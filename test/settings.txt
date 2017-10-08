@@ -5,6 +5,7 @@ SOURCEDIR=../contracts
 
 CROWDSALESOL=BATTToken.sol
 CROWDSALEJS=BATTToken.js
+# ECVERIFYSOL=ECVerify.sol
 
 DEPLOYMENTDATA=deploymentData.txt
 

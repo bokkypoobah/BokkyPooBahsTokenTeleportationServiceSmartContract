@@ -188,15 +188,16 @@ function printTokenContractDetails() {
   if (tokenContractAddress != null && tokenContractAbi != null) {
     var contract = eth.contract(tokenContractAbi).at(tokenContractAddress);
     var decimals = contract.decimals();
-    console.log("RESULT: token.totalSupply=" + contract.totalSupply().shift(-decimals));
-    console.log("RESULT: token.name=" + contract.name());
     console.log("RESULT: token.symbol=" + contract.symbol());
+    console.log("RESULT: token.name=" + contract.name());
     console.log("RESULT: token.decimals=" + decimals);
+    console.log("RESULT: token.decimalsFactor=" + contract.decimalsFactor());
+    console.log("RESULT: token.totalSupply=" + contract.totalSupply().shift(-decimals));
+    console.log("RESULT: token.transferable=" + contract.transferable());
+    console.log("RESULT: token.mintable=" + contract.mintable());
     /*
     console.log("RESULT: token.totalEthReceivedInWei=" + contract.totalEthReceivedInWei().shift(-18));
     console.log("RESULT: token.totalUsdReceived=" + contract.totalUsdReceived());
-    console.log("RESULT: token.version=" + contract.version());
-    console.log("RESULT: token.saleWalletAddress=" + contract.saleWalletAddress());
     console.log("RESULT: token.snipCoinToEtherExchangeRate=" + contract.snipCoinToEtherExchangeRate());
     console.log("RESULT: token.isSaleOpen=" + contract.isSaleOpen());
     console.log("RESULT: token.transferable=" + contract.transferable());

@@ -14,6 +14,7 @@ SOURCEDIR=`grep ^SOURCEDIR= settings.txt | sed "s/^.*=//"`
 
 CROWDSALESOL=`grep ^CROWDSALESOL= settings.txt | sed "s/^.*=//"`
 CROWDSALEJS=`grep ^CROWDSALEJS= settings.txt | sed "s/^.*=//"`
+# ECVERIFYSOL=`grep ^ECVERIFYSOL= settings.txt | sed "s/^.*=//"`
 
 DEPLOYMENTDATA=`grep ^DEPLOYMENTDATA= settings.txt | sed "s/^.*=//"`
 
@@ -43,6 +44,7 @@ printf "PASSWORD        = '$PASSWORD'\n" | tee -a $TEST1OUTPUT
 printf "SOURCEDIR       = '$SOURCEDIR'\n" | tee -a $TEST1OUTPUT
 printf "CROWDSALESOL    = '$CROWDSALESOL'\n" | tee -a $TEST1OUTPUT
 printf "CROWDSALEJS     = '$CROWDSALEJS'\n" | tee -a $TEST1OUTPUT
+# printf "ECVERIFYSOL     = '$ECVERIFYSOL'\n" | tee -a $TEST1OUTPUT
 printf "DEPLOYMENTDATA  = '$DEPLOYMENTDATA'\n" | tee -a $TEST1OUTPUT
 printf "INCLUDEJS       = '$INCLUDEJS'\n" | tee -a $TEST1OUTPUT
 printf "TEST1OUTPUT     = '$TEST1OUTPUT'\n" | tee -a $TEST1OUTPUT
@@ -54,6 +56,7 @@ printf "ENDTIME         = '$ENDTIME' '$ENDTIME_S'\n" | tee -a $TEST1OUTPUT
 # Make copy of SOL file and modify start and end times ---
 # `cp modifiedContracts/SnipCoin.sol .`
 `cp $SOURCEDIR/$CROWDSALESOL .`
+#`cp $SOURCEDIR/$ECVERIFYSOL .`
 
 # --- Modify parameters ---
 # `perl -pi -e "s/bool transferable/bool public transferable/" $TOKENSOL`
@@ -126,6 +129,10 @@ var tokenMessage = "Deploy Crowdsale/Token Contract";
 console.log("RESULT: old='" + tokenBin + "'");
 var newTokenBin = tokenBin.replace(/__BATTToken\.sol\:SafeMath________________/g, libAddress.substring(2, 42));
 console.log("RESULT: new='" + newTokenBin + "'");
+var symbol = "TST";
+var name = "Test";
+var decimals = 18;
+var initialSupply = "1000000000000000000000000";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + tokenMessage);
 var tokenContract = web3.eth.contract(tokenAbi);
@@ -133,7 +140,8 @@ var tokenContract = web3.eth.contract(tokenAbi);
 var tokenTx = null;
 var tokenAddress = null;
 
-var token = tokenContract.new({from: contractOwnerAccount, data: newTokenBin, gas: 6000000},
+var token = tokenContract.new(symbol, name, decimals, initialSupply,
+    {from: contractOwnerAccount, data: newTokenBin, gas: 6000000},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
@@ -156,6 +164,43 @@ printBalances();
 failIfGasEqualsGasUsed(tokenTx, tokenMessage);
 printTokenContractDetails();
 console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
+var mintTokensMessage = "Mint Tokens";
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + mintTokensMessage);
+var mintTokens1Tx = token.mint(account3, "1000000000000000000000000", {from: contractOwnerAccount, gas: 100000});
+var mintTokens2Tx = token.mint(account4, "1000000000000000000000000", {from: contractOwnerAccount, gas: 100000});
+while (txpool.status.pending > 0) {
+}
+printTxData("mintTokens1Tx", mintTokens1Tx);
+printTxData("mintTokens2Tx", mintTokens2Tx);
+printBalances();
+failIfGasEqualsGasUsed(mintTokens1Tx, mintTokensMessage + " - mint 1,000,000 tokens 0x0 -> ac3");
+failIfGasEqualsGasUsed(mintTokens2Tx, mintTokensMessage + " - mint 1,000,000 tokens 0x0 -> ac4");
+printTokenContractDetails();
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
+var startTransfersMessage = "Start Transfers";
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + startTransfersMessage);
+var startTransfers1Tx = token.disableMinting({from: contractOwnerAccount, gas: 100000});
+var startTransfers2Tx = token.enableTransfers({from: contractOwnerAccount, gas: 100000});
+while (txpool.status.pending > 0) {
+}
+printTxData("startTransfers1Tx", startTransfers1Tx);
+printTxData("startTransfers2Tx", startTransfers2Tx);
+printBalances();
+failIfGasEqualsGasUsed(startTransfers1Tx, startTransfersMessage + " - Disable Minting");
+failIfGasEqualsGasUsed(startTransfers2Tx, startTransfersMessage + " - Enable Transfers");
+printTokenContractDetails();
+console.log("RESULT: ");
+
+
+exit;
 
 
 // -----------------------------------------------------------------------------
