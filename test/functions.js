@@ -131,6 +131,28 @@ function assertEtherBalance(account, expectedBalance) {
   }
 }
 
+function failIfTxStatusError(tx, msg) {
+  var status = eth.getTransactionReceipt(tx).status;
+  if (status == 0) {
+    console.log("RESULT: FAIL " + msg);
+    return 0;
+  } else {
+    console.log("RESULT: PASS " + msg);
+    return 1;
+  }
+}
+
+function passIfTxStatusError(tx, msg) {
+  var status = eth.getTransactionReceipt(tx).status;
+  if (status == 1) {
+    console.log("RESULT: FAIL " + msg);
+    return 0;
+  } else {
+    console.log("RESULT: PASS " + msg);
+    return 1;
+  }
+}
+
 function gasEqualsGasUsed(tx) {
   var gas = eth.getTransaction(tx).gas;
   var gasUsed = eth.getTransactionReceipt(tx).gasUsed;
@@ -214,19 +236,30 @@ function printTokenContractDetails() {
     var latestBlock = eth.blockNumber;
     var i;
 
+    var signedTransferEvents = contract.SignedTransfer({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
+    i = 0;
+    signedTransferEvents.watch(function (error, result) {
+      console.log("RESULT: SignedTransfer " + i++ + " #" + result.blockNumber + " executor=" + result.args.executor +
+        " spender=" + result.args.spender + " from=" + result.args.from + " to=" + result.args.to + 
+        " tokens=" + result.args.tokens.shift(-decimals) + " fee=" + result.args.fee.shift(-decimals) +
+        " nonce=" + result.args.nonce + 
+        " v=" + result.args.v + " r=" + result.args.r + " s=" + result.args.s);
+    });
+    signedTransferEvents.stopWatching();
+
     var approvalEvents = contract.Approval({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
     i = 0;
     approvalEvents.watch(function (error, result) {
-      console.log("RESULT: Approval " + i++ + " #" + result.blockNumber + " _owner=" + result.args._owner + " _spender=" + result.args._spender + " _value=" +
-        result.args._value.shift(-decimals));
+      console.log("RESULT: Approval " + i++ + " #" + result.blockNumber + " owner=" + result.args.owner +
+        " spender=" + result.args.spender + " tokens=" + result.args.tokens.shift(-decimals));
     });
     approvalEvents.stopWatching();
 
     var transferEvents = contract.Transfer({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
     i = 0;
     transferEvents.watch(function (error, result) {
-      console.log("RESULT: Transfer " + i++ + " #" + result.blockNumber + ": _from=" + result.args._from + " _to=" + result.args._to +
-        " _value=" + result.args._value.shift(-decimals));
+      console.log("RESULT: Transfer " + i++ + " #" + result.blockNumber + ": from=" + result.args.from + " to=" + result.args.to +
+        " tokens=" + result.args.tokens.shift(-decimals));
     });
     transferEvents.stopWatching();
 

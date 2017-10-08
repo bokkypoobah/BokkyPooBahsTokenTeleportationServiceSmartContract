@@ -119,7 +119,7 @@ while (txpool.status.pending > 0) {
 
 printTxData("libAddress=" + libAddress, libTx);
 printBalances();
-failIfGasEqualsGasUsed(libTx, deployLibraryMessage);
+failIfTxStatusError(libTx, deployLibraryMessage);
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -132,7 +132,7 @@ console.log("RESULT: new='" + newTokenBin + "'");
 var symbol = "TST";
 var name = "Test";
 var decimals = 18;
-var initialSupply = "1000000000000000000000000";
+var initialSupply = "10000000000000000000000000";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + tokenMessage);
 var tokenContract = web3.eth.contract(tokenAbi);
@@ -161,7 +161,7 @@ while (txpool.status.pending > 0) {
 
 printTxData("tokenAddress=" + tokenAddress, tokenTx);
 printBalances();
-failIfGasEqualsGasUsed(tokenTx, tokenMessage);
+failIfTxStatusError(tokenTx, tokenMessage);
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -177,8 +177,8 @@ while (txpool.status.pending > 0) {
 printTxData("mintTokens1Tx", mintTokens1Tx);
 printTxData("mintTokens2Tx", mintTokens2Tx);
 printBalances();
-failIfGasEqualsGasUsed(mintTokens1Tx, mintTokensMessage + " - mint 1,000,000 tokens 0x0 -> ac3");
-failIfGasEqualsGasUsed(mintTokens2Tx, mintTokensMessage + " - mint 1,000,000 tokens 0x0 -> ac4");
+failIfTxStatusError(mintTokens1Tx, mintTokensMessage + " - mint 1,000,000 tokens 0x0 -> ac3");
+failIfTxStatusError(mintTokens2Tx, mintTokensMessage + " - mint 1,000,000 tokens 0x0 -> ac4");
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -194,10 +194,123 @@ while (txpool.status.pending > 0) {
 printTxData("startTransfers1Tx", startTransfers1Tx);
 printTxData("startTransfers2Tx", startTransfers2Tx);
 printBalances();
-failIfGasEqualsGasUsed(startTransfers1Tx, startTransfersMessage + " - Disable Minting");
-failIfGasEqualsGasUsed(startTransfers2Tx, startTransfersMessage + " - Enable Transfers");
+failIfTxStatusError(startTransfers1Tx, startTransfersMessage + " - Disable Minting");
+failIfTxStatusError(startTransfers2Tx, startTransfersMessage + " - Enable Transfers");
 printTokenContractDetails();
 console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
+var signedTransferMessage = "Signed Transfers";
+var functionSig = web3.sha3("signedTransfer(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
+var tokenContractAddress = tokenAddress;
+var from = account3;
+var to = account5;
+var tokens = "1000000000000000000";
+var fee = "10000000000000000";
+var nonce = "0";
+// -----------------------------------------------------------------------------
+
+var signedTransferHash = token.signedTransferHash(tokenContractAddress,
+  from, to, tokens, fee);
+console.log("RESULT: signedTransferHash=" + signedTransferHash);
+
+function padLeft0(s, n) {
+  var result = s.toString();
+  while (result.length < n) {
+    result = "0" + result;
+  }
+  return result;
+}
+
+function bytes4ToHex(bytes4) {
+  if (bytes4.substring(0, 2) == "0x") {
+    return padLeft0(bytes4.substring(2, 10), 8);
+  } else {
+    return padLeft0(bytes4.substring(0, 8), 8);
+  } 
+}
+
+function addressToHex(address) {
+  if (address.substring(0, 2) == "0x") {
+    return padLeft0(address.substring(2, 42).toLowerCase(), 40);
+  } else {
+    return padLeft0(address.substring(0, 40).toLowerCase(), 40);
+  } 
+}
+
+function uint256ToHex(number) {
+  var bigNumber = new BigNumber(number).toString(16);
+  if (bigNumber.substring(0, 2) == "0x") {
+    return padLeft0(bigNumber.substring(2, 66).toLowerCase(), 64);
+  } else {
+    return padLeft0(bigNumber.substring(0, 64).toLowerCase(), 64);
+  } 
+}
+
+function getSigR(sig) {
+  if (sig.substring(0, 2) == "0x") {
+    return "0x" + sig.substring(2, 66);
+  } else {
+    return "0x" + sig.substring(0, 64)
+  } 
+}
+
+function getSigS(sig) {
+  if (sig.substring(0, 2) == "0x") {
+    return "0x" + sig.substring(66, 130);
+  } else {
+    return "0x" + sig.substring(64, 128)
+  } 
+}
+
+function getSigV(sig) {
+  if (sig.substring(0, 2) == "0x") {
+    return "0x" + sig.substring(130, 132);
+  } else {
+    return "0x" + sig.substring(128, 130)
+  } 
+}
+
+
+var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
+console.log("RESULT: hashOf=" + hashOf);
+var hash = web3.sha3(hashOf, {encoding: 'hex'});
+console.log("RESULT: hash=" + hash);
+var sig = web3.eth.sign(account3, hash);
+console.log("RESULT: sig=" + sig);
+var r = getSigR(sig);
+var s = getSigS(sig);
+var v = getSigV(sig);
+console.log("RESULT: sigR=" + r);
+console.log("RESULT: sigS=" + s);
+console.log("RESULT: sigV=" + v);
+
+
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + signedTransferMessage);
+// console.log("RESULT: functionSig=" + functionSig + " (should be '0xbdb96cef')");
+
+var signedTransfer1Check = token.signedTransferCheck(tokenContractAddress, from, to, tokens, fee, nonce, v, r, s);
+console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check);
+var signedTransfer1Tx = token.signedTransfer(tokenContractAddress, from, to, tokens, fee, nonce, v, r, s,
+  {from: contractOwnerAccount, gas: 200000});
+while (txpool.status.pending > 0) {
+}
+var signedTransfer2Check = token.signedTransferCheck(tokenContractAddress, from, to, tokens, fee, nonce, v, r, s);
+console.log("RESULT: signedTransfer2Check=" + signedTransfer2Check);
+var signedTransfer2Tx = token.signedTransfer(tokenContractAddress, from, to, tokens, fee, nonce, v, r, s,
+  {from: contractOwnerAccount, gas: 200000});
+while (txpool.status.pending > 0) {
+}
+printTxData("signedTransfer1Tx", signedTransfer1Tx);
+printTxData("signedTransfer2Tx", signedTransfer2Tx);
+printBalances();
+failIfTxStatusError(signedTransfer1Tx, signedTransferMessage + " - Signed Transfer ");
+passIfTxStatusError(signedTransfer2Tx, signedTransferMessage + " - Duplicated Signed Transfers - Expecting Failure");
+printTokenContractDetails();
+console.log("RESULT: ");
+
 
 
 exit;
@@ -214,8 +327,8 @@ while (txpool.status.pending > 0) {
 printTxData("transferToken1Tx", transferToken1Tx);
 printTxData("transferToken2Tx", transferToken2Tx);
 printBalances();
-failIfGasEqualsGasUsed(transferToken1Tx, transferTokenMessage + " - transfer 10,000 tokens ac1 -> ac3");
-failIfGasEqualsGasUsed(transferToken2Tx, transferTokenMessage + " - transfer 10,000 tokens ac1 -> ac4");
+failIfTxStatusError(transferToken1Tx, transferTokenMessage + " - transfer 10,000 tokens ac1 -> ac3");
+failIfTxStatusError(transferToken2Tx, transferTokenMessage + " - transfer 10,000 tokens ac1 -> ac4");
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -231,8 +344,8 @@ while (txpool.status.pending > 0) {
 printTxData("moveToken1Tx", moveToken1Tx);
 printTxData("moveToken3Tx", moveToken3Tx);
 printBalances();
-failIfGasEqualsGasUsed(moveToken1Tx, moveTokenMessage + " - transfer 0 tokens ac3 -> ac5. SHOULD not throw");
-failIfGasEqualsGasUsed(moveToken3Tx, moveTokenMessage + " - transferFrom 0 tokens ac4 -> ac7 by ac6. SHOULD not throw");
+failIfTxStatusError(moveToken1Tx, moveTokenMessage + " - transfer 0 tokens ac3 -> ac5. SHOULD not throw");
+failIfTxStatusError(moveToken3Tx, moveTokenMessage + " - transferFrom 0 tokens ac4 -> ac7 by ac6. SHOULD not throw");
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -252,9 +365,9 @@ printTxData("moveToken1Tx", moveToken1Tx);
 printTxData("moveToken2Tx", moveToken2Tx);
 printTxData("moveToken3Tx", moveToken3Tx);
 printBalances();
-passIfGasEqualsGasUsed(moveToken1Tx, moveTokenMessage + " - transfer 300K+1e-18 tokens ac3 -> ac5. SHOULD throw");
-failIfGasEqualsGasUsed(moveToken2Tx, moveTokenMessage + " - approve 300K+1e-18 tokens ac4 -> ac6");
-passIfGasEqualsGasUsed(moveToken3Tx, moveTokenMessage + " - transferFrom 300K+1e-18 tokens ac4 -> ac7 by ac6. SHOULD throw");
+passIfTxStatusError(moveToken1Tx, moveTokenMessage + " - transfer 300K+1e-18 tokens ac3 -> ac5. SHOULD throw");
+failIfTxStatusError(moveToken2Tx, moveTokenMessage + " - approve 300K+1e-18 tokens ac4 -> ac6");
+passIfTxStatusError(moveToken3Tx, moveTokenMessage + " - transferFrom 300K+1e-18 tokens ac4 -> ac7 by ac6. SHOULD throw");
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -268,7 +381,7 @@ while (txpool.status.pending > 0) {
 }
 printTxData("approveToken2Tx", approveToken2Tx);
 printBalances();
-passIfGasEqualsGasUsed(approveToken2Tx, approveTokenMessage + " - approve 300K+2e-18 tokens ac4 -> ac6. SHOULD throw");
+passIfTxStatusError(approveToken2Tx, approveTokenMessage + " - approve 300K+2e-18 tokens ac4 -> ac6. SHOULD throw");
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -286,8 +399,8 @@ while (txpool.status.pending > 0) {
 printTxData("approveToken2Tx", approveToken2Tx);
 printTxData("approveToken3Tx", approveToken3Tx);
 printBalances();
-failIfGasEqualsGasUsed(approveToken2Tx, approveTokenMessage + " - approve 0 tokens ac4 -> ac6");
-failIfGasEqualsGasUsed(approveToken3Tx, approveTokenMessage + " - approve 300K+2e-18 tokens ac4 -> ac6");
+failIfTxStatusError(approveToken2Tx, approveTokenMessage + " - approve 0 tokens ac4 -> ac6");
+failIfTxStatusError(approveToken3Tx, approveTokenMessage + " - approve 300K+2e-18 tokens ac4 -> ac6");
 printTokenContractDetails();
 console.log("RESULT: ");
 

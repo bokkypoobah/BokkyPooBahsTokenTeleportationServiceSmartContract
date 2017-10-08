@@ -1,6 +1,7 @@
 {
   "config": {
-    "homesteadBlock": 1
+    "homesteadBlock": 1,
+    "byzantiumBlock": 2
   },
   "nonce": "0",
   "difficulty": "0x400",
