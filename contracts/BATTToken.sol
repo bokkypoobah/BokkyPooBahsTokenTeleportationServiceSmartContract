@@ -33,6 +33,135 @@ contract ERC20Interface {
 
 
 // ----------------------------------------------------------------------------
+// BokkyPooBah's Assisted Token Transfer Token Interface
+// ----------------------------------------------------------------------------
+contract BATTInterface is ERC20Interface {
+    // ------------------------------------------------------------------------
+    // Version
+    // ------------------------------------------------------------------------
+    uint public constant battVersion = 100;
+
+    enum CheckResult { Success, NotTransferable, SignerMismatch,
+        AlreadyExecuted,
+        InsufficientApprovedTokens, InsufficientApprovedTokensForFees,
+        InsufficientTokens, InsufficientTokensForFees,
+        OverflowError }
+
+    // ------------------------------------------------------------------------
+    // Data for signing and ecrecover
+    // ------------------------------------------------------------------------
+    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
+
+    // ------------------------------------------------------------------------
+    // signedTransfer(...) function signature
+    // web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
+    // => "0xa64a9365"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedTransferSig = "\xa6\x4a\x93\x65";
+
+
+    // ------------------------------------------------------------------------
+    // signedApprove(...) function signature
+    // web3.sha3("signedApprove(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
+    // => "0xb310efc3"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedApproveSig = "\xb3\x10\xef\xc3";
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom(...) function signature
+    // web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
+    // => "0xc6e5df0c"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedTransferFromSig = "\xc6\xe5\xdf\x0c";
+
+
+    // ------------------------------------------------------------------------
+    // signedTransfer helper
+    //
+    // Function to generate the hash used to create the signed transfer message
+    // ------------------------------------------------------------------------
+    function signedTransferHash(address owner, address to, uint tokens,
+        uint fee, uint nonce) public view returns (bytes32 hash);
+
+    // ------------------------------------------------------------------------
+    // signedTransfer helper
+    //
+    // Check whether a transfer can be executed on behalf of the user who
+    // signed the transfer message
+    // ------------------------------------------------------------------------
+    function signedTransferCheck(address owner, address to, uint tokens,
+        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public constant returns (CheckResult result);
+
+    // ------------------------------------------------------------------------
+    // signedTransfer
+    //
+    // Execute a transfer on behalf of the user who signed the transfer 
+    // message
+    // ------------------------------------------------------------------------
+    function signedTransfer(address owner, address to, uint tokens, uint fee,
+        uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public returns (bool success);
+
+    // ------------------------------------------------------------------------
+    // signedApprove helper
+    //
+    // Function to generate the hash used to create the signed approve message
+    // ------------------------------------------------------------------------
+    function signedApproveHash(address owner, address spender, uint tokens,
+        uint fee, uint nonce) public view returns (bytes32 hash);
+
+    // ------------------------------------------------------------------------
+    // signedApprove helper
+    //
+    // Check whether an approve can be executed on behalf of the user who
+    // signed the approve message
+    // ------------------------------------------------------------------------
+    function signedApproveCheck(address owner, address spender, uint tokens,
+        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public constant returns (CheckResult result);
+
+    // ------------------------------------------------------------------------
+    // signedApprove
+    //
+    // Execute an approve on behalf of the user who signed the approve message
+    // ------------------------------------------------------------------------
+    function signedApprove(address owner, address spender, uint tokens,
+        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public returns (bool success);
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom helper
+    //
+    // Function to generate the hash used to create the signed transferFrom
+    // message
+    // ------------------------------------------------------------------------
+    function signedTransferFromHash(address spender, address from, address to,
+        uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom helper
+    //
+    // Check whether a transferFrom can be executed on behalf of the user who
+    // signed the transferFrom message
+    // ------------------------------------------------------------------------
+    function signedTransferFromCheck(address spender, address from, address to,
+        uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public constant returns (CheckResult result);
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom
+    //
+    // Execute a transferFrom on behalf of the user who signed the transferFrom 
+    // message
+    // ------------------------------------------------------------------------
+    function signedTransferFrom(address spender, address from, address to,
+        uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public returns (bool success);
+}
+
+
+// ----------------------------------------------------------------------------
 // Owned contract
 // ----------------------------------------------------------------------------
 contract Owned {
@@ -167,7 +296,7 @@ library SafeMath {
 // ERC20 Token, with the addition of symbol, name and decimals and assisted
 // token transfers
 // ----------------------------------------------------------------------------
-contract BATTToken is ERC20Interface, Owned {
+contract ERC20Token is ERC20Interface, Owned {
     using SafeMath for uint;
 
     // ------------------------------------------------------------------------
@@ -184,19 +313,6 @@ contract BATTToken is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     bool public transferable = false;
     bool public mintable = true;
-
-    // ------------------------------------------------------------------------
-    // Data for signing and ecrecover
-    // ------------------------------------------------------------------------
-    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
-
-    // ------------------------------------------------------------------------
-    // signedTransfer(...) function signature
-    // web3.sha3("signedTransfer(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0x4a07bd1f"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferSig = "\x4a\x07\xbd\x1f";
-
 
     // ------------------------------------------------------------------------
     // Balances for each account
@@ -216,7 +332,7 @@ contract BATTToken is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function BATTToken(string _symbol, string _name, uint8 _decimals, 
+    function ERC20Token(string _symbol, string _name, uint8 _decimals, 
         uint _initialSupply) public 
     {
         symbol = _symbol;
@@ -264,6 +380,8 @@ contract BATTToken is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     function transfer(address to, uint tokens) public returns (bool success) {
         require(transferable);
+        require(balances[msg.sender] >= tokens);
+
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
         Transfer(msg.sender, to, tokens);
@@ -279,11 +397,12 @@ contract BATTToken is ERC20Interface, Owned {
     function approve(address spender, uint tokens)
         public returns (bool success) 
     {
+        // NOT IMPLEMENTED
         // To change the approve amount you first have to reduce the addresses`
         //  allowance to zero by calling `approve(_spender,0)` if it is not
         //  already 0 to mitigate the race condition described here:
         //  https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-        require((tokens == 0) || (allowed[msg.sender][spender] == 0));
+        // require((tokens == 0) || (allowed[msg.sender][spender] == 0));
 
         allowed[msg.sender][spender] = tokens;
         Approval(msg.sender, spender, tokens);
@@ -303,6 +422,9 @@ contract BATTToken is ERC20Interface, Owned {
         public returns (bool success)
     {
         require(transferable);
+        require(balances[from] >= tokens);
+        require(allowed[from][msg.sender] >= tokens);
+
         balances[from] = balances[from].sub(tokens);
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
@@ -346,17 +468,43 @@ contract BATTToken is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
+    // Owner can transfer out any accidentally sent ERC20 tokens
+    // ------------------------------------------------------------------------
+    function transferAnyERC20Token(address tokenAddress, uint tokens)
+      public onlyOwner returns (bool success)
+    {
+        return ERC20Interface(tokenAddress).transfer(owner, tokens);
+    }
+}
+
+
+// ----------------------------------------------------------------------------
+// ERC20 Token, with the addition of symbol, name and decimals and assisted
+// token transfers
+// ----------------------------------------------------------------------------
+contract BATTToken is ERC20Token, BATTInterface {
+    using SafeMath for uint;
+
+    // ------------------------------------------------------------------------
+    // Constructor
+    // ------------------------------------------------------------------------
+    function BATTToken(string _symbol, string _name, uint8 _decimals, 
+        uint _initialSupply) public ERC20Token(_symbol, _name, _decimals,
+        _initialSupply)
+    {
+    }
+
+
+    // ------------------------------------------------------------------------
     // signedTransfer helper
     //
     // Function to generate the hash used to create the signed transfer message
     // ------------------------------------------------------------------------
-    function signedTransferHash(address tokenContractAddress,
-        address from, address to, uint tokens, uint fee,
-        uint nonce)
-        public pure returns (bytes32 hash) 
+    function signedTransferHash(address owner, address to, uint tokens,
+        uint fee, uint nonce) public view returns (bytes32 hash)
     {
-        hash = keccak256(signedTransferSig, tokenContractAddress,
-            from, to, tokens, fee, nonce);
+        hash = keccak256(signedTransferSig, address(this), owner, to, tokens,
+            fee, nonce);
     }
 
 
@@ -366,22 +514,37 @@ contract BATTToken is ERC20Interface, Owned {
     // Check whether a transfer can be executed on behalf of the user who
     // signed the transfer message
     // ------------------------------------------------------------------------
-    function signedTransferCheck(address tokenContractAddress,
-        address from, address to, uint tokens, uint fee,
-        uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public constant returns (bool success) 
+    function signedTransferCheck(address owner, address to, uint tokens,
+        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public constant returns (CheckResult result)
     {
-        if (tokenContractAddress != address(this)) return false;
-        if (!transferable) return false;
-        bytes32 hash = signedTransferHash(tokenContractAddress,
-            from, to, tokens, fee, nonce);
-        bytes32 prefixedHash = keccak256(signingPrefix, hash);
-        address signer = ecrecover(prefixedHash, v, r, s);
+        // Check tokens are transferable
+        if (!transferable) return CheckResult.NotTransferable;
 
-        if (from != signer) return false;
-        if (executed[from][hash]) return false;
-        if (balances[from] < (tokens + fee)) return false;
-        return true;
+        // Check owner is the message signer
+        bytes32 hash = signedTransferHash(owner, to, tokens, fee, nonce);
+        if (owner != ecrecover(keccak256(signingPrefix, hash), v, r, s))
+            return CheckResult.SignerMismatch;
+
+        // Check message not already executed
+        if (executed[owner][hash]) return CheckResult.AlreadyExecuted;
+
+        uint total = tokens.add(fee);
+
+        // Check there are sufficient tokens to transfer
+        if (balances[owner] < tokens) return CheckResult.InsufficientTokens;
+
+        // Check there are sufficient tokens to pay for fees
+        if (balances[owner] < total)
+            return CheckResult.InsufficientTokensForFees;
+
+        // Check for overflows
+        if (balances[to] + tokens < balances[to])
+            return CheckResult.OverflowError;
+        if (balances[msg.sender] + fee < balances[msg.sender])
+            return CheckResult.OverflowError;
+
+        return CheckResult.Success;
     }
 
 
@@ -391,52 +554,216 @@ contract BATTToken is ERC20Interface, Owned {
     // Execute a transfer on behalf of the user who signed the transfer 
     // message
     // ------------------------------------------------------------------------
-    function signedTransfer(address tokenContractAddress,
-        address from, address to, uint tokens, uint fee,
+    function signedTransfer(address owner, address to, uint tokens, uint fee,
         uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public returns (bool success) 
+        public returns (bool success)
     {
-        // Check we are executing with the right contract
-        // and tokens are transferable
-        require(tokenContractAddress == address(this));
+        // Check tokens are transferable
         require(transferable);
 
-        // Check the user who signed the message matches
-        // the transfer instructions
-        bytes32 hash = signedTransferHash(tokenContractAddress,
-            from, to, tokens, fee, nonce);
-        bytes32 prefixedHash = keccak256(signingPrefix, hash);
-        address signer = ecrecover(prefixedHash, v, r, s);
-        require(from == signer);
+        // Check owner is the message signer
+        bytes32 hash = signedTransferHash(owner, to, tokens, fee, nonce);
+        require(owner == ecrecover(keccak256(signingPrefix, hash), v, r, s));
 
-        // Check we have not already executed this transfer
-        require(!executed[from][hash]);
-        executed[from][hash] = true;
+        // Check message not already executed
+        require(!executed[owner][hash]);
+        executed[owner][hash] = true;
+
+        // Move the tokens and fees
+        require(balances[owner] >= tokens);
+        balances[owner] = balances[owner].sub(tokens);
+        balances[to] = balances[to].add(tokens);
+        Transfer(owner, to, tokens);
+
+        // Fee
+        require(balances[owner] >= fee);
+        balances[owner] = balances[owner].sub(fee);
+        balances[msg.sender] = balances[msg.sender].add(fee);
+        Transfer(owner, msg.sender, fee);
+
+        return true;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // signedApprove helper
+    //
+    // Function to generate the hash used to create the signed approve message
+    // ------------------------------------------------------------------------
+    function signedApproveHash(address signer, address spender, uint tokens,
+        uint fee, uint nonce) public view returns (bytes32 hash) 
+    {
+        hash = keccak256(signedApproveSig, address(this),
+            signer, spender, tokens, fee, nonce);
+    }
+
+
+    // ------------------------------------------------------------------------
+    // signedApprove helper
+    //
+    // Check whether an approve can be executed on behalf of the user who
+    // signed the approve message
+    // ------------------------------------------------------------------------
+    function signedApproveCheck(address owner, address spender, uint tokens,
+        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public constant returns (CheckResult result) 
+    {
+        // Check tokens are transferable
+        if (!transferable) return CheckResult.NotTransferable;
+
+        // Check owner is the message signer
+        bytes32 hash = signedApproveHash(owner, spender, tokens, fee, nonce);
+        if (owner != ecrecover(keccak256(signingPrefix, hash), v, r, s))
+            return CheckResult.SignerMismatch;
+
+        // Check message not already executed
+        if (executed[owner][hash]) return CheckResult.AlreadyExecuted;
+
+        // Check there are sufficient tokens to pay for fees
+        if (balances[owner] < fee)
+            return CheckResult.InsufficientTokensForFees;
+
+        // Check for overflows
+        if (balances[msg.sender] + fee < balances[msg.sender])
+            return CheckResult.OverflowError;
+
+        return CheckResult.Success;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // signedApprove
+    //
+    // Execute an approve on behalf of the user who signed the approve message
+    // ------------------------------------------------------------------------
+    function signedApprove(address owner, address spender, uint tokens,
+        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public returns (bool success) 
+    {
+        // Check tokens are transferable
+        require(transferable);
+
+        // Check owner is the message signer
+        bytes32 hash = signedApproveHash(owner, spender, tokens, fee, nonce);
+        require(owner == ecrecover(keccak256(signingPrefix, hash), v, r, s));
+
+        // Check message not already executed
+        require(!executed[owner][hash]);
+        executed[owner][hash] = true;
+
+        // Approve
+        allowed[owner][spender] = tokens;
+        Approval(owner, spender, tokens);
+
+        // Fee
+        require(balances[owner] >= fee);
+        balances[owner] = balances[owner].sub(fee);
+        balances[msg.sender] = balances[msg.sender].add(fee);
+        Transfer(owner, msg.sender, fee);
+
+        return true;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom helper
+    //
+    // Function to generate the hash used to create the signed transfer message
+    // ------------------------------------------------------------------------
+    function signedTransferFromHash(address spender, address from, address to,
+        uint tokens, uint fee, uint nonce) public view returns (bytes32 hash)
+    {
+        hash = keccak256(signedTransferFromSig, address(this),
+            spender, from, to, tokens, fee, nonce);
+    }
+
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom helper
+    //
+    // Check whether a transferFrom can be executed on behalf of the user who
+    // signed the transferFrom message
+    // ------------------------------------------------------------------------
+    function signedTransferFromCheck(address spender, address from, address to,
+        uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public constant returns (CheckResult result)
+    {
+        // Check tokens are transferable
+        if (!transferable) return CheckResult.NotTransferable;
+
+        // Check spender is the message signer
+        bytes32 hash = signedTransferFromHash(spender, from, to, tokens, fee,
+            nonce);
+        if (spender != ecrecover(keccak256(signingPrefix, hash), v, r, s))
+            return CheckResult.SignerMismatch;
+
+        // Check message not already executed
+        if (executed[spender][hash]) return CheckResult.AlreadyExecuted;
+
+        uint total = tokens.add(fee);
+
+        // Check there are sufficient approved tokens to transfer
+        if (allowed[from][spender] < tokens)
+            return CheckResult.InsufficientApprovedTokens;
+        // Check there are sufficient approved tokens to pay for fees
+        if (allowed[from][spender] < total)
+            return CheckResult.InsufficientApprovedTokensForFees;
+
+        // Check there are sufficient tokens to transfer
+        if (balances[from] < tokens) return CheckResult.InsufficientTokens;
+
+        // Check there are sufficient tokens to pay for fees
+        if (balances[from] < total)
+            return CheckResult.InsufficientTokensForFees;
+
+        // Check for overflows
+        if (balances[to] + tokens < balances[to])
+            return CheckResult.OverflowError;
+        if (balances[msg.sender] + fee < balances[msg.sender])
+            return CheckResult.OverflowError;
+
+        return CheckResult.Success;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom
+    //
+    // Execute a transferFrom on behalf of the user who signed the transferFrom 
+    // message
+    // ------------------------------------------------------------------------
+    function signedTransferFrom(address spender, address from, address to,
+        uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
+        public returns (bool success)
+    {
+        // Check tokens are transferable
+        require(transferable);
+
+        // Check spender is the message signer
+        bytes32 hash = signedTransferFromHash(spender, from, to, tokens,
+            fee, nonce);
+        require(spender == ecrecover(keccak256(signingPrefix, hash), v, r, s));
+
+        // Check message not already executed
+        require(!executed[spender][hash]);
+        executed[spender][hash] = true;
+
+        uint total = tokens.add(fee);
+        require(balances[from] >= total);
+        require(allowed[from][spender] >= total);
 
         // Move the tokens and fees
         balances[from] = balances[from].sub(tokens);
-        balances[from] = balances[from].sub(fee);
+        allowed[from][spender] = allowed[from][spender].sub(tokens);
         balances[to] = balances[to].add(tokens);
-        balances[msg.sender] = balances[msg.sender].add(fee);
-
-        // Log transfers
         Transfer(from, to, tokens);
+
+        // Fee
+        balances[from] = balances[from].sub(fee);
+        allowed[from][spender] = allowed[from][spender].sub(fee);
+        balances[msg.sender] = balances[msg.sender].add(fee);
         Transfer(from, msg.sender, fee);
-        SignedTransfer(msg.sender, from, from, to, tokens, fee, nonce, v, r, s);
+
         return true;
-    }
-    event SignedTransfer(address indexed executor, address spender, 
-      address indexed from, address indexed to,
-      uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s);
-
-
-
-    // ------------------------------------------------------------------------
-    // Owner can transfer out any accidentally sent ERC20 tokens
-    // ------------------------------------------------------------------------
-    function transferAnyERC20Token(address tokenAddress, uint tokens)
-      public onlyOwner returns (bool success)
-    {
-        return ERC20Interface(tokenAddress).transfer(owner, tokens);
     }
 }

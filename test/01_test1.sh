@@ -200,9 +200,36 @@ printTokenContractDetails();
 console.log("RESULT: ");
 
 
+function signedTransferCheckResultString(e) {
+  var text = "Unknown";
+  if (e == 0) {
+    text = "Success"
+  } else if (e == 1) {
+    text = "NotTransferable";
+  } else if (e == 2) {
+    text = "SignerMismatch";
+  } else if (e == 3) {
+    text = "AlreadyExecuted";
+  } else if (e == 4) {
+    text = "InsufficientApprovedTokens";
+  } else if (e == 5) {
+    text = "InsufficientApprovedTokensForFees";
+  } else if (e == 6) {
+    text = "InsufficientTokens";
+  } else if (e == 7) {
+    text = "InsufficientTokensForFees";
+  } else if (e == 8) {
+    text = "OverflowError";
+  } else {
+    text = "Unknown";
+  }
+  return text;
+}
+
+
 // -----------------------------------------------------------------------------
 var signedTransferMessage = "Signed Transfers";
-var functionSig = web3.sha3("signedTransfer(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
+var functionSig = web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
 var tokenContractAddress = tokenAddress;
 var from = account3;
 var to = account5;
@@ -211,8 +238,7 @@ var fee = "10000000000000000";
 var nonce = "0";
 // -----------------------------------------------------------------------------
 
-var signedTransferHash = token.signedTransferHash(tokenContractAddress,
-  from, to, tokens, fee);
+var signedTransferHash = token.signedTransferHash(from, to, tokens, fee);
 console.log("RESULT: signedTransferHash=" + signedTransferHash);
 
 function padLeft0(s, n) {
@@ -277,7 +303,7 @@ var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress
 console.log("RESULT: hashOf=" + hashOf);
 var hash = web3.sha3(hashOf, {encoding: 'hex'});
 console.log("RESULT: hash=" + hash);
-var sig = web3.eth.sign(account3, hash);
+var sig = web3.eth.sign(account3, signedTransferHash);
 console.log("RESULT: sig=" + sig);
 var r = getSigR(sig);
 var s = getSigS(sig);
@@ -289,17 +315,17 @@ console.log("RESULT: sigV=" + v);
 
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + signedTransferMessage);
-// console.log("RESULT: functionSig=" + functionSig + " (should be '0xbdb96cef')");
+// console.log("RESULT: functionSig=" + functionSig + " (should be '0xa64a9365')");
 
-var signedTransfer1Check = token.signedTransferCheck(tokenContractAddress, from, to, tokens, fee, nonce, v, r, s);
-console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check);
-var signedTransfer1Tx = token.signedTransfer(tokenContractAddress, from, to, tokens, fee, nonce, v, r, s,
+var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, v, r, s);
+console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check + " " + signedTransferCheckResultString(signedTransfer1Check));
+var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, v, r, s,
   {from: contractOwnerAccount, gas: 200000});
 while (txpool.status.pending > 0) {
 }
-var signedTransfer2Check = token.signedTransferCheck(tokenContractAddress, from, to, tokens, fee, nonce, v, r, s);
-console.log("RESULT: signedTransfer2Check=" + signedTransfer2Check);
-var signedTransfer2Tx = token.signedTransfer(tokenContractAddress, from, to, tokens, fee, nonce, v, r, s,
+var signedTransfer2Check = token.signedTransferCheck(from, to, tokens, fee, nonce, v, r, s);
+console.log("RESULT: signedTransfer2Check=" + signedTransfer2Check + " " + signedTransferCheckResultString(signedTransfer2Check));
+var signedTransfer2Tx = token.signedTransfer(from, to, tokens, fee, nonce, v, r, s,
   {from: contractOwnerAccount, gas: 200000});
 while (txpool.status.pending > 0) {
 }
@@ -312,6 +338,113 @@ printTokenContractDetails();
 console.log("RESULT: ");
 
 
+// -----------------------------------------------------------------------------
+var signedApproveMessage = "Signed Approve";
+var functionSig = web3.sha3("signedApprove(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
+var tokenContractAddress = tokenAddress;
+var owner = account4;
+var spender = account6;
+var tokens = "50000000000000000000";
+var fee = "500000000000000000";
+var nonce = "0";
+// -----------------------------------------------------------------------------
+
+var signedApproveHash = token.signedApproveHash(tokenContractAddress,
+  owner, spender, tokens, fee);
+console.log("RESULT: signedApproveHash=" + signedApproveHash);
+
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + signedApproveMessage);
+console.log("RESULT: functionSig=" + functionSig + " (should be '0xb310efc3')");
+
+var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(owner) + addressToHex(spender) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
+console.log("RESULT: hashOf=" + hashOf);
+var hash = web3.sha3(hashOf, {encoding: 'hex'});
+console.log("RESULT: hash=" + hash);
+var sig = web3.eth.sign(account4, hash);
+
+// var sig = web3.eth.sign(account4, signedApproveHash);
+console.log("RESULT: sig=" + sig);
+var r = getSigR(sig);
+var s = getSigS(sig);
+var v = getSigV(sig);
+console.log("RESULT: sigR=" + r);
+console.log("RESULT: sigS=" + s);
+console.log("RESULT: sigV=" + v);
+
+var signedApprove1Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, v, r, s);
+console.log("RESULT: signedApprove1Check=" + signedApprove1Check + " " + signedTransferCheckResultString(signedApprove1Check));
+var signedApprove1Tx = token.signedApprove(owner, spender, tokens, fee, nonce, v, r, s,
+  {from: contractOwnerAccount, gas: 200000});
+while (txpool.status.pending > 0) {
+}
+var signedApprove2Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, v, r, s);
+console.log("RESULT: signedApprove2Check=" + signedApprove2Check + " " + signedTransferCheckResultString(signedApprove2Check));
+var signedApprove2Tx = token.signedApprove(owner, spender, tokens, fee, nonce, v, r, s,
+  {from: contractOwnerAccount, gas: 200000});
+while (txpool.status.pending > 0) {
+}
+printTxData("signedApprove1Tx", signedApprove1Tx);
+printTxData("signedApprove2Tx", signedApprove2Tx);
+printBalances();
+failIfTxStatusError(signedApprove1Tx, signedApproveMessage + " - Signed Approve ");
+passIfTxStatusError(signedApprove2Tx, signedApproveMessage + " - Duplicated Signed Approve - Expecting Failure");
+printTokenContractDetails();
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
+var signedTransferFromMessage = "Signed TransferFrom";
+var functionSig = web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
+var tokenContractAddress = tokenAddress;
+var spender = account6;
+var from = account4;
+var to = account7;
+var tokens = "3000000000000000000";
+var fee = "30000000000000000";
+
+
+var signedTransferFromHash = token.signedTransferFromHash(spender, from, to, tokens, fee);
+console.log("RESULT: signedTransferFromHash=" + signedTransferFromHash);
+
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + signedTransferFromMessage);
+console.log("RESULT: functionSig=" + functionSig + " (should be '0xc6e5df0c')");
+
+var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(spender) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
+console.log("RESULT: hashOf=" + hashOf);
+var hash = web3.sha3(hashOf, {encoding: 'hex'});
+console.log("RESULT: hash=" + hash);
+var sig = web3.eth.sign(account6, hash);
+
+// var sig = web3.eth.sign(account4, signedTransferFromHash);
+console.log("RESULT: sig=" + sig);
+var r = getSigR(sig);
+var s = getSigS(sig);
+var v = getSigV(sig);
+console.log("RESULT: sigR=" + r);
+console.log("RESULT: sigS=" + s);
+console.log("RESULT: sigV=" + v);
+
+var signedTransferFrom1Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, v, r, s);
+console.log("RESULT: signedTransferFrom1Check=" + signedTransferFrom1Check + " " + signedTransferCheckResultString(signedTransferFrom1Check));
+var signedTransferFrom1Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, v, r, s,
+  {from: contractOwnerAccount, gas: 200000});
+while (txpool.status.pending > 0) {
+}
+var signedTransferFrom2Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, v, r, s);
+console.log("RESULT: signedTransferFrom2Check=" + signedTransferFrom2Check + " " + signedTransferCheckResultString(signedTransferFrom2Check));
+var signedTransferFrom2Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, v, r, s,
+  {from: contractOwnerAccount, gas: 200000});
+while (txpool.status.pending > 0) {
+}
+printTxData("signedTransferFrom1Tx", signedTransferFrom1Tx);
+printTxData("signedTransferFrom2Tx", signedTransferFrom2Tx);
+printBalances();
+failIfTxStatusError(signedTransferFrom1Tx, signedTransferMessage + " - Signed TransferFrom ");
+passIfTxStatusError(signedTransferFrom2Tx, signedTransferMessage + " - Duplicated Signed TransfersFrom - Expecting Failure");
+printTokenContractDetails();
+console.log("RESULT: ");
 
 exit;
 

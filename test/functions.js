@@ -117,8 +117,9 @@ function printTxData(name, txId) {
   var gasPrice = tx.gasPrice;
   var gasCostETH = tx.gasPrice.mul(txReceipt.gasUsed).div(1e18);
   var gasCostUSD = gasCostETH.mul(ethPriceUSD);
-  console.log("RESULT: " + name + " gas=" + tx.gas + " gasUsed=" + txReceipt.gasUsed + " costETH=" + gasCostETH +
-    " costUSD=" + gasCostUSD + " @ ETH/USD=" + ethPriceUSD + " gasPrice=" + gasPrice + " block=" + 
+  console.log("RESULT: " + name + " status=" + txReceipt.status + " gas=" + tx.gas +
+    " gasUsed=" + txReceipt.gasUsed + " costETH=" + gasCostETH + " costUSD=" + gasCostUSD +
+    " @ ETH/USD=" + ethPriceUSD + " gasPrice=" + gasPrice + " block=" + 
     txReceipt.blockNumber + " txIx=" + tx.transactionIndex + " txId=" + txId);
 }
 
@@ -236,16 +237,16 @@ function printTokenContractDetails() {
     var latestBlock = eth.blockNumber;
     var i;
 
-    var signedTransferEvents = contract.SignedTransfer({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
-    i = 0;
-    signedTransferEvents.watch(function (error, result) {
-      console.log("RESULT: SignedTransfer " + i++ + " #" + result.blockNumber + " executor=" + result.args.executor +
-        " spender=" + result.args.spender + " from=" + result.args.from + " to=" + result.args.to + 
-        " tokens=" + result.args.tokens.shift(-decimals) + " fee=" + result.args.fee.shift(-decimals) +
-        " nonce=" + result.args.nonce + 
-        " v=" + result.args.v + " r=" + result.args.r + " s=" + result.args.s);
-    });
-    signedTransferEvents.stopWatching();
+    // var signedTransferEvents = contract.SignedTransfer({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
+    // i = 0;
+    // signedTransferEvents.watch(function (error, result) {
+    //   console.log("RESULT: SignedTransfer " + i++ + " #" + result.blockNumber + " executor=" + result.args.executor +
+    //     " spender=" + result.args.spender + " from=" + result.args.from + " to=" + result.args.to + 
+    //     " tokens=" + result.args.tokens.shift(-decimals) + " fee=" + result.args.fee.shift(-decimals) +
+    //     " nonce=" + result.args.nonce + 
+    //     " v=" + result.args.v + " r=" + result.args.r + " s=" + result.args.s);
+    // });
+    // signedTransferEvents.stopWatching();
 
     var approvalEvents = contract.Approval({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
     i = 0;
