@@ -1,13 +1,8 @@
 pragma solidity ^0.4.17;
 
 // ----------------------------------------------------------------------------
-// BATTT 'BokkyPooBah's Assisted Token Transfer Token' token contract
-//
-// Deployed to : 
-// Symbol      : BATTT
-// Name        : BokkyPooBah's Assisted Token Transfer Token
-// Total supply: 10 million
-// Decimals    : 18
+// BTTS 'BokkyPooBah's Token Teleportation Service' token interface and
+// sample implementation
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
@@ -33,59 +28,61 @@ contract ERC20Interface {
 
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Assisted Token Transfer Token Interface
+// BokkyPooBah's Token Teleportation Service (BTTS) Interface v1.00
+//
+// This consist of the signed message versions of the three ERC20 function:
+// - signedTransfer(...)
+// - signedApprove(...)
+// - signedTransferFrom(...)
+//
+// Each of these signed message functions have a helper to generate the signed
+// message hash:
+// - signedTransferHash(...)
+// - signedApproveHash(...)
+// - signedTransferFromHash(...)
+//
+// Each of these signed message functions have a help to check the status of
+// the signed message before the signed message functions are submitted for
+// execution:
+// - signedTransferCheck(...)
+// - signedApproveCheck(...)
+// - signedTransferFromCheck(...)
+//
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
-contract BATTInterface is ERC20Interface {
+contract BTTSInterface {
+
     // ------------------------------------------------------------------------
     // Version
     // ------------------------------------------------------------------------
-    uint public constant battVersion = 100;
-
-    enum CheckResult { Success, NotTransferable, SignerMismatch,
-        AlreadyExecuted,
-        InsufficientApprovedTokens, InsufficientApprovedTokensForFees,
-        InsufficientTokens, InsufficientTokensForFees,
-        OverflowError }
-
-    // ------------------------------------------------------------------------
-    // Data for signing and ecrecover
-    // ------------------------------------------------------------------------
-    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
-
-    // ------------------------------------------------------------------------
-    // signedTransfer(...) function signature
-    // web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xa64a9365"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferSig = "\xa6\x4a\x93\x65";
+    uint public constant bttsVersion = 100;
 
 
     // ------------------------------------------------------------------------
-    // signedApprove(...) function signature
-    // web3.sha3("signedApprove(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xb310efc3"
+    // signed{X}Check return status
     // ------------------------------------------------------------------------
-    bytes4 public constant signedApproveSig = "\xb3\x10\xef\xc3";
+    enum CheckResult {
+        Success,                           // 0 Success
+        NotTransferable,                   // 1 Tokens not transferable yet
+        SignerMismatch,                    // 2 Mismatch in signing account
+        AlreadyExecuted,                   // 3 Transfer already executed
+        InsufficientApprovedTokens,        // 4 Insufficient approved tokens
+        InsufficientApprovedTokensForFees, // 5 Insufficient approved tokens for fees
+        InsufficientTokens,                // 6 Insufficient tokens
+        InsufficientTokensForFees,         // 7 Insufficient tokens for fees
+        OverflowError                      // 8 Overflow error
+    }
+
 
     // ------------------------------------------------------------------------
-    // signedTransferFrom(...) function signature
-    // web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xc6e5df0c"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferFromSig = "\xc6\xe5\xdf\x0c";
-
-
-    // ------------------------------------------------------------------------
-    // signedTransfer helper
+    // signedTransfer functions
     //
-    // Function to generate the hash used to create the signed transfer message
+    // Generate the hash used to create the signed transfer message
     // ------------------------------------------------------------------------
     function signedTransferHash(address owner, address to, uint tokens,
         uint fee, uint nonce) public view returns (bytes32 hash);
 
     // ------------------------------------------------------------------------
-    // signedTransfer helper
-    //
     // Check whether a transfer can be executed on behalf of the user who
     // signed the transfer message
     // ------------------------------------------------------------------------
@@ -94,8 +91,6 @@ contract BATTInterface is ERC20Interface {
         public constant returns (CheckResult result);
 
     // ------------------------------------------------------------------------
-    // signedTransfer
-    //
     // Execute a transfer on behalf of the user who signed the transfer 
     // message
     // ------------------------------------------------------------------------
@@ -103,17 +98,16 @@ contract BATTInterface is ERC20Interface {
         uint nonce, uint8 v, bytes32 r, bytes32 s)
         public returns (bool success);
 
+
     // ------------------------------------------------------------------------
-    // signedApprove helper
+    // signedApprove functions
     //
-    // Function to generate the hash used to create the signed approve message
+    // Generate the hash used to create the signed approve message
     // ------------------------------------------------------------------------
     function signedApproveHash(address owner, address spender, uint tokens,
         uint fee, uint nonce) public view returns (bytes32 hash);
 
     // ------------------------------------------------------------------------
-    // signedApprove helper
-    //
     // Check whether an approve can be executed on behalf of the user who
     // signed the approve message
     // ------------------------------------------------------------------------
@@ -122,26 +116,22 @@ contract BATTInterface is ERC20Interface {
         public constant returns (CheckResult result);
 
     // ------------------------------------------------------------------------
-    // signedApprove
-    //
     // Execute an approve on behalf of the user who signed the approve message
     // ------------------------------------------------------------------------
     function signedApprove(address owner, address spender, uint tokens,
         uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
         public returns (bool success);
 
+
     // ------------------------------------------------------------------------
-    // signedTransferFrom helper
+    // signedTransferFrom functions
     //
-    // Function to generate the hash used to create the signed transferFrom
-    // message
+    // Generate the hash used to create the signed transferFrom message
     // ------------------------------------------------------------------------
     function signedTransferFromHash(address spender, address from, address to,
         uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
 
     // ------------------------------------------------------------------------
-    // signedTransferFrom helper
-    //
     // Check whether a transferFrom can be executed on behalf of the user who
     // signed the transferFrom message
     // ------------------------------------------------------------------------
@@ -150,8 +140,6 @@ contract BATTInterface is ERC20Interface {
         public constant returns (CheckResult result);
 
     // ------------------------------------------------------------------------
-    // signedTransferFrom
-    //
     // Execute a transferFrom on behalf of the user who signed the transferFrom 
     // message
     // ------------------------------------------------------------------------
@@ -207,6 +195,7 @@ contract Owned {
 }
 
 
+/*
 // ----------------------------------------------------------------------------
 // Administrators
 // ----------------------------------------------------------------------------
@@ -247,7 +236,7 @@ contract Admin is Owned {
         AdminRemoved(_address);
     }
 }
-
+*/
 
 // ----------------------------------------------------------------------------
 // Safe maths, borrowed from OpenZeppelin
@@ -259,7 +248,7 @@ library SafeMath {
     // ------------------------------------------------------------------------
     function add(uint a, uint b) public pure returns (uint) {
         uint c = a + b;
-        assert(c >= a && c >= b);
+        assert(c >= a);
         return c;
     }
 
@@ -311,8 +300,8 @@ contract ERC20Token is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     // Token contract state
     // ------------------------------------------------------------------------
-    bool public transferable = false;
-    bool public mintable = true;
+    bool public mintable;
+    bool public transferable;
 
     // ------------------------------------------------------------------------
     // Balances for each account
@@ -329,11 +318,12 @@ contract ERC20Token is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     mapping(address => mapping(bytes32 => bool)) public executed;
 
+
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
     function ERC20Token(string _symbol, string _name, uint8 _decimals, 
-        uint _initialSupply) public 
+        uint _initialSupply, bool _mintable, bool _transferable) public 
     {
         symbol = _symbol;
         name = _name;
@@ -344,15 +334,8 @@ contract ERC20Token is ERC20Interface, Owned {
             totalSupply = _initialSupply;
             Transfer(0x0, owner, _initialSupply);
         }
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Enable transfers
-    // ------------------------------------------------------------------------
-    function enableTransfers() public onlyOwner {
-        require(!transferable);
-        transferable = true;
+        mintable = _mintable;
+        transferable = _transferable;
     }
 
 
@@ -366,6 +349,15 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
+    // Enable transfers
+    // ------------------------------------------------------------------------
+    function enableTransfers() public onlyOwner {
+        require(!transferable);
+        transferable = true;
+    }
+
+
+    // ------------------------------------------------------------------------
     // Get the account balance of another account with address _owner
     // ------------------------------------------------------------------------
     function balanceOf(address owner) public constant returns (uint balance) {
@@ -374,8 +366,8 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
-    // Transfer the balance from owner's account to another account
-    // - Account must have sufficient balance to transfer
+    // Transfer the balance from owner's account to `to` account
+    // - Owner's account must have sufficient balance to transfer
     // - 0 value transfers are allowed
     // ------------------------------------------------------------------------
     function transfer(address to, uint tokens) public returns (bool success) {
@@ -390,20 +382,15 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
-    // Allow _spender to withdraw from your account, multiple times, up to the
-    // _value amount. If this function is called again it overwrites the
-    // current allowance with _value.
+    // Approve `spender` to withdraw `tokens` tokens from the owner's account
+    //
+    // As recommended in https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md#approve
+    // there are no checks for the approval double-spend attack as this should
+    // be implemented in user interfaces 
     // ------------------------------------------------------------------------
     function approve(address spender, uint tokens)
         public returns (bool success) 
     {
-        // NOT IMPLEMENTED
-        // To change the approve amount you first have to reduce the addresses`
-        //  allowance to zero by calling `approve(_spender,0)` if it is not
-        //  already 0 to mitigate the race condition described here:
-        //  https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-        // require((tokens == 0) || (allowed[msg.sender][spender] == 0));
-
         allowed[msg.sender][spender] = tokens;
         Approval(msg.sender, spender, tokens);
         return true;
@@ -411,6 +398,8 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
+    // 
+    
     // Spender of tokens transfer an amount of tokens from the token owner's
     // balance to another account. The owner of the tokens must already
     // have approve(...)-d this transfer
@@ -479,26 +468,55 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
 // ----------------------------------------------------------------------------
-// ERC20 Token, with the addition of symbol, name and decimals and assisted
-// token transfers
+// BokkyPooBah's Token Teleportation Service (BTTS) Implementation v1.00
+//
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
-contract BATTToken is ERC20Token, BATTInterface {
+contract BTTSToken is ERC20Token, BTTSInterface {
     using SafeMath for uint;
+
+    // ------------------------------------------------------------------------
+    // Constants used for signing and recovery
+    // ------------------------------------------------------------------------
+    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
+
+    // ------------------------------------------------------------------------
+    // signedTransfer(...) function signature
+    // web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
+    // => "0xa64a9365"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedTransferSig = "\xa6\x4a\x93\x65";
+
+    // ------------------------------------------------------------------------
+    // signedApprove(...) function signature
+    // web3.sha3("signedApprove(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
+    // => "0xb310efc3"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedApproveSig = "\xb3\x10\xef\xc3";
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom(...) function signature
+    // web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
+    // => "0xc6e5df0c"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedTransferFromSig = "\xc6\xe5\xdf\x0c";
+
 
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function BATTToken(string _symbol, string _name, uint8 _decimals, 
-        uint _initialSupply) public ERC20Token(_symbol, _name, _decimals,
-        _initialSupply)
+    function BTTSToken(string _symbol, string _name, uint8 _decimals, 
+        uint _initialSupply, bool _mintable, bool _transferable)
+        public ERC20Token(_symbol, _name, _decimals, _initialSupply,
+        _mintable, _transferable)
     {
     }
 
 
     // ------------------------------------------------------------------------
-    // signedTransfer helper
+    // signedTransfer functions
     //
-    // Function to generate the hash used to create the signed transfer message
+    // Generate the hash used to create the signed transfer message
     // ------------------------------------------------------------------------
     function signedTransferHash(address owner, address to, uint tokens,
         uint fee, uint nonce) public view returns (bytes32 hash)
@@ -507,10 +525,7 @@ contract BATTToken is ERC20Token, BATTInterface {
             fee, nonce);
     }
 
-
     // ------------------------------------------------------------------------
-    // signedTransfer helper
-    //
     // Check whether a transfer can be executed on behalf of the user who
     // signed the transfer message
     // ------------------------------------------------------------------------
@@ -547,11 +562,8 @@ contract BATTToken is ERC20Token, BATTInterface {
         return CheckResult.Success;
     }
 
-
     // ------------------------------------------------------------------------
-    // signedTransfer
-    //
-    // Execute a transfer on behalf of the user who signed the transfer 
+    // Execute a transfer on behalf of the user who signed the transfer
     // message
     // ------------------------------------------------------------------------
     function signedTransfer(address owner, address to, uint tokens, uint fee,
@@ -586,9 +598,9 @@ contract BATTToken is ERC20Token, BATTInterface {
 
 
     // ------------------------------------------------------------------------
-    // signedApprove helper
+    // signedApprove functions
     //
-    // Function to generate the hash used to create the signed approve message
+    // Generate the hash used to create the signed approve message
     // ------------------------------------------------------------------------
     function signedApproveHash(address signer, address spender, uint tokens,
         uint fee, uint nonce) public view returns (bytes32 hash) 
@@ -597,10 +609,7 @@ contract BATTToken is ERC20Token, BATTInterface {
             signer, spender, tokens, fee, nonce);
     }
 
-
     // ------------------------------------------------------------------------
-    // signedApprove helper
-    //
     // Check whether an approve can be executed on behalf of the user who
     // signed the approve message
     // ------------------------------------------------------------------------
@@ -630,10 +639,7 @@ contract BATTToken is ERC20Token, BATTInterface {
         return CheckResult.Success;
     }
 
-
     // ------------------------------------------------------------------------
-    // signedApprove
-    //
     // Execute an approve on behalf of the user who signed the approve message
     // ------------------------------------------------------------------------
     function signedApprove(address owner, address spender, uint tokens,
@@ -666,9 +672,9 @@ contract BATTToken is ERC20Token, BATTInterface {
 
 
     // ------------------------------------------------------------------------
-    // signedTransferFrom helper
+    // signedTransferFrom functions
     //
-    // Function to generate the hash used to create the signed transfer message
+    // Generate the hash used to create the signed transferFrom message
     // ------------------------------------------------------------------------
     function signedTransferFromHash(address spender, address from, address to,
         uint tokens, uint fee, uint nonce) public view returns (bytes32 hash)
@@ -677,10 +683,7 @@ contract BATTToken is ERC20Token, BATTInterface {
             spender, from, to, tokens, fee, nonce);
     }
 
-
     // ------------------------------------------------------------------------
-    // signedTransferFrom helper
-    //
     // Check whether a transferFrom can be executed on behalf of the user who
     // signed the transferFrom message
     // ------------------------------------------------------------------------
@@ -727,8 +730,6 @@ contract BATTToken is ERC20Token, BATTInterface {
 
 
     // ------------------------------------------------------------------------
-    // signedTransferFrom
-    //
     // Execute a transferFrom on behalf of the user who signed the transferFrom 
     // message
     // ------------------------------------------------------------------------

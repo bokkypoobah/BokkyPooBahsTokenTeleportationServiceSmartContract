@@ -10,14 +10,11 @@ var accountNames = {};
 addAccount(eth.accounts[0], "Account #0 - Miner");
 addAccount(eth.accounts[1], "Account #1 - Contract Owner");
 addAccount(eth.accounts[2], "Account #2 - Wallet");
-addAccount(eth.accounts[3], "Account #3 - Uncapped");
-addAccount(eth.accounts[4], "Account #4 - Capped");
+addAccount(eth.accounts[3], "Account #3");
+addAccount(eth.accounts[4], "Account #4");
 addAccount(eth.accounts[5], "Account #5");
 addAccount(eth.accounts[6], "Account #6");
 addAccount(eth.accounts[7], "Account #7");
-addAccount(eth.accounts[8], "Account #8");
-addAccount(eth.accounts[9], "Account #9");
-addAccount(eth.accounts[10], "Account #10");
 
 
 var minerAccount = eth.accounts[0];
