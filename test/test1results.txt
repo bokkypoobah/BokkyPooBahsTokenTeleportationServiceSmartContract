@@ -1,7 +1,7 @@
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       33.000000000000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433        0.000000000000000000           0.000000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        8.224896500000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.224896500000000000           0.000000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
@@ -14,18 +14,18 @@
 
 
 Deploy Crowdsale/Token Contract
-libAddress=null status=0x1 gas=6000000 gasUsed=130714 costETH=0.002352852 costUSD=0.89500137228 @ ETH/USD=380.39 gasPrice=18000000000 block=156 txIx=0 txId=0x8251c7651aa151809446d6ac07e488166d0ccfbd272728271ae314e3cd73a7f8
+libAddress=0xf235febef748bc1586d8aea01f093012eea7b3c8 status=0x1 gas=6000000 gasUsed=130714 costETH=0.002352852 costUSD=0.89500137228 @ ETH/USD=380.39 gasPrice=18000000000 block=4 txIx=0 txId=0x1b806928534ab19bb8a09c43e6c5ba6a671c6b964c1e84ab71a540d918510eac
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       39.002352852000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.002352852000000000           0.000000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       14.227249352000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.227249352000000000           0.000000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
+ 8 0xf235febef748bc1586d8aea01f093012eea7b3c8        0.000000000000000000           0.000000000000000000 Lib SafeMath
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                                     0.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -34,25 +34,25 @@ PASS Deploy Crowdsale/Token Contract
 tokenContractAddress=null
 
 Deploy Crowdsale/Token Contract
-tokenAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5 status=0x1 gas=6000000 gasUsed=3163903 costETH=0.056950254 costUSD=21.66330711906 @ ETH/USD=380.39 gasPrice=18000000000 block=158 txIx=0 txId=0xa977ea13555e090b96fdd25b098a75a9ba93b68fb7d9da96310501565f9f4eca
+tokenAddress=0x27daa9fe81944d721dc95e09f54c8bd3a90a5603 status=0x1 gas=6000000 gasUsed=3163903 costETH=0.056950254 costUSD=21.66330711906 @ ETH/USD=380.39 gasPrice=18000000000 block=6 txIx=0 txId=0x2c85969735268b7615bb983babc730f57b03d9f028ea281f98ed0b2dfd99f6a3
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       45.059303106000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.059303106000000000    10000000.000000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       20.284199606000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.284199606000000000    10000000.000000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
- 9 0x1aa3ebfd892954f32a37b698673505d1dafef4f5        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
+ 8 0xf235febef748bc1586d8aea01f093012eea7b3c8        0.000000000000000000           0.000000000000000000 Lib SafeMath
+ 9 0x27daa9fe81944d721dc95e09f54c8bd3a90a5603        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                              10000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
 PASS Deploy Crowdsale/Token Contract
-tokenContractAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5
+tokenContractAddress=0x27daa9fe81944d721dc95e09f54c8bd3a90a5603
 token.symbol=TST
 token.name=Test
 token.decimals=18
@@ -60,30 +60,30 @@ token.decimalsFactor=1000000000000000000
 token.totalSupply=10000000
 token.transferable=false
 token.mintable=true
-Transfer 0 #158: from=0x0000000000000000000000000000000000000000 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=10000000
+Transfer 0 #6: from=0x0000000000000000000000000000000000000000 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=10000000
 
 Mint Tokens
-mintTokens1Tx status=0x1 gas=100000 gasUsed=52024 costETH=0.000936432 costUSD=0.35620936848 @ ETH/USD=380.39 gasPrice=18000000000 block=160 txIx=0 txId=0x3303e68d9aeb3d366a75d4673d51c57657da6a37aa79e14c221b8168200b3303
-mintTokens2Tx status=0x1 gas=100000 gasUsed=52024 costETH=0.000936432 costUSD=0.35620936848 @ ETH/USD=380.39 gasPrice=18000000000 block=160 txIx=1 txId=0xece9dc9121ef5e4e249eb22d4a05cc208ad9677f80def8d4c8eda6a4ceed29dd
+mintTokens1Tx status=0x1 gas=100000 gasUsed=52024 costETH=0.000936432 costUSD=0.35620936848 @ ETH/USD=380.39 gasPrice=18000000000 block=10 txIx=0 txId=0x365a08a02e6029f51b31d202cfe8a1728608f725dc6c13894b56d4ef15894ea2
+mintTokens2Tx status=0x1 gas=100000 gasUsed=52024 costETH=0.000936432 costUSD=0.35620936848 @ ETH/USD=380.39 gasPrice=18000000000 block=10 txIx=1 txId=0xa022ab0f281328d0f420141ee0dd65ffc00f136d54f0661ed4931edb6056e940
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       51.061175970000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.061175970000000000    10000000.000000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       32.286072470000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.286072470000000000    10000000.000000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000000.000000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
- 9 0x1aa3ebfd892954f32a37b698673505d1dafef4f5        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
+ 8 0xf235febef748bc1586d8aea01f093012eea7b3c8        0.000000000000000000           0.000000000000000000 Lib SafeMath
+ 9 0x27daa9fe81944d721dc95e09f54c8bd3a90a5603        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                              12000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
 PASS Mint Tokens - mint 1,000,000 tokens 0x0 -> ac3
 PASS Mint Tokens - mint 1,000,000 tokens 0x0 -> ac4
-tokenContractAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5
+tokenContractAddress=0x27daa9fe81944d721dc95e09f54c8bd3a90a5603
 token.symbol=TST
 token.name=Test
 token.decimals=18
@@ -91,31 +91,31 @@ token.decimalsFactor=1000000000000000000
 token.totalSupply=12000000
 token.transferable=false
 token.mintable=true
-Transfer 0 #160: from=0x0000000000000000000000000000000000000000 to=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 tokens=1000000
-Transfer 1 #160: from=0x0000000000000000000000000000000000000000 to=0xa44a08d3f6933c69212114bb66e2df1813651844 tokens=1000000
+Transfer 0 #10: from=0x0000000000000000000000000000000000000000 to=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 tokens=1000000
+Transfer 1 #10: from=0x0000000000000000000000000000000000000000 to=0xa44a08d3f6933c69212114bb66e2df1813651844 tokens=1000000
 
 Start Transfers
-startTransfers1Tx status=0x1 gas=100000 gasUsed=13485 costETH=0.00024273 costUSD=0.0923320647 @ ETH/USD=380.39 gasPrice=18000000000 block=162 txIx=0 txId=0x86bd46667b6ce30dc4cd39dce0a7cb19630097df3d32dc1484ff525dada9a151
-startTransfers2Tx status=0x1 gas=100000 gasUsed=42181 costETH=0.000759258 costUSD=0.28881415062 @ ETH/USD=380.39 gasPrice=18000000000 block=162 txIx=1 txId=0xc16db46932a66bee6dbc45e190ab619c441261441b9d7d00451a8df1a9d9f5de
+startTransfers1Tx status=0x1 gas=100000 gasUsed=13485 costETH=0.00024273 costUSD=0.0923320647 @ ETH/USD=380.39 gasPrice=18000000000 block=13 txIx=0 txId=0x9080807887be37515f4e0d63518e4fb3a02264d070bcd900511b2f0df61c067c
+startTransfers2Tx status=0x1 gas=100000 gasUsed=42181 costETH=0.000759258 costUSD=0.28881415062 @ ETH/USD=380.39 gasPrice=18000000000 block=13 txIx=1 txId=0xf7dabede6b69c691c677a7cb4fee12e5e15d6f3f21b81fee79d3597e14a1a4b2
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       57.062177958000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.062177958000000000    10000000.000000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       41.287074458000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.287074458000000000    10000000.000000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000000.000000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
- 9 0x1aa3ebfd892954f32a37b698673505d1dafef4f5        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
+ 8 0xf235febef748bc1586d8aea01f093012eea7b3c8        0.000000000000000000           0.000000000000000000 Lib SafeMath
+ 9 0x27daa9fe81944d721dc95e09f54c8bd3a90a5603        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                              12000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
 PASS Start Transfers - Disable Minting
 PASS Start Transfers - Enable Transfers
-tokenContractAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5
+tokenContractAddress=0x27daa9fe81944d721dc95e09f54c8bd3a90a5603
 token.symbol=TST
 token.name=Test
 token.decimals=18
@@ -124,8 +124,8 @@ token.totalSupply=12000000
 token.transferable=true
 token.mintable=false
 
-hashOf=0xa64a93651aa3ebfd892954f32a37b698673505d1dafef4f5a33a6c312d9ad0e0f2e95541beed0cc081621fd0a55a151eb00fded1634d27d1127b4be4627079ea0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000000000000000000000
-hash=0xc7e05a63c8b39acaae9a4c0e438f00e30eb69e91d2a960f9dedaea03f662177f
+hashOf=0xa64a936527daa9fe81944d721dc95e09f54c8bd3a90a5603a33a6c312d9ad0e0f2e95541beed0cc081621fd0a55a151eb00fded1634d27d1127b4be4627079ea0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000000000000000000000
+hash=0xf9bd8762300de91e0edadfe9ba5f08de67bf49b03520e0be28a36166f451e028
 Signed Transfers
 functionSig=0xa64a9365 (should be '0xa64a9365')
 from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0
@@ -133,31 +133,31 @@ to=0xa55a151eb00fded1634d27d1127b4be4627079ea
 tokens=1000000000000000000 1
 fee=10000000000000000 0.01
 nonce=0
-signedTransferHash=0xc7e05a63c8b39acaae9a4c0e438f00e30eb69e91d2a960f9dedaea03f662177f
-sig=0xb9195151b7cc53992814d0dc0f15be36f56a0f7e79d0a37f04f2cb4b309320165abdd0eefb5017859e91c84f3225aec2e387daa384de496c71cea8b3e99ecf0c1c
-sigR=0xb9195151b7cc53992814d0dc0f15be36f56a0f7e79d0a37f04f2cb4b30932016
-sigS=0x5abdd0eefb5017859e91c84f3225aec2e387daa384de496c71cea8b3e99ecf0c
+signedTransferHash=0xf9bd8762300de91e0edadfe9ba5f08de67bf49b03520e0be28a36166f451e028
+sig=0x92bd847f8f2de2795f26ff5b81feaf5dbcdb19e4e085a4b4c12ed40caee200b6544eec7238b9d578c1672c8f1067cb4d39b5d8281f94918f960ef030ec7084d11c
+sigR=0x92bd847f8f2de2795f26ff5b81feaf5dbcdb19e4e085a4b4c12ed40caee200b6
+sigS=0x544eec7238b9d578c1672c8f1067cb4d39b5d8281f94918f960ef030ec7084d1
 sigV=0x1c
 signedTransfer1Check=0 Success
-signedTransfer1Tx status=0x1 gas=200000 gasUsed=97217 costETH=0.001749906 costUSD=0.66564674334 @ ETH/USD=380.39 gasPrice=18000000000 block=164 txIx=0 txId=0x49b3881b237f3b0e87acc5e2cf49e73674bf5139e79951ec61a370cfaa82d300
+signedTransfer1Tx status=0x1 gas=200000 gasUsed=97153 costETH=0.001748754 costUSD=0.66520853406 @ ETH/USD=380.39 gasPrice=18000000000 block=16 txIx=0 txId=0x95ed137e9d190ced12d07815cdc2c4217aa97b7e9be773f7df31414e51248b6b
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       63.063927864000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.063927864000000000    10000000.010000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       50.288823212000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.288823212000000000    10000000.010000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
- 9 0x1aa3ebfd892954f32a37b698673505d1dafef4f5        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
+ 8 0xf235febef748bc1586d8aea01f093012eea7b3c8        0.000000000000000000           0.000000000000000000 Lib SafeMath
+ 9 0x27daa9fe81944d721dc95e09f54c8bd3a90a5603        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                              12000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
 PASS Signed Transfers - Signed Transfer 
-tokenContractAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5
+tokenContractAddress=0x27daa9fe81944d721dc95e09f54c8bd3a90a5603
 token.symbol=TST
 token.name=Test
 token.decimals=18
@@ -165,29 +165,29 @@ token.decimalsFactor=1000000000000000000
 token.totalSupply=12000000
 token.transferable=true
 token.mintable=false
-Transfer 0 #164: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
-Transfer 1 #164: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=0.01
+Transfer 0 #16: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
+Transfer 1 #16: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=0.01
 
 signedTransfer2Check=3 AlreadyExecuted
-signedTransfer2Tx status=0x0 gas=200000 gasUsed=34885 costETH=0.00062793 costUSD=0.2388582927 @ ETH/USD=380.39 gasPrice=18000000000 block=166 txIx=0 txId=0xb135f85342f4cab5a53c310a1aec3561280b551f4bcbfa0177e78baa557ea9b2
+signedTransfer2Tx status=0x0 gas=200000 gasUsed=34821 costETH=0.000626778 costUSD=0.23842008342 @ ETH/USD=380.39 gasPrice=18000000000 block=19 txIx=0 txId=0x7dadacec01f81a815e673ea526152cf6a9ee9ed44b5b824fc01386bbb4441ac6
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       69.064555794000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.064555794000000000    10000000.010000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       59.289449990000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.289449990000000000    10000000.010000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
- 9 0x1aa3ebfd892954f32a37b698673505d1dafef4f5        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
+ 8 0xf235febef748bc1586d8aea01f093012eea7b3c8        0.000000000000000000           0.000000000000000000 Lib SafeMath
+ 9 0x27daa9fe81944d721dc95e09f54c8bd3a90a5603        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                              12000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
 PASS Signed Transfers - Duplicated Signed Transfers - Expecting Failure
-tokenContractAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5
+tokenContractAddress=0x27daa9fe81944d721dc95e09f54c8bd3a90a5603
 token.symbol=TST
 token.name=Test
 token.decimals=18
@@ -196,38 +196,38 @@ token.totalSupply=12000000
 token.transferable=true
 token.mintable=false
 
-signedApproveHash=0x6553ff6280722617fccb0b26e2e2b68e8a1b32d21337b0bd58061f2709d6498b
+signedApproveHash=0xfd8bfc849b8f0a185e08320087113817dddb4f815e6889f0736ab1dd71925095
 Signed Approve
 functionSig=0xb310efc3 (should be '0xb310efc3')
-hashOf=0xb310efc31aa3ebfd892954f32a37b698673505d1dafef4f5a44a08d3f6933c69212114bb66e2df1813651844a66a85ede0cbe03694aa9d9de0bb19c99ff55bd9000000000000000000000000000000000000000000000002b5e3af16b188000000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000000
-hash=0x142a4df6ad0bfe91fdb17cc854c022a12cc9ed85851fd93bf1ed1a4aef868e34
-sig=0x7ed9e3ced2d5783589a67e16883c78f6a38b67255a69feaa0c3af9d4392e5051255d163e8f98a5c7669fbb4902ad7bbeef58802252f7b1c5398c2bfabfe5cc901c
-sigR=0x7ed9e3ced2d5783589a67e16883c78f6a38b67255a69feaa0c3af9d4392e5051
-sigS=0x255d163e8f98a5c7669fbb4902ad7bbeef58802252f7b1c5398c2bfabfe5cc90
+hashOf=0xb310efc327daa9fe81944d721dc95e09f54c8bd3a90a5603a44a08d3f6933c69212114bb66e2df1813651844a66a85ede0cbe03694aa9d9de0bb19c99ff55bd9000000000000000000000000000000000000000000000002b5e3af16b188000000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000000
+hash=0xda15f37f8d172fabb25d6a46091a291eac7ae4f5e0174584fb9d471322b02fa5
+sig=0x351175a2dfea628390dab4da2149a3739c9faa4ffd88111d94bd9bc3050eba447fa99008bd1236e6f796900ff8b44046a56a75cb429ace42e8ceeb649e86f98c1c
+sigR=0x351175a2dfea628390dab4da2149a3739c9faa4ffd88111d94bd9bc3050eba44
+sigS=0x7fa99008bd1236e6f796900ff8b44046a56a75cb429ace42e8ceeb649e86f98c
 sigV=0x1c
 signedApprove1Check=0 Success
 signedApprove2Check=3 AlreadyExecuted
-signedApprove1Tx status=0x1 gas=200000 gasUsed=90915 costETH=0.00163647 costUSD=0.6224968233 @ ETH/USD=380.39 gasPrice=18000000000 block=168 txIx=0 txId=0x950c01666db7af2da2ec7d1a1f147f6d7df316466743e7f87902638fe833f0a5
-signedApprove2Tx status=0x0 gas=200000 gasUsed=35101 costETH=0.000631818 costUSD=0.24033724902 @ ETH/USD=380.39 gasPrice=18000000000 block=170 txIx=0 txId=0x2511629e323bea124e8fc71d110039eb78a7d67ea2b6c1d84ed46a14c580c660
+signedApprove1Tx status=0x1 gas=200000 gasUsed=90915 costETH=0.00163647 costUSD=0.6224968233 @ ETH/USD=380.39 gasPrice=18000000000 block=21 txIx=0 txId=0xe546a30d0b77c6d1a5f534fabb54e36b74f7113dc7333b457a4090b2899cdafb
+signedApprove2Tx status=0x0 gas=200000 gasUsed=35101 costETH=0.000631818 costUSD=0.24033724902 @ ETH/USD=380.39 gasPrice=18000000000 block=23 txIx=0 txId=0x30d6cf1bf34a1c1b7825b2e3d1441c83d365acd6cc29ad9dd39ceeb992fb513e
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       81.066824082000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.066824082000000000    10000000.510000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       71.291718278000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.291718278000000000    10000000.510000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999999.500000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
- 9 0x1aa3ebfd892954f32a37b698673505d1dafef4f5        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
+ 8 0xf235febef748bc1586d8aea01f093012eea7b3c8        0.000000000000000000           0.000000000000000000 Lib SafeMath
+ 9 0x27daa9fe81944d721dc95e09f54c8bd3a90a5603        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                              12000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
 PASS Signed Approve - Signed Approve 
 PASS Signed Approve - Duplicated Signed Approve - Expecting Failure
-tokenContractAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5
+tokenContractAddress=0x27daa9fe81944d721dc95e09f54c8bd3a90a5603
 token.symbol=TST
 token.name=Test
 token.decimals=18
@@ -235,41 +235,41 @@ token.decimalsFactor=1000000000000000000
 token.totalSupply=12000000
 token.transferable=true
 token.mintable=false
-Approval 0 #168 owner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9 tokens=50
-Transfer 0 #168: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=0.5
+Approval 0 #21 owner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9 tokens=50
+Transfer 0 #21: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=0.5
 
 signedTransferFromHash=undefined
 Signed TransferFrom
 functionSig=0xc6e5df0c (should be '0xc6e5df0c')
-hashOf=0xc6e5df0c1aa3ebfd892954f32a37b698673505d1dafef4f5a66a85ede0cbe03694aa9d9de0bb19c99ff55bd9a44a08d3f6933c69212114bb66e2df1813651844a77a2b9d4b1c010a22a7c565dc418cef683dbcec00000000000000000000000000000000000000000000000029a2241af62c0000000000000000000000000000000000000000000000000000006a94d74f4300000000000000000000000000000000000000000000000000000000000000000000
-hash=0xdb8c7ac7fd18e1c60063b54f0a9376969ae955063ddb9d71d3e91646b3045315
-sig=0xfc3902fafb8ed430560348d6286eaf8c0fdf9037cacc76ea095894ab6a6ced8d6fecae2accda9900593c5c5b7594202596d47106c4e1dbbc7261dc046e0e6b7a1b
-sigR=0xfc3902fafb8ed430560348d6286eaf8c0fdf9037cacc76ea095894ab6a6ced8d
-sigS=0x6fecae2accda9900593c5c5b7594202596d47106c4e1dbbc7261dc046e0e6b7a
+hashOf=0xc6e5df0c27daa9fe81944d721dc95e09f54c8bd3a90a5603a66a85ede0cbe03694aa9d9de0bb19c99ff55bd9a44a08d3f6933c69212114bb66e2df1813651844a77a2b9d4b1c010a22a7c565dc418cef683dbcec00000000000000000000000000000000000000000000000029a2241af62c0000000000000000000000000000000000000000000000000000006a94d74f4300000000000000000000000000000000000000000000000000000000000000000000
+hash=0x81be34e8107b012e91b7d3e782a9c054407286fde503b4a431b73b18aff51bb4
+sig=0x7ec185d432450dcc12db1af5761263c96382bc98fc9d63207ad9fa0e31451830707e2dcf440f160400b4112bd9a22841685e733ad319def13f4c1b7d81e4baa41b
+sigR=0x7ec185d432450dcc12db1af5761263c96382bc98fc9d63207ad9fa0e31451830
+sigS=0x707e2dcf440f160400b4112bd9a22841685e733ad319def13f4c1b7d81e4baa4
 sigV=0x1b
 signedTransferFrom1Check=0 Success
 signedTransferFrom2Check=3 AlreadyExecuted
-signedTransferFrom1Tx status=0x1 gas=200000 gasUsed=112077 costETH=0.002017386 costUSD=0.76739346054 @ ETH/USD=380.39 gasPrice=18000000000 block=172 txIx=0 txId=0x4f48c7feda3f4dde9adbe4bb9595a8229a2e76b5e2c42bb265e191850fcac9d2
-signedTransferFrom2Tx status=0x0 gas=200000 gasUsed=36445 costETH=0.00065601 costUSD=0.2495396439 @ ETH/USD=380.39 gasPrice=18000000000 block=174 txIx=0 txId=0xfcb6f6eda25b3b51cc946489430efa0c03b083a6ced735647f5d46a4f252afc1
+signedTransferFrom1Tx status=0x1 gas=200000 gasUsed=112077 costETH=0.002017386 costUSD=0.76739346054 @ ETH/USD=380.39 gasPrice=18000000000 block=25 txIx=0 txId=0x0cd6ee5d33ef025f4176a3bb258ae95ccdf0e9c230b9240648e8652d4dbc1d89
+signedTransferFrom2Tx status=0x0 gas=200000 gasUsed=36445 costETH=0.00065601 costUSD=0.2495396439 @ ETH/USD=380.39 gasPrice=18000000000 block=27 txIx=0 txId=0xc88d50c4fcfc36e8075cd33cd2c92d1a1e960c172d40eeab34ce505cb2e2c5ce
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       93.069497478000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.069497478000000000    10000000.540000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       86.294391674000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.294391674000000000    10000000.540000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999996.470000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           3.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
- 9 0x1aa3ebfd892954f32a37b698673505d1dafef4f5        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
+ 8 0xf235febef748bc1586d8aea01f093012eea7b3c8        0.000000000000000000           0.000000000000000000 Lib SafeMath
+ 9 0x27daa9fe81944d721dc95e09f54c8bd3a90a5603        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                              12000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
 PASS Signed Transfers - Signed TransferFrom 
 PASS Signed Transfers - Duplicated Signed TransfersFrom - Expecting Failure
-tokenContractAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5
+tokenContractAddress=0x27daa9fe81944d721dc95e09f54c8bd3a90a5603
 token.symbol=TST
 token.name=Test
 token.decimals=18
@@ -277,6 +277,6 @@ token.decimalsFactor=1000000000000000000
 token.totalSupply=12000000
 token.transferable=true
 token.mintable=false
-Transfer 0 #172: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec tokens=3
-Transfer 1 #172: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=0.03
+Transfer 0 #25: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec tokens=3
+Transfer 1 #25: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=0.03
 

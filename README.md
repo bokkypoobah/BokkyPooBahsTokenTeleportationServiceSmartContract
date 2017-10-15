@@ -4,15 +4,44 @@ Status: Work in progress
 
 ## Summary
 
-ERC20 token smart contract that implement the BokkyPooBah's Token Teleportation Service interface
-provides Ethereum accounts with the ability to transfer the ERC20 tokens without having to pay
-for the Ethereum network transaction fees in ethers (ETH). Instead, the account pays for the
-token transfers in the token.
+ERC20 token smart contract that implement the BokkyPooBah's Token Teleportation Service (BTTS)
+interface provides Ethereum accounts with the ability to transfer the ERC20 tokens without 
+having to pay for the Ethereum network transaction fees in ethers (ETH). Instead, the account
+pays for the token transfer fees in the token being transferred.
 
-BTTS Interface
-BTTS Implementation
-BTTS Service
-BTTS Service Provider
+<br />
+
+### Account Creates Signed Message
+
+Any ERC20 token contracts that implement the *BTTS Interface* with their own *BTTS Implementation*
+will be transferable using this *BTTS Service*. An account holding BTTS enabled functions use
+the implemented functionality to create a message signed with the account's private key with the
+token transfer instructions, including the fees specified in the token being transferred.
+
+<br />
+
+### BTTS Service Provider Executes Token Transfer
+
+The account provides the transfer details and the signed message to the *BTTS Service Provider*.
+The *BTTS Service Provider* then executes the appropriate function to execute the token transfer,
+paying the transaction fees in ETH. On successful execution of the transfer, the fee in tokens will
+be transferred to the *BTTS Service Provider*'s account.
+
+<br />
+
+### Use Cases
+
+Application wallets that implement the message signing technology will be able to cryptographically
+sign the token transfer messages, and send the signed messages to the *BTTS Service Providers*.
+
+Users of the application will not even need to know about the cryptographic methods that secure
+their tokens.
+
+The application will have to include cryptographic libraries that support the message signing
+functionality. The user will install the application and create an account. The account will be
+secured by a 12 or 24 word mnemonic phrase. This mnemonic phrase can be used in MyEtherWallet
+or the Ledger Nano S hardware wallet to unlock the same set of accounts.
+
 
 <br />
 
@@ -32,7 +61,9 @@ BTTS Service Provider
 
 ## How It Works
 
-This example will be explain the results from the testing script and testing results.
+This example will be explain the results from the testing script and testing results. Note that the computed
+hashes will differ in the testing results because new token contract addresses are created in each testing
+session.
 
 In the testing:
 
