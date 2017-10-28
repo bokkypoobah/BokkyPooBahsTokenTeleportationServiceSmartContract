@@ -61,7 +61,7 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
 
 ## How It Works
 
-This example will be explain the results from the testing script and testing results. Note that the computed
+This example will explain the results from the testing script and testing results. Note that the computed
 hashes will differ in the testing results because new token contract addresses are created in each testing
 session.
 
