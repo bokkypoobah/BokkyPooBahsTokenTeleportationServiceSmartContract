@@ -327,9 +327,9 @@ console.log("RESULT: sigR=" + r);
 console.log("RESULT: sigS=" + s);
 console.log("RESULT: sigV=" + v);
 
-var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, v, r, s);
+var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig);
 console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check + " " + signedTransferCheckResultString(signedTransfer1Check));
-var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, v, r, s,
+var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig,
   {from: contractOwnerAccount, gas: 200000});
 while (txpool.status.pending > 0) {
 }
@@ -340,9 +340,9 @@ printTokenContractDetails();
 console.log("RESULT: ");
 
 
-var signedTransfer2Check = token.signedTransferCheck(from, to, tokens, fee, nonce, v, r, s);
+var signedTransfer2Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig);
 console.log("RESULT: signedTransfer2Check=" + signedTransfer2Check + " " + signedTransferCheckResultString(signedTransfer2Check));
-var signedTransfer2Tx = token.signedTransfer(from, to, tokens, fee, nonce, v, r, s,
+var signedTransfer2Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig,
   {from: contractOwnerAccount, gas: 200000});
 while (txpool.status.pending > 0) {
 }
@@ -387,15 +387,15 @@ console.log("RESULT: sigR=" + r);
 console.log("RESULT: sigS=" + s);
 console.log("RESULT: sigV=" + v);
 
-var signedApprove1Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, v, r, s);
+var signedApprove1Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig);
 console.log("RESULT: signedApprove1Check=" + signedApprove1Check + " " + signedTransferCheckResultString(signedApprove1Check));
-var signedApprove1Tx = token.signedApprove(owner, spender, tokens, fee, nonce, v, r, s,
+var signedApprove1Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig,
   {from: contractOwnerAccount, gas: 200000});
 while (txpool.status.pending > 0) {
 }
-var signedApprove2Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, v, r, s);
+var signedApprove2Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig);
 console.log("RESULT: signedApprove2Check=" + signedApprove2Check + " " + signedTransferCheckResultString(signedApprove2Check));
-var signedApprove2Tx = token.signedApprove(owner, spender, tokens, fee, nonce, v, r, s,
+var signedApprove2Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig,
   {from: contractOwnerAccount, gas: 200000});
 while (txpool.status.pending > 0) {
 }
@@ -441,15 +441,15 @@ console.log("RESULT: sigR=" + r);
 console.log("RESULT: sigS=" + s);
 console.log("RESULT: sigV=" + v);
 
-var signedTransferFrom1Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, v, r, s);
+var signedTransferFrom1Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, sig);
 console.log("RESULT: signedTransferFrom1Check=" + signedTransferFrom1Check + " " + signedTransferCheckResultString(signedTransferFrom1Check));
-var signedTransferFrom1Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, v, r, s,
+var signedTransferFrom1Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, sig,
   {from: contractOwnerAccount, gas: 200000});
 while (txpool.status.pending > 0) {
 }
-var signedTransferFrom2Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, v, r, s);
+var signedTransferFrom2Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, sig);
 console.log("RESULT: signedTransferFrom2Check=" + signedTransferFrom2Check + " " + signedTransferCheckResultString(signedTransferFrom2Check));
-var signedTransferFrom2Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, v, r, s,
+var signedTransferFrom2Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, sig,
   {from: contractOwnerAccount, gas: 200000});
 while (txpool.status.pending > 0) {
 }
