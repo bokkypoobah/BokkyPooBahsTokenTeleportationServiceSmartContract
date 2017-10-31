@@ -82,6 +82,8 @@ var libAbi = JSON.parse(tokenOutput.contracts["$CROWDSALESOL:SafeMath"].abi);
 var libBin = "0x" + tokenOutput.contracts["$CROWDSALESOL:SafeMath"].bin;
 var tokenAbi = JSON.parse(tokenOutput.contracts["$CROWDSALESOL:BTTSToken"].abi);
 var tokenBin = "0x" + tokenOutput.contracts["$CROWDSALESOL:BTTSToken"].bin;
+var factoryAbi = JSON.parse(tokenOutput.contracts["$CROWDSALESOL:BTTSTokenFactory"].abi);
+var factoryBin = "0x" + tokenOutput.contracts["$CROWDSALESOL:BTTSTokenFactory"].bin;
 
 // console.log("DATA: libAbi=" + JSON.stringify(libAbi));
 // console.log("DATA: libBin=" + JSON.stringify(libBin));
@@ -102,7 +104,7 @@ var libContract = web3.eth.contract(libAbi);
 var libTx = null;
 var libAddress = null;
 
-var lib = libContract.new({from: contractOwnerAccount, data: libBin, gas: 6000000},
+var lib = libContract.new({from: contractOwnerAccount, data: libBin, gas: 6000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
@@ -127,12 +129,51 @@ console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------
+var deployFactoryMessage = "Deploy BTTSTokenFactory";
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + deployFactoryMessage);
+// console.log("RESULT: old='" + factoryBin + "'");
+var newFactoryBin = factoryBin.replace(/__BTTSToken\.sol\:SafeMath________________/g, libAddress.substring(2, 42));
+// console.log("RESULT: new='" + newFactoryBin + "'");
+
+var factoryContract = web3.eth.contract(factoryAbi);
+console.log(JSON.stringify(factoryAbi));
+console.log(factoryBin);
+var factoryTx = null;
+var factoryAddress = null;
+
+var factory = factoryContract.new({from: contractOwnerAccount, data: newFactoryBin, gas: 6000000, gasPrice: defaultGasPrice},
+  function(e, contract) {
+    if (!e) {
+      if (!contract.address) {
+        factoryTx = contract.transactionHash;
+      } else {
+        factoryAddress = contract.address;
+        addAccount(factoryAddress, "BTTSTokenFactory");
+        addFactoryContractAddressAndAbi(factoryAddress, factoryAbi);
+        console.log("DATA: factoryAddress=" + factoryAddress);
+      }
+    }
+  }
+);
+
+while (txpool.status.pending > 0) {
+}
+
+printTxData("factoryAddress=" + factoryAddress, factoryTx);
+printBalances();
+failIfTxStatusError(factoryTx, deployFactoryMessage);
+printFactoryContractDetails();
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
 var tokenMessage = "Deploy Crowdsale/Token Contract";
 // console.log("RESULT: old='" + tokenBin + "'");
 var newTokenBin = tokenBin.replace(/__BTTSToken\.sol\:SafeMath________________/g, libAddress.substring(2, 42));
 // console.log("RESULT: new='" + newTokenBin + "'");
-var symbol = "TST";
-var name = "Test";
+var symbol = "GZETest";
+var name = "GazeCoin Test";
 var decimals = 18;
 var initialSupply = "10000000000000000000000000";
 var mintable = true;
@@ -144,8 +185,10 @@ var tokenContract = web3.eth.contract(tokenAbi);
 var tokenTx = null;
 var tokenAddress = null;
 
+// Now deploying using factory
+if (false) {
 var token = tokenContract.new(symbol, name, decimals, initialSupply, mintable, transferable,
-    {from: contractOwnerAccount, data: newTokenBin, gas: 6000000},
+    {from: contractOwnerAccount, data: newTokenBin, gas: 6000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
@@ -159,13 +202,42 @@ var token = tokenContract.new(symbol, name, decimals, initialSupply, mintable, t
     }
   }
 );
+}
+
+var deployTokenTx = factory.deployBTTSTokenContract(symbol, name, decimals, initialSupply, mintable, transferable, {from: contractOwnerAccount, gas: 4000000, gasPrice: defaultGasPrice});
 
 while (txpool.status.pending > 0) {
 }
 
-printTxData("tokenAddress=" + tokenAddress, tokenTx);
+printTxData("deployTokenTx", deployTokenTx);
 printBalances();
-failIfTxStatusError(tokenTx, tokenMessage);
+var bttsTokens = getBTTSFactoryTokenListing();
+console.log("RESULT: bttsTokens=#" + bttsTokens.length + " " + JSON.stringify(bttsTokens));
+
+// Can check, but the rest will not work anyway - if (bttsTokens.length == 1)
+tokenAddress = bttsTokens[0];
+token = web3.eth.contract(tokenAbi).at(tokenAddress);
+// console.log("RESULT: token=" + JSON.stringify(token));
+
+addAccount(tokenAddress, "Token '" + token.symbol() + "' '" + token.name() + "'");
+addTokenContractAddressAndAbi(tokenAddress, tokenAbi);
+
+printFactoryContractDetails();
+printTokenContractDetails();
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
+var setBaseTokenMessage = "Set Base Token to " + token.symbol();
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + setBaseTokenMessage);
+var setBaseToken1Tx = factory.setBaseToken(tokenAddress, {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printTxData("setBaseToken1Tx", setBaseToken1Tx);
+printBalances();
+failIfTxStatusError(setBaseToken1Tx, setBaseTokenMessage);
+printFactoryContractDetails();
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -174,8 +246,8 @@ console.log("RESULT: ");
 var mintTokensMessage = "Mint Tokens";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + mintTokensMessage);
-var mintTokens1Tx = token.mint(account3, "1000000000000000000000000", {from: contractOwnerAccount, gas: 100000});
-var mintTokens2Tx = token.mint(account4, "1000000000000000000000000", {from: contractOwnerAccount, gas: 100000});
+var mintTokens1Tx = token.mint(account3, "1000000000000000000000000", {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
+var mintTokens2Tx = token.mint(account4, "1000000000000000000000000", {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("mintTokens1Tx", mintTokens1Tx);
@@ -191,8 +263,8 @@ console.log("RESULT: ");
 var startTransfersMessage = "Start Transfers";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + startTransfersMessage);
-var startTransfers1Tx = token.disableMinting({from: contractOwnerAccount, gas: 100000});
-var startTransfers2Tx = token.enableTransfers({from: contractOwnerAccount, gas: 100000});
+var startTransfers1Tx = token.disableMinting({from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
+var startTransfers2Tx = token.enableTransfers({from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("startTransfers1Tx", startTransfers1Tx);
@@ -214,18 +286,20 @@ function signedTransferCheckResultString(e) {
   } else if (e == 1) {
     text = "NotTransferable";
   } else if (e == 2) {
-    text = "SignerMismatch";
+    text = "NotExecutable";
   } else if (e == 3) {
-    text = "AlreadyExecuted";
+    text = "SignerMismatch";
   } else if (e == 4) {
-    text = "InsufficientApprovedTokens";
+    text = "AlreadyExecuted";
   } else if (e == 5) {
-    text = "InsufficientApprovedTokensForFees";
+    text = "InsufficientApprovedTokens";
   } else if (e == 6) {
-    text = "InsufficientTokens";
+    text = "InsufficientApprovedTokensForFees";
   } else if (e == 7) {
-    text = "InsufficientTokensForFees";
+    text = "InsufficientTokens";
   } else if (e == 8) {
+    text = "InsufficientTokensForFees";
+  } else if (e == 9) {
     text = "OverflowError";
   } else {
     text = "Unknown";
@@ -291,74 +365,13 @@ function getSigV(sig) {
 }
 
 
+if (0) {
 // -----------------------------------------------------------------------------
-var signedTransferMessage = "Signed Transfers";
-var functionSig = web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
-var tokenContractAddress = tokenAddress;
-var from = account3;
-var to = account5;
-var tokens = new BigNumber("1000000000000000000");
-var fee = new BigNumber("10000000000000000");
-var nonce = "0";
-// -----------------------------------------------------------------------------
-
-var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
-console.log("RESULT: hashOf=" + hashOf);
-var hash = web3.sha3(hashOf, {encoding: 'hex'});
-console.log("RESULT: hash=" + hash);
-
-// -----------------------------------------------------------------------------
-console.log("RESULT: " + signedTransferMessage);
-console.log("RESULT: functionSig=" + functionSig + " (should be '0xa64a9365')");
-
-console.log("RESULT: from=" + from);
-console.log("RESULT: to=" + to);
-console.log("RESULT: tokens=" + tokens + " " + tokens.shift(-decimals));
-console.log("RESULT: fee=" + fee + " " + fee.shift(-decimals));
-console.log("RESULT: nonce=" + nonce);
-var signedTransferHash = token.signedTransferHash(from, to, tokens, fee, nonce);
-console.log("RESULT: signedTransferHash=" + signedTransferHash);
-var sig = web3.eth.sign(from, signedTransferHash);
-console.log("RESULT: sig=" + sig);
-var r = getSigR(sig);
-var s = getSigS(sig);
-var v = getSigV(sig);
-console.log("RESULT: sigR=" + r);
-console.log("RESULT: sigS=" + s);
-console.log("RESULT: sigV=" + v);
-
-var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig);
-console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check + " " + signedTransferCheckResultString(signedTransfer1Check));
-var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig,
-  {from: contractOwnerAccount, gas: 200000});
-while (txpool.status.pending > 0) {
-}
-printTxData("signedTransfer1Tx", signedTransfer1Tx);
-printBalances();
-failIfTxStatusError(signedTransfer1Tx, signedTransferMessage + " - Signed Transfer ");
-printTokenContractDetails();
-console.log("RESULT: ");
-
-
-var signedTransfer2Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig);
-console.log("RESULT: signedTransfer2Check=" + signedTransfer2Check + " " + signedTransferCheckResultString(signedTransfer2Check));
-var signedTransfer2Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig,
-  {from: contractOwnerAccount, gas: 200000});
-while (txpool.status.pending > 0) {
-}
-printTxData("signedTransfer2Tx", signedTransfer2Tx);
-printBalances();
-passIfTxStatusError(signedTransfer2Tx, signedTransferMessage + " - Duplicated Signed Transfers - Expecting Failure");
-printTokenContractDetails();
-console.log("RESULT: ");
-
-
-// -----------------------------------------------------------------------------
-var signedApproveMessage = "Signed Approve";
+var signedApproveMessage = "Signed Approve For BTTS Token Deployment";
 var functionSig = web3.sha3("signedApprove(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
 var tokenContractAddress = tokenAddress;
 var owner = account4;
-var spender = account6;
+var spender = factoryAddress;
 var tokens = "50000000000000000000";
 var fee = "500000000000000000";
 var nonce = "0";
@@ -380,6 +393,172 @@ var sig = web3.eth.sign(account4, hash);
 
 // var sig = web3.eth.sign(account4, signedApproveHash);
 console.log("RESULT: sig=" + sig);
+
+var signedApprove1Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig, feeAccount);
+console.log("RESULT: signedApprove1Check=" + signedApprove1Check + " " + signedTransferCheckResultString(signedApprove1Check));
+var signedApprove1Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+var signedApprove2Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig, feeAccount);
+console.log("RESULT: signedApprove2Check=" + signedApprove2Check + " " + signedTransferCheckResultString(signedApprove2Check));
+var signedApprove2Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printTxData("signedApprove1Tx", signedApprove1Tx);
+printTxData("signedApprove2Tx", signedApprove2Tx);
+printBalances();
+failIfTxStatusError(signedApprove1Tx, signedApproveMessage + " - Signed Approve ");
+passIfTxStatusError(signedApprove2Tx, signedApproveMessage + " - Duplicated Signed Approve - Expecting Failure");
+printTokenContractDetails();
+console.log("RESULT: ");
+}
+
+
+// -----------------------------------------------------------------------------
+var signedDeployTokenMessage = "Signed Deployment of BTTS Token";
+var functionSig = web3.sha3("signedDeployToken(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
+// var tokenContractAddress = tokenAddress;
+// var from = account3;
+// var to = account5;
+// var tokens = new BigNumber("1000000000000000000");
+var deployer = account3;
+var symbol = "TestSignedDeploy";
+var name = "Signed Deployed BTTS Token";
+var decimals = 18;
+var initialSupply = new BigNumber("1000000000000000000000000");
+var mintable = false;
+var transferable = true;
+var fee = new BigNumber("10000000000000000");
+var feeToken = tokenAddress;
+var nonce = "0";
+// -----------------------------------------------------------------------------
+
+// var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + addressToHex(feeToken) + uint256ToHex(nonce);
+// console.log("RESULT: hashOf=" + hashOf);
+// var hash = web3.sha3(hashOf, {encoding: 'hex'});
+// console.log("RESULT: hash=" + hash);
+
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + signedDeployTokenMessage);
+console.log("RESULT: functionSig=" + functionSig + " (should be '0xa64a9365')");
+
+// console.log("RESULT: from=" + from);
+// console.log("RESULT: to=" + to);
+// console.log("RESULT: tokens=" + tokens + " " + tokens.shift(-decimals));
+console.log("RESULT: symbol=" + symbol);
+console.log("RESULT: name=" + name);
+console.log("RESULT: decimals=" + decimals);
+console.log("RESULT: initialSupply=" + initialSupply);
+console.log("RESULT: mintable=" + mintable);
+console.log("RESULT: transferable=" + transferable);
+console.log("RESULT: fee=" + fee + " " + fee.shift(-decimals));
+console.log("RESULT: feeToken=" + feeToken);
+console.log("RESULT: nonce=" + nonce);
+var signedDeployTokenHash = factory.signedDeployBTTSTokenContractHash(symbol, name, decimals, initialSupply, mintable, transferable, fee, feeToken, nonce);
+console.log("RESULT: signedDeployTokenHash=" + signedDeployTokenHash);
+var sig = web3.eth.sign(deployer, signedDeployTokenHash);
+console.log("RESULT: sig=" + sig);
+
+var signedDeployToken1Check = factory.signedDeployBTTSTokenContractCheck(deployer, symbol, name, decimals, initialSupply, mintable, transferable, fee, feeToken, nonce, sig);
+console.log("RESULT: signedDeployToken1Check=" + signedDeployToken1Check + " " + signedTransferCheckResultString(signedDeployToken1Check));
+var signedDeployToken1Tx = factory.signedDeployBTTSTokenContract(deployer, symbol, name, decimals, initialSupply, mintable, transferable, fee, feeToken, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas:64000000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printTxData("signedDeployToken1Tx", signedDeployToken1Tx);
+printBalances();
+failIfTxStatusError(signedDeployToken1Tx, signedDeployTokenMessage);
+printFactoryContractDetails();
+printTokenContractDetails();
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
+var signedTransferMessage = "Signed Transfers";
+var functionSig = web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10);
+var tokenContractAddress = tokenAddress;
+var from = account3;
+var to = account5;
+var tokens = new BigNumber("1000000000000000000");
+var fee = new BigNumber("10000000000000000");
+var feeToken = token;
+var nonce = "0";
+// -----------------------------------------------------------------------------
+
+var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
+console.log("RESULT: hashOf=" + hashOf);
+var hash = web3.sha3(hashOf, {encoding: 'hex'});
+console.log("RESULT: hash=" + hash);
+
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + signedTransferMessage);
+console.log("RESULT: functionSig=" + functionSig + " (should be '0x7532eaac')");
+
+console.log("RESULT: from=" + from);
+console.log("RESULT: to=" + to);
+console.log("RESULT: tokens=" + tokens + " " + tokens.shift(-decimals));
+console.log("RESULT: fee=" + fee + " " + fee.shift(-decimals));
+console.log("RESULT: nonce=" + nonce);
+var signedTransferHash = token.signedTransferHash(from, to, tokens, fee, nonce);
+console.log("RESULT: signedTransferHash=" + signedTransferHash);
+var sig = web3.eth.sign(from, signedTransferHash);
+console.log("RESULT: sig=" + sig);
+
+var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig, feeAccount);
+console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check + " " + signedTransferCheckResultString(signedTransfer1Check));
+var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, feeAccount, 
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printTxData("signedTransfer1Tx", signedTransfer1Tx);
+printBalances();
+failIfTxStatusError(signedTransfer1Tx, signedTransferMessage + " - Signed Transfer ");
+printTokenContractDetails();
+console.log("RESULT: ");
+
+
+var signedTransfer2Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig, feeAccount);
+console.log("RESULT: signedTransfer2Check=" + signedTransfer2Check + " " + signedTransferCheckResultString(signedTransfer2Check));
+var signedTransfer2Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printTxData("signedTransfer2Tx", signedTransfer2Tx);
+printBalances();
+passIfTxStatusError(signedTransfer2Tx, signedTransferMessage + " - Duplicated Signed Transfers - Expecting Failure");
+printTokenContractDetails();
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
+var signedApproveMessage = "Signed Approve";
+var functionSig = web3.sha3("signedApprove(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10);
+var tokenContractAddress = tokenAddress;
+var owner = account4;
+var spender = account6;
+var tokens = "50000000000000000000";
+var fee = "500000000000000000";
+var nonce = "0";
+// -----------------------------------------------------------------------------
+
+var signedApproveHash = token.signedApproveHash(tokenContractAddress,
+  owner, spender, tokens, fee);
+console.log("RESULT: signedApproveHash=" + signedApproveHash);
+
+// -----------------------------------------------------------------------------
+console.log("RESULT: " + signedApproveMessage);
+console.log("RESULT: functionSig=" + functionSig + " (should be '0xe9afa7a1')");
+
+var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(owner) + addressToHex(spender) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
+console.log("RESULT: hashOf=" + hashOf);
+var hash = web3.sha3(hashOf, {encoding: 'hex'});
+console.log("RESULT: hash=" + hash);
+var sig = web3.eth.sign(account4, hash);
+
+// var sig = web3.eth.sign(account4, signedApproveHash);
+console.log("RESULT: sig=" + sig);
 var r = getSigR(sig);
 var s = getSigS(sig);
 var v = getSigV(sig);
@@ -387,16 +566,16 @@ console.log("RESULT: sigR=" + r);
 console.log("RESULT: sigS=" + s);
 console.log("RESULT: sigV=" + v);
 
-var signedApprove1Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig);
+var signedApprove1Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig, feeAccount);
 console.log("RESULT: signedApprove1Check=" + signedApprove1Check + " " + signedTransferCheckResultString(signedApprove1Check));
-var signedApprove1Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig,
-  {from: contractOwnerAccount, gas: 200000});
+var signedApprove1Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-var signedApprove2Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig);
+var signedApprove2Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig, feeAccount);
 console.log("RESULT: signedApprove2Check=" + signedApprove2Check + " " + signedTransferCheckResultString(signedApprove2Check));
-var signedApprove2Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig,
-  {from: contractOwnerAccount, gas: 200000});
+var signedApprove2Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("signedApprove1Tx", signedApprove1Tx);
@@ -410,7 +589,7 @@ console.log("RESULT: ");
 
 // -----------------------------------------------------------------------------
 var signedTransferFromMessage = "Signed TransferFrom";
-var functionSig = web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
+var functionSig = web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,bytes,address)").substring(0,10);
 var tokenContractAddress = tokenAddress;
 var spender = account6;
 var from = account4;
@@ -419,12 +598,12 @@ var tokens = "3000000000000000000";
 var fee = "30000000000000000";
 
 
-var signedTransferFromHash = token.signedTransferFromHash(spender, from, to, tokens, fee);
+var signedTransferFromHash = token.signedTransferFromHash(spender, from, to, tokens, fee, nonce);
 console.log("RESULT: signedTransferFromHash=" + signedTransferFromHash);
 
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + signedTransferFromMessage);
-console.log("RESULT: functionSig=" + functionSig + " (should be '0xc6e5df0c')");
+console.log("RESULT: functionSig=" + functionSig + " (should be '0x344bcc7d')");
 
 var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(spender) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
 console.log("RESULT: hashOf=" + hashOf);
@@ -441,16 +620,16 @@ console.log("RESULT: sigR=" + r);
 console.log("RESULT: sigS=" + s);
 console.log("RESULT: sigV=" + v);
 
-var signedTransferFrom1Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, sig);
+var signedTransferFrom1Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, sig, feeAccount);
 console.log("RESULT: signedTransferFrom1Check=" + signedTransferFrom1Check + " " + signedTransferCheckResultString(signedTransferFrom1Check));
-var signedTransferFrom1Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, sig,
-  {from: contractOwnerAccount, gas: 200000});
+var signedTransferFrom1Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-var signedTransferFrom2Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, sig);
+var signedTransferFrom2Check = token.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, sig, feeAccount);
 console.log("RESULT: signedTransferFrom2Check=" + signedTransferFrom2Check + " " + signedTransferCheckResultString(signedTransferFrom2Check));
-var signedTransferFrom2Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, sig,
-  {from: contractOwnerAccount, gas: 200000});
+var signedTransferFrom2Tx = token.signedTransferFrom(spender, from, to, tokens, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("signedTransferFrom1Tx", signedTransferFrom1Tx);
@@ -468,8 +647,8 @@ exit;
 var transferTokenMessage = "Transfer Tokens";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + transferTokenMessage);
-var transferToken1Tx = token.transfer(account3, "100000000000000000000", {from: contractOwnerAccount, gas: 100000});
-var transferToken2Tx = token.transfer(account4, "100000000000000000000", {from: contractOwnerAccount, gas: 100000});
+var transferToken1Tx = token.transfer(account3, "100000000000000000000", {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
+var transferToken2Tx = token.transfer(account4, "100000000000000000000", {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("transferToken1Tx", transferToken1Tx);
@@ -485,8 +664,8 @@ console.log("RESULT: ");
 var moveTokenMessage = "Move 0 Tokens After Transfers Allowed";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + moveTokenMessage);
-var moveToken1Tx = token.transfer(account5, "0", {from: account3, gas: 100000});
-var moveToken3Tx = token.transferFrom(account4, account7, "0", {from: account6, gas: 100000});
+var moveToken1Tx = token.transfer(account5, "0", {from: account3, gas: 100000, gasPrice: defaultGasPrice});
+var moveToken3Tx = token.transferFrom(account4, account7, "0", {from: account6, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("moveToken1Tx", moveToken1Tx);
@@ -502,11 +681,11 @@ console.log("RESULT: ");
 var moveTokenMessage = "Move More Tokens Than Owned";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + moveTokenMessage);
-var moveToken1Tx = token.transfer(account5, "3000000000000000000000001", {from: account3, gas: 100000});
-var moveToken2Tx = token.approve(account6,  "3000000000000000000000001", {from: account4, gas: 100000});
+var moveToken1Tx = token.transfer(account5, "3000000000000000000000001", {from: account3, gas: 100000, gasPrice: defaultGasPrice});
+var moveToken2Tx = token.approve(account6,  "3000000000000000000000001", {from: account4, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-var moveToken3Tx = token.transferFrom(account4, account7, "3000000000000000000000001", {from: account6, gas: 100000});
+var moveToken3Tx = token.transferFrom(account4, account7, "3000000000000000000000001", {from: account6, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("moveToken1Tx", moveToken1Tx);
@@ -524,7 +703,7 @@ console.log("RESULT: ");
 var approveTokenMessage = "Change Approval Without Setting To 0";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + approveTokenMessage);
-var approveToken2Tx = token.approve(account6,  "3000000000000000000000002", {from: account4, gas: 100000});
+var approveToken2Tx = token.approve(account6,  "3000000000000000000000002", {from: account4, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("approveToken2Tx", approveToken2Tx);
@@ -538,10 +717,10 @@ console.log("RESULT: ");
 var approveTokenMessage = "Change Approval By Setting To 0 In Between";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + approveTokenMessage);
-var approveToken2Tx = token.approve(account6,  "0", {from: account4, gas: 100000});
+var approveToken2Tx = token.approve(account6,  "0", {from: account4, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-var approveToken3Tx = token.approve(account6,  "3000000000000000000000002", {from: account4, gas: 100000});
+var approveToken3Tx = token.approve(account6,  "3000000000000000000000002", {from: account4, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("approveToken2Tx", approveToken2Tx);

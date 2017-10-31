@@ -41,12 +41,18 @@ contract BTTSBase {
 
 
     // ------------------------------------------------------------------------
+    // Constant used for recovery
+    // ------------------------------------------------------------------------
+    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
+
+
+    // ------------------------------------------------------------------------
     // signed{X}Check return status
     // ------------------------------------------------------------------------
     enum CheckResult {
         Success,                           // 0 Success
         NotTransferable,                   // 1 Tokens not transferable yet
-        NotExecutable,                     // 2 Tokens not transferable yet
+        NotExecutable,                     // 2 Execution will fail
         SignerMismatch,                    // 3 Mismatch in signing account
         AlreadyExecuted,                   // 4 Transfer already executed
         InsufficientApprovedTokens,        // 5 Insufficient approved tokens
@@ -56,44 +62,18 @@ contract BTTSBase {
         OverflowError                      // 9 Overflow error
     }
 
-    /*
-    // Duplicate Solidity's ecrecover, but catching the CALL return value
-    function safer_ecrecover(bytes32 hash, uint8 v, bytes32 r, bytes32 s) internal view returns (bool, address) {
-        // We do our own memory management here. Solidity uses memory offset
-        // 0x40 to store the current end of memory. We write past it (as
-        // writes are memory extensions), but don't update the offset so
-        // Solidity will reuse it. The memory used here is only needed for
-        // this context.
-
-        // FIXME: inline assembly can't access return values
-        bool ret;
-        address addr;
-
-        assembly {
-            let size := mload(0x40)
-            mstore(size, hash)
-            mstore(add(size, 32), v)
-            mstore(add(size, 64), r)
-            mstore(add(size, 96), s)
-
-            // NOTE: we can reuse the request memory because we deal with
-            //       the return code
-            ret := call(3000, 1, 0, size, 128, size, 32)
-            addr := mload(size)
-        }
-
-        return (ret, addr);
-    }*/
-
-    // Borrowed from https://gist.github.com/axic/5b33912c6f61ae6fd96d6c4a47afde6d
-    //
-    function ecrecovery(bytes32 hash, bytes sig) public pure returns (bool, address) {
+    // ------------------------------------------------------------------------
+    // ecrecover from a signature rather than the signature in parts [v, r, s]
+    // 
+    // Parts from https://gist.github.com/axic/5b33912c6f61ae6fd96d6c4a47afde6d
+    // ------------------------------------------------------------------------
+    function ecrecoverFromSig(bytes32 hash, bytes sig) public pure returns (address) {
         bytes32 r;
         bytes32 s;
         uint8 v;
 
         if (sig.length != 65)
-          return (false, 0);
+          return 0;
 
         // The signature format is a compact form of:
         //   {bytes32 r}{bytes32 s}{uint8 v}
@@ -106,11 +86,6 @@ contract BTTSBase {
             // 'mload' will pad with zeroes if we overread.
             // There is no 'mload8' to do this, but that would be nicer.
             v := byte(0, mload(add(sig, 96)))
-
-            // Alternative solution:
-            // 'byte' is not working due to the Solidity parser, so lets
-            // use the second best option, 'and'
-            // v := and(mload(add(sig, 65)), 255)
         }
 
         // albeit non-transactional signatures are not specified by the YP, one would expect it
@@ -122,24 +97,12 @@ contract BTTSBase {
           v += 27;
 
         if (v != 27 && v != 28)
-            return (false, 0);
+            return 0;
 
-        // return safer_ecrecover(hash, v, r, s);
-        return (true, ecrecover(hash, v, r, s));
-    }
-
-    function ecverify(bytes32 hash, bytes sig, address signer) public pure returns (bool) {
-        bool ret;
-        address addr;
-        (ret, addr) = ecrecovery(hash, sig);
-        return ret == true && addr == signer;
-    }
-
-    function ecrecoverFromSig(bytes32 hash, bytes sig) public pure returns (address addr) {
-        bool ret;
-        (ret, addr) = ecrecovery(hash, sig);
+        return ecrecover(hash, v, r, s);
     }
 }
+
 
 // ----------------------------------------------------------------------------
 // BokkyPooBah's Token Teleportation Service (BTTS) Interface v1.00
@@ -179,7 +142,7 @@ contract BTTSInterface is BTTSBase {
     // signed the transfer message
     // ------------------------------------------------------------------------
     function signedTransferCheck(address owner, address to, uint tokens,
-        uint fee, uint nonce, bytes sig)
+        uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result);
 
     // ------------------------------------------------------------------------
@@ -187,7 +150,7 @@ contract BTTSInterface is BTTSBase {
     // message
     // ------------------------------------------------------------------------
     function signedTransfer(address owner, address to, uint tokens, uint fee,
-        uint nonce, bytes sig)
+        uint nonce, bytes sig, address feeAccount)
         public returns (bool success);
 
 
@@ -204,14 +167,14 @@ contract BTTSInterface is BTTSBase {
     // signed the approve message
     // ------------------------------------------------------------------------
     function signedApproveCheck(address owner, address spender, uint tokens,
-        uint fee, uint nonce, bytes sig)
+        uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result);
 
     // ------------------------------------------------------------------------
     // Execute an approve on behalf of the user who signed the approve message
     // ------------------------------------------------------------------------
     function signedApprove(address owner, address spender, uint tokens,
-        uint fee, uint nonce, bytes sig)
+        uint fee, uint nonce, bytes sig, address feeAccount)
         public returns (bool success);
 
 
@@ -228,7 +191,7 @@ contract BTTSInterface is BTTSBase {
     // signed the transferFrom message
     // ------------------------------------------------------------------------
     function signedTransferFromCheck(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce, bytes sig)
+        uint tokens, uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result);
 
     // ------------------------------------------------------------------------
@@ -236,7 +199,7 @@ contract BTTSInterface is BTTSBase {
     // message
     // ------------------------------------------------------------------------
     function signedTransferFrom(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce, bytes sig)
+        uint tokens, uint fee, uint nonce, bytes sig, address feeAccount)
         public returns (bool success);
 }
 
@@ -255,8 +218,8 @@ contract Owned {
     // ------------------------------------------------------------------------
     // Constructor - assign creator as the owner
     // ------------------------------------------------------------------------
-    function Owned() public {
-        owner = msg.sender;
+    function Owned(address _owner) public {
+        owner = _owner;
     }
 
     // ------------------------------------------------------------------------
@@ -404,6 +367,7 @@ contract ERC20Token is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     bool public mintable;
     bool public transferable;
+    address public minter;
 
     // ------------------------------------------------------------------------
     // Balances for each account
@@ -422,40 +386,51 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
+    // Events
+    // ------------------------------------------------------------------------
+    event MinterUpdated(address from, address to);
+    event MintingDisabled();
+    event TransfersEnabled();
+
+
+    // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function ERC20Token(string _symbol, string _name, uint8 _decimals, 
-        uint _initialSupply, bool _mintable, bool _transferable) public 
+    function ERC20Token(address _owner, string _symbol, string _name,
+        uint8 _decimals, uint _initialSupply, bool _mintable,
+        bool _transferable) public Owned(_owner) 
     {
         symbol = _symbol;
         name = _name;
         decimals = _decimals;
         decimalsFactor = 10**uint(_decimals);
         if (_initialSupply > 0) {
-            balances[owner] = _initialSupply;
+            balances[_owner] = _initialSupply;
             totalSupply = _initialSupply;
-            Transfer(0x0, owner, _initialSupply);
+            Transfer(0x0, _owner, _initialSupply);
         }
         mintable = _mintable;
         transferable = _transferable;
     }
 
-    event MintingDisabled();
-    event TransfersEnabled();
 
     // ------------------------------------------------------------------------
-    // Can transfer functions be executed?
+    // Set Minter
     // ------------------------------------------------------------------------
-    modifier canTransfer() {
-        require(transferable);
-        _;
+    function setMinter(address _minter) public onlyOwner {
+        require(mintable);
+        MinterUpdated(minter, _minter);
+        minter = _minter;
     }
+
 
     // ------------------------------------------------------------------------
     // Disable minting
     // ------------------------------------------------------------------------
     function disableMinting() public onlyOwner {
         require(mintable);
+        MinterUpdated(minter, 0x0);
+        minter = 0x0;
         mintable = false;
         MintingDisabled();
     }
@@ -484,11 +459,19 @@ contract ERC20Token is ERC20Interface, Owned {
     // - Owner's account must have sufficient balance to transfer
     // - 0 value transfers are allowed
     // ------------------------------------------------------------------------
-    function transfer(address to, uint tokens) public canTransfer returns (bool success) {
+    function transfer(address to, uint tokens) public returns (bool success) {
+        // Owner and minter can move tokens before the tokens are transferable 
+        require(transferable || (mintable &&
+            (msg.sender == owner  || msg.sender == minter)));
+
+        // Check for sufficient balance 
         require(balances[msg.sender] >= tokens);
 
+        // Perform the tranfers
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
+
+        // Log the event
         Transfer(msg.sender, to, tokens);
         return true;
     }
@@ -521,14 +504,23 @@ contract ERC20Token is ERC20Interface, Owned {
     // - 0 value transfers are allowed
     // ------------------------------------------------------------------------
     function transferFrom(address from, address to, uint tokens)
-        public canTransfer returns (bool success)
+        public returns (bool success)
     {
+        // Can we transfer
+        require(transferable);
+
+        // Check sufficient balance
         require(balances[from] >= tokens);
+
+        // Check that the transfer has been approved
         require(allowed[from][msg.sender] >= tokens);
 
+        // Perform the transfers
         balances[from] = balances[from].sub(tokens);
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
+
+        // Log the event
         Transfer(from, to, tokens);
         return true;
     }
@@ -551,11 +543,19 @@ contract ERC20Token is ERC20Interface, Owned {
     // - 0 value transfers are allowed
     // ------------------------------------------------------------------------
     function mint(address to, uint tokens)
-        public onlyOwner returns (bool success)
+        public returns (bool success)
     {
+        // Check we are in the minting stage
         require(mintable);
+
+        // Only the minter or the owner can 
+        require(msg.sender == minter || msg.sender == owner);
+
+        // Mint the tokens
         balances[to] = balances[to].add(tokens);
         totalSupply = totalSupply.add(tokens);
+
+        // Log the event
         Transfer(0x0, to, tokens);
         return true;
     }
@@ -588,40 +588,44 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     using SafeMath for uint;
 
     // ------------------------------------------------------------------------
-    // Constants used for signing and recovery
-    // ------------------------------------------------------------------------
-    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
-
-    // ------------------------------------------------------------------------
+    // Constants used for recovery
+    //
     // signedTransfer(...) function signature
-    // web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xa64a9365"
+    // web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
+    // => "0x7532eaac"
     // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferSig = "\xa6\x4a\x93\x65";
+    bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
 
     // ------------------------------------------------------------------------
     // signedApprove(...) function signature
-    // web3.sha3("signedApprove(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xb310efc3"
+    // web3.sha3("signedApprove(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
+    // => "0xe9afa7a1"
     // ------------------------------------------------------------------------
-    bytes4 public constant signedApproveSig = "\xb3\x10\xef\xc3";
+    bytes4 public constant signedApproveSig = "\xe9\xaf\xa7\xa1";
 
     // ------------------------------------------------------------------------
     // signedTransferFrom(...) function signature
-    // web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xc6e5df0c"
+    // web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
+    // => "0x344bcc7d"
     // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferFromSig = "\xc6\xe5\xdf\x0c";
+    bytes4 public constant signedTransferFromSig = "\x34\x4b\xcc\x7d";
+
+
+    // ------------------------------------------------------------------------
+    // Parent - account that originally deployed this contract
+    // ------------------------------------------------------------------------
+    address parent;
 
 
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function BTTSToken(string _symbol, string _name, uint8 _decimals, 
-        uint _initialSupply, bool _mintable, bool _transferable)
-        public ERC20Token(_symbol, _name, _decimals, _initialSupply,
-        _mintable, _transferable)
+    function BTTSToken(address _owner, string _symbol, string _name,
+        uint8 _decimals, uint _initialSupply, bool _mintable,
+        bool _transferable) public ERC20Token(_owner, _symbol, _name,
+        _decimals, _initialSupply, _mintable, _transferable)
     {
+        parent = msg.sender;
     }
 
 
@@ -642,7 +646,7 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // signed the transfer message
     // ------------------------------------------------------------------------
     function signedTransferCheck(address owner, address to, uint tokens,
-        uint fee, uint nonce, bytes sig)
+        uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result)
     {
         // Check tokens are transferable
@@ -668,7 +672,7 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         // Check for overflows
         if (balances[to] + tokens < balances[to])
             return CheckResult.OverflowError;
-        if (balances[msg.sender] + fee < balances[msg.sender])
+        if (balances[feeAccount] + fee < balances[feeAccount])
             return CheckResult.OverflowError;
 
         return CheckResult.Success;
@@ -679,9 +683,11 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // message
     // ------------------------------------------------------------------------
     function signedTransfer(address owner, address to, uint tokens, uint fee,
-        uint nonce, bytes sig)
-        public canTransfer returns (bool success)
+        uint nonce, bytes sig, address feeAccount)
+        public returns (bool success)
     {
+        require(transferable);
+
         // Check owner is the message signer
         bytes32 hash = signedTransferHash(owner, to, tokens, fee, nonce);
         require(owner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
@@ -690,7 +696,7 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         require(!executed[owner][hash]);
         executed[owner][hash] = true;
 
-        // Move the tokens and fees
+        // Move the tokens
         require(balances[owner] >= tokens);
         balances[owner] = balances[owner].sub(tokens);
         balances[to] = balances[to].add(tokens);
@@ -699,8 +705,28 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         // Fee
         require(balances[owner] >= fee);
         balances[owner] = balances[owner].sub(fee);
-        balances[msg.sender] = balances[msg.sender].add(fee);
-        Transfer(owner, msg.sender, fee);
+        balances[feeAccount] = balances[feeAccount].add(fee);
+        Transfer(owner, feeAccount, fee);
+
+        return true;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // Execute a transfer on behalf of the user who signed the transfer
+    // message
+    // ------------------------------------------------------------------------
+    function transferFee(address from, address to, uint fee)
+        public returns (bool success)
+    {
+        require(transferable);
+        require(BTTSTokenFactory(parent).bttsVersion() == bttsVersion);
+        require(parent == msg.sender);
+
+        require(balances[from] >= fee);
+        balances[from] = balances[from].sub(fee);
+        balances[to] = balances[to].add(fee);
+        Transfer(from, to, fee);
 
         return true;
     }
@@ -723,7 +749,7 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // signed the approve message
     // ------------------------------------------------------------------------
     function signedApproveCheck(address owner, address spender, uint tokens,
-        uint fee, uint nonce, bytes sig)
+        uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result) 
     {
         // Check tokens are transferable
@@ -742,7 +768,7 @@ contract BTTSToken is ERC20Token, BTTSInterface {
             return CheckResult.InsufficientTokensForFees;
 
         // Check for overflows
-        if (balances[msg.sender] + fee < balances[msg.sender])
+        if (balances[feeAccount] + fee < balances[feeAccount])
             return CheckResult.OverflowError;
 
         return CheckResult.Success;
@@ -752,9 +778,11 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // Execute an approve on behalf of the user who signed the approve message
     // ------------------------------------------------------------------------
     function signedApprove(address owner, address spender, uint tokens,
-        uint fee, uint nonce, bytes sig)
-        public canTransfer returns (bool success) 
+        uint fee, uint nonce, bytes sig, address feeAccount)
+        public returns (bool success) 
     {
+        require(transferable);
+
         // Check owner is the message signer
         bytes32 hash = signedApproveHash(owner, spender, tokens, fee, nonce);
         require(owner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
@@ -770,8 +798,8 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         // Fee
         require(balances[owner] >= fee);
         balances[owner] = balances[owner].sub(fee);
-        balances[msg.sender] = balances[msg.sender].add(fee);
-        Transfer(owner, msg.sender, fee);
+        balances[feeAccount] = balances[feeAccount].add(fee);
+        Transfer(owner, feeAccount, fee);
 
         return true;
     }
@@ -794,7 +822,7 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // signed the transferFrom message
     // ------------------------------------------------------------------------
     function signedTransferFromCheck(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce, bytes sig)
+        uint tokens, uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result)
     {
         // Check tokens are transferable
@@ -814,6 +842,7 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         // Check there are sufficient approved tokens to transfer
         if (allowed[from][spender] < tokens)
             return CheckResult.InsufficientApprovedTokens;
+
         // Check there are sufficient approved tokens to pay for fees
         if (allowed[from][spender] < total)
             return CheckResult.InsufficientApprovedTokensForFees;
@@ -828,7 +857,7 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         // Check for overflows
         if (balances[to] + tokens < balances[to])
             return CheckResult.OverflowError;
-        if (balances[msg.sender] + fee < balances[msg.sender])
+        if (balances[feeAccount] + fee < balances[feeAccount])
             return CheckResult.OverflowError;
 
         return CheckResult.Success;
@@ -840,9 +869,11 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // message
     // ------------------------------------------------------------------------
     function signedTransferFrom(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce, bytes sig)
-        public canTransfer returns (bool success)
+        uint tokens, uint fee, uint nonce, bytes sig, address feeAccount)
+        public returns (bool success)
     {
+        require(transferable);
+
         // Check spender is the message signer
         bytes32 hash = signedTransferFromHash(spender, from, to, tokens,
             fee, nonce);
@@ -865,8 +896,8 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         // Fee
         balances[from] = balances[from].sub(fee);
         allowed[from][spender] = allowed[from][spender].sub(fee);
-        balances[msg.sender] = balances[msg.sender].add(fee);
-        Transfer(from, msg.sender, fee);
+        balances[feeAccount] = balances[feeAccount].add(fee);
+        Transfer(from, feeAccount, fee);
 
         return true;
     }
@@ -881,16 +912,13 @@ contract BTTSToken is ERC20Token, BTTSInterface {
 contract BTTSTokenFactory is Owned, BTTSBase {
 
     // ------------------------------------------------------------------------
-    // Constants used for signing and recovery
-    // ------------------------------------------------------------------------
-    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
-
-    // ------------------------------------------------------------------------
+    // Constants used for recovery
+    //
     // signedDeployBTTSTokenContractSig(...) function signature
-    // web3.sha3("signedDeployBTTSTokenContract(address,string,string,uint8,uint256,bool,bool,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "cb0c3dc8"
+    // web3.sha3("signedDeployBTTSTokenContract(address,string,string,uint8,uint256,bool,bool,uint256,address,uint256,bytes,address)").substring(0,10)
+    // => "0xe6ccb844"
     // ------------------------------------------------------------------------
-    bytes4 public constant signedDeployBTTSTokenContractSig = "\xcb\x0c\x3d\xc8";
+    bytes4 public constant signedDeployBTTSTokenContractSig = "\xe6\xcc\xb8\x44";
 
     // ------------------------------------------------------------------------
     // Executed signed calls
@@ -902,23 +930,34 @@ contract BTTSTokenFactory is Owned, BTTSBase {
     // ------------------------------------------------------------------------
     mapping(address => bool) _verify;
 
-    address public baseToken;
+    // ------------------------------------------------------------------------
+    // Base token for fee payment
+    // ------------------------------------------------------------------------
+    ERC20Interface public baseToken;
 
     // ------------------------------------------------------------------------
     // Event
     // ------------------------------------------------------------------------
     event BTTSTokenListing(address indexed ownerAddress,
-        address indexed bttsTokenAddress,
+        address indexed bttsTokenAddress, 
         string symbol, string name, uint8 decimals, 
         uint initialSupply, bool mintable, bool transferable);
 
 
-    function BTTSTokenFactory() public {
+    // ------------------------------------------------------------------------
+    // Constructor
+    // ------------------------------------------------------------------------
+    function BTTSTokenFactory() public Owned(msg.sender) {
     }
 
-    function setBaseToken(address _baseToken) public {
+
+    // ------------------------------------------------------------------------
+    // Set base token
+    // ------------------------------------------------------------------------
+    function setBaseToken(ERC20Interface _baseToken) public {
         baseToken = _baseToken;
     }
+
 
     // ------------------------------------------------------------------------
     // Anyone can call this method to verify whether the bttsToken contract at
@@ -1004,12 +1043,13 @@ contract BTTSTokenFactory is Owned, BTTSBase {
     function deployBTTSTokenContract(
         string symbol,
         string name,
-        uint8 decimals, 
+        uint8 decimals,
         uint initialSupply,
         bool mintable,
         bool transferable
     ) public returns (address bttsTokenAddress) {
         bttsTokenAddress = new BTTSToken(
+            msg.sender,
             symbol,
             name,
             decimals,
@@ -1018,8 +1058,10 @@ contract BTTSTokenFactory is Owned, BTTSBase {
             transferable);
         // Record that this factory created the trader
         _verify[bttsTokenAddress] = true;
-        // Transfer ownership to the account that deployed the contract
-        BTTSToken(bttsTokenAddress).transferOwnershipImmediately(msg.sender);
+        // BTTSToken(bttsTokenAddress).transfer(msg.sender,
+        //     BTTSToken(bttsTokenAddress).balanceOf(address(this))); 
+        // // Transfer ownership to the account that deployed the contract
+        // BTTSToken(bttsTokenAddress).transferOwnershipImmediately(msg.sender);
         BTTSTokenListing(msg.sender, bttsTokenAddress, symbol, name, decimals, 
             initialSupply, mintable, transferable);
     }
@@ -1039,11 +1081,12 @@ contract BTTSTokenFactory is Owned, BTTSBase {
         bool mintable,
         bool transferable,
         uint fee,
+        address feeToken,
         uint nonce
     ) public view returns (bytes32 hash) {
         hash = keccak256(signedDeployBTTSTokenContractSig, address(this),
             symbol, name, decimals, initialSupply, mintable, transferable,
-            fee, nonce);
+            fee, feeToken, nonce);
     }
 
     // ------------------------------------------------------------------------
@@ -1059,45 +1102,31 @@ contract BTTSTokenFactory is Owned, BTTSBase {
         bool mintable,
         bool transferable,
         uint fee,
+        address feeToken,
         uint nonce,
         bytes sig)
         public constant returns (CheckResult result)
     {
-        // Check tokens are transferable
-        if (!transferable) return CheckResult.NotTransferable;
+        // Check factory base token has been set
+        if (feeToken == 0x0) return CheckResult.NotExecutable;
 
-        // Check spender is the message signer
+        // Check deployer is the message signer
         bytes32 hash = signedDeployBTTSTokenContractHash(symbol, name, decimals,
-            initialSupply, mintable, transferable, fee, nonce);
+            initialSupply, mintable, transferable, fee, feeToken, nonce);
         if (deployer != ecrecoverFromSig(keccak256(signingPrefix, hash), sig))
             return CheckResult.SignerMismatch;
 
-        // Check message not already executed
+        // Message already executed?
         if (alreadyExecuted(deployer, hash)) return CheckResult.AlreadyExecuted;
 
-        /*
-        uint total = tokens.add(fee);
+        // // Sufficient approved tokens to pay for fees?
+        // if (baseToken.allowance(deployer, address(this)) < fee)
+        //     return CheckResult.InsufficientApprovedTokensForFees;
 
-        // Check there are sufficient approved tokens to transfer
-        if (allowed[from][spender] < tokens)
-            return CheckResult.InsufficientApprovedTokens;
-        // Check there are sufficient approved tokens to pay for fees
-        if (allowed[from][spender] < total)
-            return CheckResult.InsufficientApprovedTokensForFees;
-
-        // Check there are sufficient tokens to transfer
-        if (balances[from] < tokens) return CheckResult.InsufficientTokens;
-
-        // Check there are sufficient tokens to pay for fees
-        if (balances[from] < total)
+        // Sufficient tokens to pay for fees?
+        if (BTTSToken(feeToken).balanceOf(deployer) < fee)
             return CheckResult.InsufficientTokensForFees;
 
-        // Check for overflows
-        if (balances[to] + tokens < balances[to])
-            return CheckResult.OverflowError;
-        if (balances[msg.sender] + fee < balances[msg.sender])
-            return CheckResult.OverflowError;
-        */
         return CheckResult.Success;
     }
 
@@ -1115,13 +1144,17 @@ contract BTTSTokenFactory is Owned, BTTSBase {
         bool mintable,
         bool transferable,
         uint fee,
+        address feeToken,
         uint nonce,
-        bytes sig)
-        public returns (bool success)
+        bytes sig,
+        address feeAccount)
+        public returns (address bttsTokenAddress)
     {
+        require(feeToken != 0x0);
+
         // Check spender is the message signer
         bytes32 hash = signedDeployBTTSTokenContractHash(symbol, name,
-          decimals, initialSupply, mintable, transferable, fee, nonce);
+          decimals, initialSupply, mintable, transferable, fee, feeToken, nonce);
         require(deployer == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
 
         // Check message not already executed
@@ -1130,25 +1163,29 @@ contract BTTSTokenFactory is Owned, BTTSBase {
         // executed[deployer][hash] = true;
         recordAsExecuted(deployer, hash);
 
-        require(ERC20Interface(baseToken).balanceOf(deployer) >= fee);
-        require(ERC20Interface(baseToken).allowance(deployer, this) >= fee);
-        /*
-        require(allowed[from][spender] >= fee);
+        // Sufficient approved tokens to pay for fees?
+        // require(baseToken.allowance(deployer, address(this)) >= fee);
+        // Sufficient tokens to pay for fees?
+        // require(baseToken.balanceOf(deployer) >= fee);
 
-        // Move the tokens and fees
-        balances[from] = balances[from].sub(fee);
-        allowed[from][spender] = allowed[from][spender].sub(tokens);
-        balances[to] = balances[to].add(tokens);
-        Transfer(from, to, tokens);
+        BTTSToken(feeToken).transferFee(deployer, feeAccount, fee);
 
-        // Fee
-        balances[from] = balances[from].sub(fee);
-        allowed[from][spender] = allowed[from][spender].sub(fee);
-        balances[msg.sender] = balances[msg.sender].add(fee);
-        Transfer(from, msg.sender, fee);
-        */
-
-        return true;
+        bttsTokenAddress = new BTTSToken(
+            deployer,
+            symbol,
+            name,
+            decimals,
+            initialSupply,
+            mintable,
+            transferable);
+        // Record that this factory created the trader
+        _verify[bttsTokenAddress] = true;
+        // ERC20Interface(bttsTokenAddress).transfer(deployer,
+        //     BTTSToken(bttsTokenAddress).balanceOf(address(this))); 
+        // Transfer ownership to the account that deployed the contract
+        // BTTSToken(bttsTokenAddress).transferOwnershipImmediately(deployer);
+        BTTSTokenListing(deployer, bttsTokenAddress, symbol, name, decimals, 
+            initialSupply, mintable, transferable);
     }
 
 

@@ -1,6 +1,6 @@
 # BokkyPooBah's Token Teleportation Service Smart Contract
 
-Status: Work in progress
+Status: Work in progress, still some medium size changes to be done
 
 ## Summary
 
@@ -87,6 +87,8 @@ In the testing:
   * `sigV=0x1c` (last 2 hex chars of signature)
   * `sigR=0xb9195151b7cc53992814d0dc0f15be36f56a0f7e79d0a37f04f2cb4b30932016` (first 64 hex chars of signature)
   * `sigS=0x5abdd0eefb5017859e91c84f3225aec2e387daa384de496c71cea8b3e99ecf0c` (second 64 hex chars of signature)
+  
+  (Note that the methods now use the signature instead of [v, r, s]). 
 
   The token owner then provides the data `from`, `to`, `tokens`, `fee`, `sigV`, `sigR` and `sigS` plus the function signature and the token
   contract address to the service provider `0xa11a`
@@ -659,6 +661,8 @@ contract BTTSToken is ERC20Token, BTTSInterface {
 <hr />
 
 ## Demo On Ropsten Testnet
+
+Later on.
 
 <br />
 
