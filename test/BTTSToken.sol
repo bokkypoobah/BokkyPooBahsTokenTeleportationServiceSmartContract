@@ -4,6 +4,9 @@ pragma solidity ^0.4.17;
 // BTTS 'BokkyPooBah's Token Teleportation Service' token interface and
 // sample implementation
 //
+// See 
+// https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract
+//
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
 
@@ -14,16 +17,18 @@ pragma solidity ^0.4.17;
 // ----------------------------------------------------------------------------
 contract ERC20Interface {
     uint public totalSupply;
-    function balanceOf(address owner) public constant returns (uint balance);
-    function transfer(address to, uint amount) public returns (bool success);
+    function balanceOf(address tokenOwner)
+        public constant returns (uint balance);
+    function transfer(address to, uint tokens) public returns (bool success);
     function transferFrom(address from, address to, uint tokens)
         public returns (bool success);
     function approve(address spender, uint tokens)
         public returns (bool success);
-    function allowance(address owner, address spender)
+    function allowance(address tokenOwner, address spender)
         public constant returns (uint remaining);
     event Transfer(address indexed from, address indexed to, uint tokens);
-    event Approval(address indexed owner, address indexed spender, uint tokens);
+    event Approval(address indexed tokenOwner, address indexed spender,
+        uint tokens);
 }
 
 
@@ -134,14 +139,14 @@ contract BTTSInterface is BTTSBase {
     //
     // Generate the hash used to create the signed transfer message
     // ------------------------------------------------------------------------
-    function signedTransferHash(address owner, address to, uint tokens,
+    function signedTransferHash(address tokenOwner, address to, uint tokens,
         uint fee, uint nonce) public view returns (bytes32 hash);
 
     // ------------------------------------------------------------------------
     // Check whether a transfer can be executed on behalf of the user who
     // signed the transfer message
     // ------------------------------------------------------------------------
-    function signedTransferCheck(address owner, address to, uint tokens,
+    function signedTransferCheck(address tokenOwner, address to, uint tokens,
         uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result);
 
@@ -149,8 +154,8 @@ contract BTTSInterface is BTTSBase {
     // Execute a transfer on behalf of the user who signed the transfer 
     // message
     // ------------------------------------------------------------------------
-    function signedTransfer(address owner, address to, uint tokens, uint fee,
-        uint nonce, bytes sig, address feeAccount)
+    function signedTransfer(address tokenOwner, address to, uint tokens,
+        uint fee, uint nonce, bytes sig, address feeAccount)
         public returns (bool success);
 
 
@@ -159,21 +164,21 @@ contract BTTSInterface is BTTSBase {
     //
     // Generate the hash used to create the signed approve message
     // ------------------------------------------------------------------------
-    function signedApproveHash(address owner, address spender, uint tokens,
-        uint fee, uint nonce) public view returns (bytes32 hash);
+    function signedApproveHash(address tokenOwner, address spender,
+        uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
 
     // ------------------------------------------------------------------------
     // Check whether an approve can be executed on behalf of the user who
     // signed the approve message
     // ------------------------------------------------------------------------
-    function signedApproveCheck(address owner, address spender, uint tokens,
-        uint fee, uint nonce, bytes sig, address feeAccount)
+    function signedApproveCheck(address tokenOwner, address spender,
+        uint tokens, uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result);
 
     // ------------------------------------------------------------------------
     // Execute an approve on behalf of the user who signed the approve message
     // ------------------------------------------------------------------------
-    function signedApprove(address owner, address spender, uint tokens,
+    function signedApprove(address tokenOwner, address spender, uint tokens,
         uint fee, uint nonce, bytes sig, address feeAccount)
         public returns (bool success);
 
@@ -313,7 +318,7 @@ library SafeMath {
     // ------------------------------------------------------------------------
     function add(uint a, uint b) public pure returns (uint) {
         uint c = a + b;
-        assert(c >= a);
+        require(c >= a);
         return c;
     }
 
@@ -321,7 +326,7 @@ library SafeMath {
     // Subtract a number from another number, checking for underflows
     // ------------------------------------------------------------------------
     function sub(uint a, uint b) public pure returns (uint) {
-        assert(b <= a);
+        require(b <= a);
         return a - b;
     }
 
@@ -330,7 +335,7 @@ library SafeMath {
     // ------------------------------------------------------------------------
     function mul(uint a, uint b) public pure returns (uint) {
         uint c = a * b;
-        assert(a == 0 || c / a == b);
+        require(a == 0 || c / a == b);
         return c;
     }
 
@@ -338,9 +343,8 @@ library SafeMath {
     // Multiply one number by another number
     // ------------------------------------------------------------------------
     function div(uint a, uint b) public pure returns (uint) {
-        // assert(b > 0); // Solidity automatically throws when dividing by 0
+        require(b > 0);
         uint c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
         return c;
     }
 }
@@ -447,15 +451,17 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
-    // Get the account balance of another account with address _owner
+    // Get the token balance for account `tokenOwner`
     // ------------------------------------------------------------------------
-    function balanceOf(address owner) public constant returns (uint balance) {
-        return balances[owner];
+    function balanceOf(address tokenOwner)
+        public constant returns (uint balance)
+    {
+        return balances[tokenOwner];
     }
 
 
     // ------------------------------------------------------------------------
-    // Transfer the balance from owner's account to `to` account
+    // Transfer the balance from token owner's account to `to` account
     // - Owner's account must have sufficient balance to transfer
     // - 0 value transfers are allowed
     // ------------------------------------------------------------------------
@@ -463,9 +469,6 @@ contract ERC20Token is ERC20Interface, Owned {
         // Owner and minter can move tokens before the tokens are transferable 
         require(transferable || (mintable &&
             (msg.sender == owner  || msg.sender == minter)));
-
-        // Check for sufficient balance 
-        require(balances[msg.sender] >= tokens);
 
         // Perform the tranfers
         balances[msg.sender] = balances[msg.sender].sub(tokens);
@@ -478,7 +481,8 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
-    // Approve `spender` to withdraw `tokens` tokens from the owner's account
+    // Token owner can approve for `spender` to withdraw `tokens` from the 
+    // token owner's account
     //
     // As recommended in https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md#approve
     // there are no checks for the approval double-spend attack as this should
@@ -494,11 +498,10 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
+    // Transfer `tokens` from the `from` account to the `to` account
     // 
-    
-    // Spender of tokens transfer an amount of tokens from the token owner's
-    // balance to another account. The owner of the tokens must already
-    // have approve(...)-d this transfer
+    // The calling account must already have sufficient tokens approved for
+    // spending from the `from` account and
     // - From account must have sufficient balance to transfer
     // - Spender must have sufficient allowance to transfer
     // - 0 value transfers are allowed
@@ -508,12 +511,6 @@ contract ERC20Token is ERC20Interface, Owned {
     {
         // Can we transfer
         require(transferable);
-
-        // Check sufficient balance
-        require(balances[from] >= tokens);
-
-        // Check that the transfer has been approved
-        require(allowed[from][msg.sender] >= tokens);
 
         // Perform the transfers
         balances[from] = balances[from].sub(tokens);
@@ -530,10 +527,10 @@ contract ERC20Token is ERC20Interface, Owned {
     // Returns the amount of tokens approved by the owner that can be
     // transferred to the spender's account
     // ------------------------------------------------------------------------
-    function allowance(address owner, address spender)
+    function allowance(address tokenOwner, address spender)
         public constant returns (uint remaining)
     {
-        return allowed[owner][spender];
+        return allowed[tokenOwner][spender];
     }
 
 
@@ -634,39 +631,39 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     //
     // Generate the hash used to create the signed transfer message
     // ------------------------------------------------------------------------
-    function signedTransferHash(address owner, address to, uint tokens,
+    function signedTransferHash(address tokenOwner, address to, uint tokens,
         uint fee, uint nonce) public view returns (bytes32 hash)
     {
-        hash = keccak256(signedTransferSig, address(this), owner, to, tokens,
-            fee, nonce);
+        hash = keccak256(signedTransferSig, address(this), tokenOwner, to,
+            tokens, fee, nonce);
     }
 
     // ------------------------------------------------------------------------
     // Check whether a transfer can be executed on behalf of the user who
     // signed the transfer message
     // ------------------------------------------------------------------------
-    function signedTransferCheck(address owner, address to, uint tokens,
+    function signedTransferCheck(address tokenOwner, address to, uint tokens,
         uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result)
     {
         // Check tokens are transferable
         if (!transferable) return CheckResult.NotTransferable;
 
-        // Check owner is the message signer
-        bytes32 hash = signedTransferHash(owner, to, tokens, fee, nonce);
-        if (owner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig))
+        // Check tokenOwner is the message signer
+        bytes32 hash = signedTransferHash(tokenOwner, to, tokens, fee, nonce);
+        if (tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig))
             return CheckResult.SignerMismatch;
 
         // Check message not already executed
-        if (executed[owner][hash]) return CheckResult.AlreadyExecuted;
+        if (executed[tokenOwner][hash]) return CheckResult.AlreadyExecuted;
 
         uint total = tokens.add(fee);
 
         // Check there are sufficient tokens to transfer
-        if (balances[owner] < tokens) return CheckResult.InsufficientTokens;
+        if (balances[tokenOwner] < tokens) return CheckResult.InsufficientTokens;
 
         // Check there are sufficient tokens to pay for fees
-        if (balances[owner] < total)
+        if (balances[tokenOwner] < total)
             return CheckResult.InsufficientTokensForFees;
 
         // Check for overflows
@@ -682,31 +679,29 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // Execute a transfer on behalf of the user who signed the transfer
     // message
     // ------------------------------------------------------------------------
-    function signedTransfer(address owner, address to, uint tokens, uint fee,
-        uint nonce, bytes sig, address feeAccount)
+    function signedTransfer(address tokenOwner, address to, uint tokens,
+        uint fee, uint nonce, bytes sig, address feeAccount)
         public returns (bool success)
     {
         require(transferable);
 
-        // Check owner is the message signer
-        bytes32 hash = signedTransferHash(owner, to, tokens, fee, nonce);
-        require(owner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        // Check tokenOwner is the message signer
+        bytes32 hash = signedTransferHash(tokenOwner, to, tokens, fee, nonce);
+        require(tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
 
         // Check message not already executed
-        require(!executed[owner][hash]);
-        executed[owner][hash] = true;
+        require(!executed[tokenOwner][hash]);
+        executed[tokenOwner][hash] = true;
 
         // Move the tokens
-        require(balances[owner] >= tokens);
-        balances[owner] = balances[owner].sub(tokens);
+        balances[tokenOwner] = balances[tokenOwner].sub(tokens);
         balances[to] = balances[to].add(tokens);
-        Transfer(owner, to, tokens);
+        Transfer(tokenOwner, to, tokens);
 
         // Fee
-        require(balances[owner] >= fee);
-        balances[owner] = balances[owner].sub(fee);
+        balances[tokenOwner] = balances[tokenOwner].sub(fee);
         balances[feeAccount] = balances[feeAccount].add(fee);
-        Transfer(owner, feeAccount, fee);
+        Transfer(tokenOwner, feeAccount, fee);
 
         return true;
     }
@@ -748,23 +743,23 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // Check whether an approve can be executed on behalf of the user who
     // signed the approve message
     // ------------------------------------------------------------------------
-    function signedApproveCheck(address owner, address spender, uint tokens,
-        uint fee, uint nonce, bytes sig, address feeAccount)
+    function signedApproveCheck(address tokenOwner, address spender,
+        uint tokens, uint fee, uint nonce, bytes sig, address feeAccount)
         public constant returns (CheckResult result) 
     {
         // Check tokens are transferable
         if (!transferable) return CheckResult.NotTransferable;
 
-        // Check owner is the message signer
-        bytes32 hash = signedApproveHash(owner, spender, tokens, fee, nonce);
-        if (owner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig))
+        // Check tokenOwner is the message signer
+        bytes32 hash = signedApproveHash(tokenOwner, spender, tokens, fee, nonce);
+        if (tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig))
             return CheckResult.SignerMismatch;
 
         // Check message not already executed
-        if (executed[owner][hash]) return CheckResult.AlreadyExecuted;
+        if (executed[tokenOwner][hash]) return CheckResult.AlreadyExecuted;
 
         // Check there are sufficient tokens to pay for fees
-        if (balances[owner] < fee)
+        if (balances[tokenOwner] < fee)
             return CheckResult.InsufficientTokensForFees;
 
         // Check for overflows
@@ -777,29 +772,28 @@ contract BTTSToken is ERC20Token, BTTSInterface {
     // ------------------------------------------------------------------------
     // Execute an approve on behalf of the user who signed the approve message
     // ------------------------------------------------------------------------
-    function signedApprove(address owner, address spender, uint tokens,
+    function signedApprove(address tokenOwner, address spender, uint tokens,
         uint fee, uint nonce, bytes sig, address feeAccount)
         public returns (bool success) 
     {
         require(transferable);
 
-        // Check owner is the message signer
-        bytes32 hash = signedApproveHash(owner, spender, tokens, fee, nonce);
-        require(owner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        // Check tokenOwner is the message signer
+        bytes32 hash = signedApproveHash(tokenOwner, spender, tokens, fee, nonce);
+        require(tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
 
         // Check message not already executed
-        require(!executed[owner][hash]);
-        executed[owner][hash] = true;
+        require(!executed[tokenOwner][hash]);
+        executed[tokenOwner][hash] = true;
 
         // Approve
-        allowed[owner][spender] = tokens;
-        Approval(owner, spender, tokens);
+        allowed[tokenOwner][spender] = tokens;
+        Approval(tokenOwner, spender, tokens);
 
         // Fee
-        require(balances[owner] >= fee);
-        balances[owner] = balances[owner].sub(fee);
+        balances[tokenOwner] = balances[tokenOwner].sub(fee);
         balances[feeAccount] = balances[feeAccount].add(fee);
-        Transfer(owner, feeAccount, fee);
+        Transfer(tokenOwner, feeAccount, fee);
 
         return true;
     }
@@ -882,10 +876,6 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         // Check message not already executed
         require(!executed[spender][hash]);
         executed[spender][hash] = true;
-
-        uint total = tokens.add(fee);
-        require(balances[from] >= total);
-        require(allowed[from][spender] >= total);
 
         // Move the tokens and fees
         balances[from] = balances[from].sub(tokens);

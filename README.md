@@ -14,7 +14,7 @@ pays for the token transfer fees in the token being transferred.
 ### Account Creates Signed Message
 
 Any ERC20 token contracts that implement the *BTTS Interface* with their own *BTTS Implementation*
-will be transferable using this *BTTS Service*. An account holding BTTS enabled functions use
+will be transferable using this *BTTS Service*. An account holding BTTS enabled tokens use
 the implemented functionality to create a message signed with the account's private key with the
 token transfer instructions, including the fees specified in the token being transferred.
 
@@ -26,6 +26,9 @@ The account provides the transfer details and the signed message to the *BTTS Se
 The *BTTS Service Provider* then executes the appropriate function to execute the token transfer,
 paying the transaction fees in ETH. On successful execution of the transfer, the fee in tokens will
 be transferred to the *BTTS Service Provider*'s account.
+
+The signed message is used to validate the account and parameters for the transfer, and guarantees
+that the service provider cannot move more (or less) tokens that the signing account instructed.
 
 <br />
 
@@ -65,56 +68,65 @@ This example will be explain the results from the testing script and testing res
 hashes will differ in the testing results because new token contract addresses are created in each testing
 session.
 
-In the testing:
+In the testing [script](test/01_test1.sh) and [results](test/test1results.txt):
 
-* The service provider `0xa11a` executes the `signedTransfer(...)` function on behalf of the token owner `0xa33a`
-* `from` = `0xa33a`
-* `to` = `0xa55a`
-* `tokens` = `1`
-* `fee` = `0.01`
-* The token owner `0xa33a` calculates a hash using the function `var signedTransferHash = token.signedTransferHash(from, to, tokens, fee);`
-  This is a hash of the `from`, `to`, `tokens`, `fee` plus some data representing the function name `signedTransfer` and the token contract
-  address. Any small difference in this data will result in a different resulting hash.
+* The account `0xa33a` wants to transfer 1 token to account `0xa55a` and pay a fee of 0.1 token
+* The parameters for the signed transfers are:
+  * `from` = `0xa33a`
+  * `to` = `0xa55a`
+  * `tokens` = `1` or the natural number 1000000000000000000 with 18 decimal places
+  * `fee` = `0.01` or the natural number 10000000000000000 with 18 decimal places
+  * `nonce` = `0` - this is an incrementing number for each new transaction
+* The account `0xa33a` creates a hash of the parameters above, and in addition includes:
+  * `functionSig` = `0x7532eaac` - this is the same function signature scheme that Ethereum uses
+  * token contract address = `0xa1b42c6ad2e1d69eee56532557480c20697aa3b5`
+* The hash of the parameters is calculated using `var signedTransferHash = token.signedTransferHash(from, to, tokens, fee, nonce);`
 
-  The resulting hash is `0xc7e05a63c8b39acaae9a4c0e438f00e30eb69e91d2a960f9dedaea03f662177f`
+  Here is the function:
+
+      function signedTransferHash(address tokenOwner, address to, uint tokens,
+          uint fee, uint nonce) public view returns (bytes32 hash)
+      {
+          hash = keccak256(signedTransferSig, address(this), tokenOwner, to,
+              tokens, fee, nonce);
+      }
+
+* The hash of the parameters can also be manually constructed using:
+
+  > var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
+
+* Any small difference in the parameters will result in a totally different hash
+* In this example, the hash is computed to be `0x8ffe42d6c4bbfb872eed6996414cf6d0084a701c0b8681573c8f75989ee1ce0a`
 * The token owner `0xa33a` then uses their private key to sign the hash computed in the previous step using the function
   `var sig = web3.eth.sign(from, signedTransferHash);`.
 
-  The resulting signature is `sig=0xb9195151b7cc53992814d0dc0f15be36f56a0f7e79d0a37f04f2cb4b309320165abdd0eefb5017859e91c84f3225aec2e387daa384de496c71cea8b3e99ecf0c1c`
+  The resulting signature is `sig=0xd563e5d5e0ace9e2f6ebc11fd7f2888a9289cdf9e2e44a148a72a14cc3a77c445e35d8abdbd499779c7d2d5081785beee092de14c7dcc6dc6e2aa653f3b4d1d51b`
 
-  This signature can be broken up into 3 parts, r (`sigR`), s (`sigS`) and v (`sigV`):
-
-  * `sigV=0x1c` (last 2 hex chars of signature)
-  * `sigR=0xb9195151b7cc53992814d0dc0f15be36f56a0f7e79d0a37f04f2cb4b30932016` (first 64 hex chars of signature)
-  * `sigS=0x5abdd0eefb5017859e91c84f3225aec2e387daa384de496c71cea8b3e99ecf0c` (second 64 hex chars of signature)
-  
-  (Note that the methods now use the signature instead of [v, r, s]). 
-
-  The token owner then provides the data `from`, `to`, `tokens`, `fee`, `sigV`, `sigR` and `sigS` plus the function signature and the token
-  contract address to the service provider `0xa11a`
-* The service provider `0xa11a` can execute the function `var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, v, r, s);` to check whether the
-  following transaction will succeed or fail. In this case, the check returned `signedTransfer1Check=0 Success`
-* The service provider `0xa11a` then executes the function `var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, v, r, s, {from: contractOwnerAccount, gas: 200000});`
-  and supplies the `from`, `to`, `tokens`, `fee`, `nonce`, `v`, `r` and `s` values originally provided by the token owner `0xa33a`
-* The BTTS smart contract function `signedTransfer(...)` will recover the original signing account `0xa33a` from the `v`, `r` and `s` and compare this to
+  The token owner then provides the data `from`, `to`, `tokens`, `fee`, `sig` plus the function signature and the token contract address to the service provider `0xa11a`
+* The service provider `0xa11a` can then execute the function `var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig, feeAccount);` to check
+  whether the `signedTransfer(...)` function will succeed or fail if executed. In this case, the check returned `signedTransfer1Check=0 Success`
+* The service provider `0xa11a` then executes the function `var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, feeAccount, {from: contractOwnerAccount, gas: 200000});`
+  and supplies the `from`, `to`, `tokens`, `fee`, `nonce`, `sig` values originally provided by the token owner `0xa33a`. The service provider also nominates their `feeAccount`
+* The BTTS smart contract function `signedTransfer(...)` will recover the original signing account `0xa33a` from the hash of the parameters and supplied signature, and compare this to
   the `from` account. If the `from` address matches the signing account `0xa33a`, the transfer of tokens can proceed.
 
   The relevant lines of code from the BTTS smart contract function `signedTransfer(...)` follow:
 
       // Check owner is the message signer
       bytes32 hash = signedTransferHash(owner, to, tokens, fee, nonce);
-      require(owner == ecrecover(keccak256(signingPrefix, hash), v, r, s));
+      require(owner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
 
-  If the `require(...)` check passes, the BTTS smart contract function `signedTransfer(...)` will execute the transfers. Otherwise the
-  transfer fails
+  If `ecrecoverFromSig(...)` returnes the same account as the token holder, the `require(...)` check passes. BTTS smart contract function `signedTransfer(...)` will continue executing
+  the transfers. If any of the parameters are not exactly the same parameters using the the hashing and signing process, `ecrecoverFromSig(...)` will return a different account to 
+  the token holder account.
 
 * 1 token is transferred from the owner `0xa33a` to the account `0xa55a` - the log of the transfer follows:
 
-      Transfer 0 #2821: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
+      Transfer 0 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
 * 0.01 tokens is transferred from the owner `0xa33a` to the service provider `0xa11a` to compensate the service provider for the 
   ETH transaction fee `costETH=0.001749906 costUSD=0.66564674334` - the log of the transfer follows:
 
-      Transfer 1 #2821: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=0.01
+      Transfer 1 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.01
 
 <br />
 
@@ -123,6 +135,16 @@ Some references on the use of signatures and the `ecrecover(...)` function:
 * [Ethereum ecrecover signature verification and encryption](https://ethereum.stackexchange.com/questions/2256/ethereum-ecrecover-signature-verification-and-encryption)
 * [workflow on signing a string with private key, followed by signature verification with public key](https://ethereum.stackexchange.com/questions/1777/workflow-on-signing-a-string-with-private-key-followed-by-signature-verificatio)
 * [Totally baffled by ecrecover](https://ethereum.stackexchange.com/questions/15364/totally-baffled-by-ecrecover)
+
+In Solidity, the `ecrecover(....)` function takes the signature as 3 separate parts - r (`sigR`), s (`sigS`) and v (`sigV`).
+
+The signature `0xd563e5d5e0ace9e2f6ebc11fd7f2888a9289cdf9e2e44a148a72a14cc3a77c445e35d8abdbd499779c7d2d5081785beee092de14c7dcc6dc6e2aa653f3b4d1d51b` can be broken into the 3 parts:
+
+  * `sigV=0x1b` (last 2 hex chars of signature)
+  * `sigR=d563e5d5e0ace9e2f6ebc11fd7f2888a9289cdf9e2e44a148a72a14cc3a77c44` (first 64 hex chars of signature)
+  * `sigS=5e35d8abdbd499779c7d2d5081785beee092de14c7dcc6dc6e2aa653f3b4d1d5` (second 64 hex chars of signature)
+  
+The `ecrecoverFromSig(...)` is supplied with the full length signature, splits the full length signature into the component [v, r, s] and calls the `ecrecover(...)` function
 
 <br />
 
@@ -135,6 +157,7 @@ var from = account3;
 var to = account5;
 var tokens = new BigNumber("1000000000000000000");
 var fee = new BigNumber("10000000000000000");
+var feeToken = token;
 var nonce = "0";
 // -----------------------------------------------------------------------------
 
@@ -148,17 +171,11 @@ var signedTransferHash = token.signedTransferHash(from, to, tokens, fee, nonce);
 console.log("RESULT: signedTransferHash=" + signedTransferHash);
 var sig = web3.eth.sign(from, signedTransferHash);
 console.log("RESULT: sig=" + sig);
-var r = getSigR(sig);
-var s = getSigS(sig);
-var v = getSigV(sig);
-console.log("RESULT: sigR=" + r);
-console.log("RESULT: sigS=" + s);
-console.log("RESULT: sigV=" + v);
 
-var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, v, r, s);
+var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig, feeAccount);
 console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check + " " + signedTransferCheckResultString(signedTransfer1Check));
-var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, v, r, s,
-  {from: contractOwnerAccount, gas: 200000});
+var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, feeAccount, 
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printTxData("signedTransfer1Tx", signedTransfer1Tx);
@@ -179,40 +196,42 @@ to=0xa55a151eb00fded1634d27d1127b4be4627079ea
 tokens=1000000000000000000 1
 fee=10000000000000000 0.01
 nonce=0
-signedTransferHash=0xc7e05a63c8b39acaae9a4c0e438f00e30eb69e91d2a960f9dedaea03f662177f
-sig=0xb9195151b7cc53992814d0dc0f15be36f56a0f7e79d0a37f04f2cb4b309320165abdd0eefb5017859e91c84f3225aec2e387daa384de496c71cea8b3e99ecf0c1c
-sigR=0xb9195151b7cc53992814d0dc0f15be36f56a0f7e79d0a37f04f2cb4b30932016
-sigS=0x5abdd0eefb5017859e91c84f3225aec2e387daa384de496c71cea8b3e99ecf0c
-sigV=0x1c
+signedTransferHash=0x8ffe42d6c4bbfb872eed6996414cf6d0084a701c0b8681573c8f75989ee1ce0a
+sig=0xd563e5d5e0ace9e2f6ebc11fd7f2888a9289cdf9e2e44a148a72a14cc3a77c445e35d8abdbd499779c7d2d5081785beee092de14c7dcc6dc6e2aa653f3b4d1d51b
 signedTransfer1Check=0 Success
-signedTransfer1Tx status=0x1 gas=200000 gasUsed=97217 costETH=0.001749906 costUSD=0.66564674334 @ ETH/USD=380.39 gasPrice=18000000000 block=164 txIx=0 txId=0x49b3881b237f3b0e87acc5e2cf49e73674bf5139e79951ec61a370cfaa82d300
+signedTransfer1Tx status=0x1 Success gas=200000 gasUsed=99336 costETH=0.000099336 costUSD=0.030567773256 @ ETH/USD=307.721 gasPrice=1 gwei block=166 txIx=0 txId=0xce11bafd68777e44964716daed0801948a0466b22c549f1fea7a1cae47dcb4c3
  # Account                                             EtherBalanceChange                          Token Name
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
- 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       63.063927864000000000           0.000000000000000000 Account #0 - Miner
- 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.063927864000000000    10000000.010000000000000000 Account #1 - Contract Owner
+ 0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       84.010982023000000000           0.000000000000000000 Account #0 - Miner
+ 1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.010982023000000000    10000000.000000000000000000 Account #1 - Contract Owner
  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
- 3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
+ 3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.980000000000000000 Account #3
  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
- 8 0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63        0.000000000000000000           0.000000000000000000 Lib SafeMath
- 9 0x1aa3ebfd892954f32a37b698673505d1dafef4f5        0.000000000000000000           0.000000000000000000 Token 'TST' 'Test'
+ 8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.020000000000000000 Fee Account
+ 9 0x545b861c70089afcbee7c3e8ff00e1ab9e5be210        0.000000000000000000           0.000000000000000000 Lib SafeMath
+10 0xb3c7d39fdd2e7dcd02b660b1a317ae06c7c915cc        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+11 0xa1b42c6ad2e1d69eee56532557480c20697aa3b5        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
                                                                              12000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
 PASS Signed Transfers - Signed Transfer 
-tokenContractAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5
-token.symbol=TST
-token.name=Test
+tokenContractAddress=0xa1b42c6ad2e1d69eee56532557480c20697aa3b5
+token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
+token.newOwner=0x0000000000000000000000000000000000000000
+token.symbol=GZETest
+token.name=GazeCoin Test
 token.decimals=18
 token.decimalsFactor=1000000000000000000
 token.totalSupply=12000000
 token.transferable=true
 token.mintable=false
-Transfer 0 #164: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
-Transfer 1 #164: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=0.01
+token.minter=0x0000000000000000000000000000000000000000
+Transfer 0 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
+Transfer 1 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.01
 ```
 
 <br />
