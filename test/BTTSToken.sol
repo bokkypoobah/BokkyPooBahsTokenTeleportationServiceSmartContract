@@ -12,23 +12,61 @@ pragma solidity ^0.4.17;
 
 
 // ----------------------------------------------------------------------------
+// Safe maths, borrowed from OpenZeppelin
+// ----------------------------------------------------------------------------
+library SafeMath {
+
+    // ------------------------------------------------------------------------
+    // Add a number to another number, checking for overflows
+    // ------------------------------------------------------------------------
+    function add(uint a, uint b) public pure returns (uint) {
+        uint c = a + b;
+        require(c >= a);
+        return c;
+    }
+
+    // ------------------------------------------------------------------------
+    // Subtract a number from another number, checking for underflows
+    // ------------------------------------------------------------------------
+    function sub(uint a, uint b) public pure returns (uint) {
+        require(b <= a);
+        return a - b;
+    }
+
+    // ------------------------------------------------------------------------
+    // Multiply two numbers
+    // ------------------------------------------------------------------------
+    function mul(uint a, uint b) public pure returns (uint) {
+        uint c = a * b;
+        require(a == 0 || c / a == b);
+        return c;
+    }
+
+    // ------------------------------------------------------------------------
+    // Divide one number by another number
+    // ------------------------------------------------------------------------
+    function div(uint a, uint b) public pure returns (uint) {
+        require(b > 0);
+        uint c = a / b;
+        return c;
+    }
+}
+
+
+// ----------------------------------------------------------------------------
 // ERC Token Standard #20 Interface
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
 // ----------------------------------------------------------------------------
 contract ERC20Interface {
     uint public totalSupply;
-    function balanceOf(address tokenOwner)
-        public constant returns (uint balance);
+    function balanceOf(address tokenOwner) public constant returns (uint balance);
     function transfer(address to, uint tokens) public returns (bool success);
-    function transferFrom(address from, address to, uint tokens)
-        public returns (bool success);
-    function approve(address spender, uint tokens)
-        public returns (bool success);
-    function allowance(address tokenOwner, address spender)
-        public constant returns (uint remaining);
+    function transferFrom(address from, address to, uint tokens) public returns (bool success);
+    function approve(address spender, uint tokens) public returns (bool success);
+    function allowance(address tokenOwner, address spender) public constant returns (uint remaining);
+
     event Transfer(address indexed from, address indexed to, uint tokens);
-    event Approval(address indexed tokenOwner, address indexed spender,
-        uint tokens);
+    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 }
 
 
@@ -308,48 +346,6 @@ contract Admin is Owned {
     }
 }
 */
-
-// ----------------------------------------------------------------------------
-// Safe maths, borrowed from OpenZeppelin
-// ----------------------------------------------------------------------------
-library SafeMath {
-
-    // ------------------------------------------------------------------------
-    // Add a number to another number, checking for overflows
-    // ------------------------------------------------------------------------
-    function add(uint a, uint b) public pure returns (uint) {
-        uint c = a + b;
-        require(c >= a);
-        return c;
-    }
-
-    // ------------------------------------------------------------------------
-    // Subtract a number from another number, checking for underflows
-    // ------------------------------------------------------------------------
-    function sub(uint a, uint b) public pure returns (uint) {
-        require(b <= a);
-        return a - b;
-    }
-
-    // ------------------------------------------------------------------------
-    // Multiply two numbers
-    // ------------------------------------------------------------------------
-    function mul(uint a, uint b) public pure returns (uint) {
-        uint c = a * b;
-        require(a == 0 || c / a == b);
-        return c;
-    }
-
-    // ------------------------------------------------------------------------
-    // Divide one number by another number
-    // ------------------------------------------------------------------------
-    function div(uint a, uint b) public pure returns (uint) {
-        require(b > 0);
-        uint c = a / b;
-        return c;
-    }
-}
-
 
 // ----------------------------------------------------------------------------
 // ERC20 Token, with the addition of symbol, name and decimals and assisted
