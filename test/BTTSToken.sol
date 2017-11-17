@@ -67,6 +67,7 @@ contract BTTSBase {
         OverflowError                      // 9 Overflow error
     }
 
+
     // ------------------------------------------------------------------------
     // ecrecover from a signature rather than the signature in parts [v, r, s]
     // 
@@ -340,7 +341,7 @@ library SafeMath {
     }
 
     // ------------------------------------------------------------------------
-    // Multiply one number by another number
+    // Divide one number by another number
     // ------------------------------------------------------------------------
     function div(uint a, uint b) public pure returns (uint) {
         require(b > 0);
@@ -473,9 +474,8 @@ contract ERC20Token is ERC20Interface, Owned {
         // Perform the tranfers
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
-
-        // Log the event
         Transfer(msg.sender, to, tokens);
+
         return true;
     }
 
@@ -516,9 +516,8 @@ contract ERC20Token is ERC20Interface, Owned {
         balances[from] = balances[from].sub(tokens);
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
-
-        // Log the event
         Transfer(from, to, tokens);
+
         return true;
     }
 
@@ -545,15 +544,14 @@ contract ERC20Token is ERC20Interface, Owned {
         // Check we are in the minting stage
         require(mintable);
 
-        // Only the minter or the owner can 
+        // Only the minter or the owner can mint
         require(msg.sender == minter || msg.sender == owner);
 
         // Mint the tokens
         balances[to] = balances[to].add(tokens);
         totalSupply = totalSupply.add(tokens);
-
-        // Log the event
         Transfer(0x0, to, tokens);
+
         return true;
     }
 
@@ -609,12 +607,6 @@ contract BTTSToken is ERC20Token, BTTSInterface {
 
 
     // ------------------------------------------------------------------------
-    // Parent - account that originally deployed this contract
-    // ------------------------------------------------------------------------
-    address parent;
-
-
-    // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
     function BTTSToken(address _owner, string _symbol, string _name,
@@ -622,7 +614,6 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         bool _transferable) public ERC20Token(_owner, _symbol, _name,
         _decimals, _initialSupply, _mintable, _transferable)
     {
-        parent = msg.sender;
     }
 
 
@@ -702,26 +693,6 @@ contract BTTSToken is ERC20Token, BTTSInterface {
         balances[tokenOwner] = balances[tokenOwner].sub(fee);
         balances[feeAccount] = balances[feeAccount].add(fee);
         Transfer(tokenOwner, feeAccount, fee);
-
-        return true;
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Execute a transfer on behalf of the user who signed the transfer
-    // message
-    // ------------------------------------------------------------------------
-    function transferFee(address from, address to, uint fee)
-        public returns (bool success)
-    {
-        require(transferable);
-        require(BTTSTokenFactory(parent).bttsVersion() == bttsVersion);
-        require(parent == msg.sender);
-
-        require(balances[from] >= fee);
-        balances[from] = balances[from].sub(fee);
-        balances[to] = balances[to].add(fee);
-        Transfer(from, to, fee);
 
         return true;
     }
@@ -899,31 +870,12 @@ contract BTTSToken is ERC20Token, BTTSInterface {
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
-contract BTTSTokenFactory is Owned, BTTSBase {
-
-    // ------------------------------------------------------------------------
-    // Constants used for recovery
-    //
-    // signedDeployBTTSTokenContractSig(...) function signature
-    // web3.sha3("signedDeployBTTSTokenContract(address,string,string,uint8,uint256,bool,bool,uint256,address,uint256,bytes,address)").substring(0,10)
-    // => "0xe6ccb844"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedDeployBTTSTokenContractSig = "\xe6\xcc\xb8\x44";
-
-    // ------------------------------------------------------------------------
-    // Executed signed calls
-    // ------------------------------------------------------------------------
-    mapping(address => mapping(bytes32 => bool)) public executed;
+contract BTTSTokenFactory is Owned {
 
     // ------------------------------------------------------------------------
     // Internal data
     // ------------------------------------------------------------------------
     mapping(address => bool) _verify;
-
-    // ------------------------------------------------------------------------
-    // Base token for fee payment
-    // ------------------------------------------------------------------------
-    ERC20Interface public baseToken;
 
     // ------------------------------------------------------------------------
     // Event
@@ -938,14 +890,6 @@ contract BTTSTokenFactory is Owned, BTTSBase {
     // Constructor
     // ------------------------------------------------------------------------
     function BTTSTokenFactory() public Owned(msg.sender) {
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Set base token
-    // ------------------------------------------------------------------------
-    function setBaseToken(ERC20Interface _baseToken) public {
-        baseToken = _baseToken;
     }
 
 
@@ -978,24 +922,6 @@ contract BTTSTokenFactory is Owned, BTTSBase {
             mintable     = t.mintable();
             transferable = t.transferable();
         }
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Has a signed execution been executed?
-    // ------------------------------------------------------------------------
-    function alreadyExecuted(address deployer, bytes32 hash)
-        public view returns (bool)
-    {
-        return executed[deployer][hash];
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Record a signed execution as having been executed
-    // ------------------------------------------------------------------------
-    function recordAsExecuted(address deployer, bytes32 hash) internal {
-        executed[deployer][hash] = true;
     }
 
 
@@ -1048,133 +974,7 @@ contract BTTSTokenFactory is Owned, BTTSBase {
             transferable);
         // Record that this factory created the trader
         _verify[bttsTokenAddress] = true;
-        // BTTSToken(bttsTokenAddress).transfer(msg.sender,
-        //     BTTSToken(bttsTokenAddress).balanceOf(address(this))); 
-        // // Transfer ownership to the account that deployed the contract
-        // BTTSToken(bttsTokenAddress).transferOwnershipImmediately(msg.sender);
         BTTSTokenListing(msg.sender, bttsTokenAddress, symbol, name, decimals, 
-            initialSupply, mintable, transferable);
-    }
-
-
-    // ------------------------------------------------------------------------
-    // signedDeployBTTSTokenContractHash functions
-    //
-    // Generate the hash used to create the signed
-    //   deployBTTSTokenContractHash message
-    // ------------------------------------------------------------------------
-    function signedDeployBTTSTokenContractHash(
-        string symbol,
-        string name,
-        uint8 decimals, 
-        uint initialSupply,
-        bool mintable,
-        bool transferable,
-        uint fee,
-        address feeToken,
-        uint nonce
-    ) public view returns (bytes32 hash) {
-        hash = keccak256(signedDeployBTTSTokenContractSig, address(this),
-            symbol, name, decimals, initialSupply, mintable, transferable,
-            fee, feeToken, nonce);
-    }
-
-    // ------------------------------------------------------------------------
-    // Check whether a signedDeployBTTSTokenContractHash can be executed on
-    // behalf of the signing account of the message
-    // ------------------------------------------------------------------------
-    function signedDeployBTTSTokenContractCheck(
-        address deployer,
-        string symbol,
-        string name,
-        uint8 decimals, 
-        uint initialSupply,
-        bool mintable,
-        bool transferable,
-        uint fee,
-        address feeToken,
-        uint nonce,
-        bytes sig)
-        public constant returns (CheckResult result)
-    {
-        // Check factory base token has been set
-        if (feeToken == 0x0) return CheckResult.NotExecutable;
-
-        // Check deployer is the message signer
-        bytes32 hash = signedDeployBTTSTokenContractHash(symbol, name, decimals,
-            initialSupply, mintable, transferable, fee, feeToken, nonce);
-        if (deployer != ecrecoverFromSig(keccak256(signingPrefix, hash), sig))
-            return CheckResult.SignerMismatch;
-
-        // Message already executed?
-        if (alreadyExecuted(deployer, hash)) return CheckResult.AlreadyExecuted;
-
-        // // Sufficient approved tokens to pay for fees?
-        // if (baseToken.allowance(deployer, address(this)) < fee)
-        //     return CheckResult.InsufficientApprovedTokensForFees;
-
-        // Sufficient tokens to pay for fees?
-        if (BTTSToken(feeToken).balanceOf(deployer) < fee)
-            return CheckResult.InsufficientTokensForFees;
-
-        return CheckResult.Success;
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Execute a transferFrom on behalf of the user who signed the transferFrom 
-    // message
-    // ------------------------------------------------------------------------
-    function signedDeployBTTSTokenContract(
-        address deployer,
-        string symbol,
-        string name,
-        uint8 decimals, 
-        uint initialSupply,
-        bool mintable,
-        bool transferable,
-        uint fee,
-        address feeToken,
-        uint nonce,
-        bytes sig,
-        address feeAccount)
-        public returns (address bttsTokenAddress)
-    {
-        require(feeToken != 0x0);
-
-        // Check spender is the message signer
-        bytes32 hash = signedDeployBTTSTokenContractHash(symbol, name,
-          decimals, initialSupply, mintable, transferable, fee, feeToken, nonce);
-        require(deployer == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
-
-        // Check message not already executed
-        // require(!executed[deployer][hash]);
-        require(!alreadyExecuted(deployer, hash));
-        // executed[deployer][hash] = true;
-        recordAsExecuted(deployer, hash);
-
-        // Sufficient approved tokens to pay for fees?
-        // require(baseToken.allowance(deployer, address(this)) >= fee);
-        // Sufficient tokens to pay for fees?
-        // require(baseToken.balanceOf(deployer) >= fee);
-
-        BTTSToken(feeToken).transferFee(deployer, feeAccount, fee);
-
-        bttsTokenAddress = new BTTSToken(
-            deployer,
-            symbol,
-            name,
-            decimals,
-            initialSupply,
-            mintable,
-            transferable);
-        // Record that this factory created the trader
-        _verify[bttsTokenAddress] = true;
-        // ERC20Interface(bttsTokenAddress).transfer(deployer,
-        //     BTTSToken(bttsTokenAddress).balanceOf(address(this))); 
-        // Transfer ownership to the account that deployed the contract
-        // BTTSToken(bttsTokenAddress).transferOwnershipImmediately(deployer);
-        BTTSTokenListing(deployer, bttsTokenAddress, symbol, name, decimals, 
             initialSupply, mintable, transferable);
     }
 

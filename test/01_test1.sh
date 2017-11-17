@@ -228,21 +228,6 @@ console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------
-var setBaseTokenMessage = "Set Base Token to " + token.symbol();
-// -----------------------------------------------------------------------------
-console.log("RESULT: " + setBaseTokenMessage);
-var setBaseToken1Tx = factory.setBaseToken(tokenAddress, {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
-printTxData("setBaseToken1Tx", setBaseToken1Tx);
-printBalances();
-failIfTxStatusError(setBaseToken1Tx, setBaseTokenMessage);
-printFactoryContractDetails();
-printTokenContractDetails();
-console.log("RESULT: ");
-
-
-// -----------------------------------------------------------------------------
 var mintTokensMessage = "Mint Tokens";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + mintTokensMessage);
@@ -363,116 +348,6 @@ function getSigV(sig) {
     return "0x" + sig.substring(128, 130)
   } 
 }
-
-
-if (0) {
-// -----------------------------------------------------------------------------
-var signedApproveMessage = "Signed Approve For BTTS Token Deployment";
-var functionSig = web3.sha3("signedApprove(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
-var tokenContractAddress = tokenAddress;
-var owner = account4;
-var spender = factoryAddress;
-var tokens = "50000000000000000000";
-var fee = "500000000000000000";
-var nonce = "0";
-// -----------------------------------------------------------------------------
-
-var signedApproveHash = token.signedApproveHash(tokenContractAddress,
-  owner, spender, tokens, fee);
-console.log("RESULT: signedApproveHash=" + signedApproveHash);
-
-// -----------------------------------------------------------------------------
-console.log("RESULT: " + signedApproveMessage);
-console.log("RESULT: functionSig=" + functionSig + " (should be '0xb310efc3')");
-
-var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(owner) + addressToHex(spender) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
-console.log("RESULT: hashOf=" + hashOf);
-var hash = web3.sha3(hashOf, {encoding: 'hex'});
-console.log("RESULT: hash=" + hash);
-var sig = web3.eth.sign(account4, hash);
-
-// var sig = web3.eth.sign(account4, signedApproveHash);
-console.log("RESULT: sig=" + sig);
-
-var signedApprove1Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig, feeAccount);
-console.log("RESULT: signedApprove1Check=" + signedApprove1Check + " " + signedTransferCheckResultString(signedApprove1Check));
-var signedApprove1Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig, feeAccount,
-  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
-var signedApprove2Check = token.signedApproveCheck(owner, spender, tokens, fee, nonce, sig, feeAccount);
-console.log("RESULT: signedApprove2Check=" + signedApprove2Check + " " + signedTransferCheckResultString(signedApprove2Check));
-var signedApprove2Tx = token.signedApprove(owner, spender, tokens, fee, nonce, sig, feeAccount,
-  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
-printTxData("signedApprove1Tx", signedApprove1Tx);
-printTxData("signedApprove2Tx", signedApprove2Tx);
-printBalances();
-failIfTxStatusError(signedApprove1Tx, signedApproveMessage + " - Signed Approve ");
-passIfTxStatusError(signedApprove2Tx, signedApproveMessage + " - Duplicated Signed Approve - Expecting Failure");
-printTokenContractDetails();
-console.log("RESULT: ");
-}
-
-
-// -----------------------------------------------------------------------------
-var signedDeployTokenMessage = "Signed Deployment of BTTS Token";
-var functionSig = web3.sha3("signedDeployToken(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10);
-// var tokenContractAddress = tokenAddress;
-// var from = account3;
-// var to = account5;
-// var tokens = new BigNumber("1000000000000000000");
-var deployer = account3;
-var symbol = "TestSignedDeploy";
-var name = "Signed Deployed BTTS Token";
-var decimals = 18;
-var initialSupply = new BigNumber("1000000000000000000000000");
-var mintable = false;
-var transferable = true;
-var fee = new BigNumber("10000000000000000");
-var feeToken = tokenAddress;
-var nonce = "0";
-// -----------------------------------------------------------------------------
-
-// var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + addressToHex(feeToken) + uint256ToHex(nonce);
-// console.log("RESULT: hashOf=" + hashOf);
-// var hash = web3.sha3(hashOf, {encoding: 'hex'});
-// console.log("RESULT: hash=" + hash);
-
-// -----------------------------------------------------------------------------
-console.log("RESULT: " + signedDeployTokenMessage);
-console.log("RESULT: functionSig=" + functionSig + " (should be '0xa64a9365')");
-
-// console.log("RESULT: from=" + from);
-// console.log("RESULT: to=" + to);
-// console.log("RESULT: tokens=" + tokens + " " + tokens.shift(-decimals));
-console.log("RESULT: symbol=" + symbol);
-console.log("RESULT: name=" + name);
-console.log("RESULT: decimals=" + decimals);
-console.log("RESULT: initialSupply=" + initialSupply);
-console.log("RESULT: mintable=" + mintable);
-console.log("RESULT: transferable=" + transferable);
-console.log("RESULT: fee=" + fee + " " + fee.shift(-decimals));
-console.log("RESULT: feeToken=" + feeToken);
-console.log("RESULT: nonce=" + nonce);
-var signedDeployTokenHash = factory.signedDeployBTTSTokenContractHash(symbol, name, decimals, initialSupply, mintable, transferable, fee, feeToken, nonce);
-console.log("RESULT: signedDeployTokenHash=" + signedDeployTokenHash);
-var sig = web3.eth.sign(deployer, signedDeployTokenHash);
-console.log("RESULT: sig=" + sig);
-
-var signedDeployToken1Check = factory.signedDeployBTTSTokenContractCheck(deployer, symbol, name, decimals, initialSupply, mintable, transferable, fee, feeToken, nonce, sig);
-console.log("RESULT: signedDeployToken1Check=" + signedDeployToken1Check + " " + signedTransferCheckResultString(signedDeployToken1Check));
-var signedDeployToken1Tx = factory.signedDeployBTTSTokenContract(deployer, symbol, name, decimals, initialSupply, mintable, transferable, fee, feeToken, nonce, sig, feeAccount,
-  {from: contractOwnerAccount, gas:64000000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
-printTxData("signedDeployToken1Tx", signedDeployToken1Tx);
-printBalances();
-failIfTxStatusError(signedDeployToken1Tx, signedDeployTokenMessage);
-printFactoryContractDetails();
-printTokenContractDetails();
-console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------

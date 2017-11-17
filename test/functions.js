@@ -332,7 +332,6 @@ function printFactoryContractDetails() {
     var contract = eth.contract(factoryContractAbi).at(factoryContractAddress);
     console.log("RESULT: factory.owner=" + contract.owner());
     console.log("RESULT: factory.newOwner=" + contract.newOwner());
-    console.log("RESULT: factory.baseToken=" + contract.baseToken());
 
     var latestBlock = eth.blockNumber;
     var i;
