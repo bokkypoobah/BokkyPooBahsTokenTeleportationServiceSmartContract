@@ -58,15 +58,28 @@ library SafeMath {
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
 // ----------------------------------------------------------------------------
 contract ERC20Interface {
-    uint public totalSupply;
+    function totalSupply() public constant returns (uint);
     function balanceOf(address tokenOwner) public constant returns (uint balance);
     function transfer(address to, uint tokens) public returns (bool success);
     function transferFrom(address from, address to, uint tokens) public returns (bool success);
     function approve(address spender, uint tokens) public returns (bool success);
     function allowance(address tokenOwner, address spender) public constant returns (uint remaining);
 
+    // The following function is an addition over the ERC20 standard
+    function approveAndCall(address spender, uint tokens, bytes data) public returns (bool success);
+
     event Transfer(address indexed from, address indexed to, uint tokens);
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
+}
+
+
+// ----------------------------------------------------------------------------
+// Contract function to receive approval and execute function in one call
+//
+// Borrowed from MiniMeToken
+// ----------------------------------------------------------------------------
+contract ApproveAndCallFallBack {
+    function receiveApproval(address from, uint256 tokens, address token, bytes data) public;
 }
 
 
@@ -95,14 +108,13 @@ contract BTTSBase {
     enum CheckResult {
         Success,                           // 0 Success
         NotTransferable,                   // 1 Tokens not transferable yet
-        NotExecutable,                     // 2 Execution will fail
-        SignerMismatch,                    // 3 Mismatch in signing account
-        AlreadyExecuted,                   // 4 Transfer already executed
-        InsufficientApprovedTokens,        // 5 Insufficient approved tokens
-        InsufficientApprovedTokensForFees, // 6 Insufficient approved tokens for fees
-        InsufficientTokens,                // 7 Insufficient tokens
-        InsufficientTokensForFees,         // 8 Insufficient tokens for fees
-        OverflowError                      // 9 Overflow error
+        SignerMismatch,                    // 2 Mismatch in signing account
+        AlreadyExecuted,                   // 3 Transfer already executed
+        InsufficientApprovedTokens,        // 4 Insufficient approved tokens
+        InsufficientApprovedTokensForFees, // 5 Insufficient approved tokens for fees
+        InsufficientTokens,                // 6 Insufficient tokens
+        InsufficientTokensForFees,         // 7 Insufficient tokens for fees
+        OverflowError                      // 8 Overflow error
     }
 
 
@@ -145,6 +157,35 @@ contract BTTSBase {
 
         return ecrecover(hash, v, r, s);
     }
+
+
+    // ------------------------------------------------------------------------
+    // Get CheckResult message
+    // ------------------------------------------------------------------------
+    function getCheckResultMessage(CheckResult result) public pure
+        returns (string) {
+        if (result == CheckResult.Success) {
+            return "Success";
+        } else if (result == CheckResult.NotTransferable) {
+            return "Tokens not transferable yet";
+        } else if (result == CheckResult.SignerMismatch) {
+            return "Mismatch in signing account";
+        } else if (result == CheckResult.AlreadyExecuted) {
+            return "Transfer already executed";
+        } else if (result == CheckResult.InsufficientApprovedTokens) {
+            return "Insufficient approved tokens";
+        } else if (result == CheckResult.InsufficientApprovedTokensForFees) {
+            return "Insufficient approved tokens for fees";
+        } else if (result == CheckResult.InsufficientTokens) {
+            return "Insufficient tokens";
+        } else if (result == CheckResult.InsufficientTokensForFees) {
+            return "Insufficient tokens for fees";
+        } else if (result == CheckResult.OverflowError) {
+            return "Overflow error";
+        } else {
+            return "Unknown error";
+        }
+    }
 }
 
 
@@ -155,23 +196,57 @@ contract BTTSBase {
 // - signedTransfer(...)
 // - signedApprove(...)
 // - signedTransferFrom(...)
+// - signedApproveAndCall(...)
 //
 // Each of these signed message functions have a helper to generate the signed
 // message hash:
 // - signedTransferHash(...)
 // - signedApproveHash(...)
 // - signedTransferFromHash(...)
+// - signedApproveAndCallHash(...)
 //
-// Each of these signed message functions have a help to check the status of
-// the signed message before the signed message functions are submitted for
-// execution:
+// Each of these signed message functions have a helper function to check
+// the status of the signed message before the signed message functions are
+// submitted for execution:
 // - signedTransferCheck(...)
 // - signedApproveCheck(...)
 // - signedTransferFromCheck(...)
+// - signedApproveAndCallCheck(...)
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
 contract BTTSInterface is BTTSBase {
+
+    // ------------------------------------------------------------------------
+    // Constants used for recovery
+    //
+    // signedTransfer(...) function signature
+    // web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
+    // => "0x7532eaac"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
+
+    // ------------------------------------------------------------------------
+    // signedApprove(...) function signature
+    // web3.sha3("signedApprove(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
+    // => "0xe9afa7a1"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedApproveSig = "\xe9\xaf\xa7\xa1";
+
+    // ------------------------------------------------------------------------
+    // signedTransferFrom(...) function signature
+    // web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
+    // => "0x344bcc7d"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedTransferFromSig = "\x34\x4b\xcc\x7d";
+
+    // ------------------------------------------------------------------------
+    // signedApproveAndCall(...) function signature
+    // web3.sha3("signedApproveAndCall(address,address,uint256,bytes,uint256,uint256,bytes,address)").substring(0,10)
+    // => "0xf16f9b53"
+    // ------------------------------------------------------------------------
+    bytes4 public constant signedApproveAndCallSig = "\xf1\x6f\x9b\x53";
+
 
     // ------------------------------------------------------------------------
     // signedTransfer functions
@@ -245,6 +320,31 @@ contract BTTSInterface is BTTSBase {
     function signedTransferFrom(address spender, address from, address to,
         uint tokens, uint fee, uint nonce, bytes sig, address feeAccount)
         public returns (bool success);
+
+
+    // ------------------------------------------------------------------------
+    // signedApproveAndCall functions
+    //
+    // Generate the hash used to create the signed approve message
+    // ------------------------------------------------------------------------
+    function signedApproveAndCallHash(address tokenOwner, address spender,
+        uint tokens, bytes data, uint fee, uint nonce)
+        public view returns (bytes32 hash);
+
+    // ------------------------------------------------------------------------
+    // Check whether an approve can be executed on behalf of the user who
+    // signed the approve message
+    // ------------------------------------------------------------------------
+    function signedApproveAndCallCheck(address tokenOwner, address spender,
+        uint tokens, bytes data, uint fee, uint nonce, bytes sig,
+        address feeAccount) public constant returns (CheckResult result);
+
+    // ------------------------------------------------------------------------
+    // Execute an approve on behalf of the user who signed the approve message
+    // ------------------------------------------------------------------------
+    function signedApproveAndCall(address tokenOwner, address spender,
+        uint tokens, bytes data, uint fee, uint nonce, bytes sig,
+        address feeAccount) public returns (bool success);
 }
 
 
@@ -288,7 +388,7 @@ contract Owned {
         require(msg.sender == newOwner);
         OwnershipTransferred(owner, newOwner);
         owner = newOwner;
-        newOwner = 0x0;
+        newOwner = address(0);
     }
 
     // ------------------------------------------------------------------------
@@ -297,7 +397,7 @@ contract Owned {
     function transferOwnershipImmediately(address _newOwner) public onlyOwner {
         OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
-        newOwner = 0x0;
+        newOwner = address(0);
     }
 
     event OwnershipTransferred(address indexed _from, address indexed _to);
@@ -361,7 +461,7 @@ contract ERC20Token is ERC20Interface, Owned {
     string public  name;
     uint8 public decimals;
     uint public decimalsFactor;
-    uint public totalSupply;
+    uint public _totalSupply;
 
     // ------------------------------------------------------------------------
     // Token contract state
@@ -407,11 +507,19 @@ contract ERC20Token is ERC20Interface, Owned {
         decimalsFactor = 10**uint(_decimals);
         if (_initialSupply > 0) {
             balances[_owner] = _initialSupply;
-            totalSupply = _initialSupply;
-            Transfer(0x0, _owner, _initialSupply);
+            _totalSupply = _initialSupply;
+            Transfer(address(0), _owner, _initialSupply);
         }
         mintable = _mintable;
         transferable = _transferable;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // Total supply
+    // ------------------------------------------------------------------------
+    function totalSupply() public constant returns (uint) {
+        return _totalSupply;
     }
 
 
@@ -430,10 +538,12 @@ contract ERC20Token is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     function disableMinting() public onlyOwner {
         require(mintable);
-        MinterUpdated(minter, 0x0);
-        minter = 0x0;
         mintable = false;
-        MintingDisabled();
+        if (minter != address(0)) {
+            MinterUpdated(minter, address(0));
+            minter = address(0);
+            MintingDisabled();
+        }
     }
 
 
@@ -477,12 +587,12 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
-    // Token owner can approve for `spender` to withdraw `tokens` from the 
-    // token owner's account
+    // Token owner can approve for `spender` to transferFrom(...) `tokens`
+    // from the token owner's account
     //
-    // As recommended in https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md#approve
-    // there are no checks for the approval double-spend attack as this should
-    // be implemented in user interfaces 
+    // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
+    // recommends that there are no checks for the approval double-spend attack
+    // as this should be implemented in user interfaces 
     // ------------------------------------------------------------------------
     function approve(address spender, uint tokens)
         public returns (bool success) 
@@ -496,8 +606,8 @@ contract ERC20Token is ERC20Interface, Owned {
     // ------------------------------------------------------------------------
     // Transfer `tokens` from the `from` account to the `to` account
     // 
-    // The calling account must already have sufficient tokens approved for
-    // spending from the `from` account and
+    // The calling account must already have sufficient tokens approve(...)-d
+    // for spending from the `from` account and
     // - From account must have sufficient balance to transfer
     // - Spender must have sufficient allowance to transfer
     // - 0 value transfers are allowed
@@ -530,32 +640,59 @@ contract ERC20Token is ERC20Interface, Owned {
 
 
     // ------------------------------------------------------------------------
-    // Transfer the balance from owner's account to another account
-    // - Account must have sufficient balance to transfer
-    // - 0 value transfers are allowed
+    // Token owner can approve for `spender` to transferFrom(...) `tokens`
+    // from the token owner's account. The `spender` contract function
+    // `receiveApproval(...)` is then executed
     // ------------------------------------------------------------------------
-    function mint(address to, uint tokens)
-        public returns (bool success)
+    function approveAndCall(address spender, uint tokens, bytes data)
+        public returns (bool success) 
     {
-        // Check we are in the minting stage
-        require(mintable);
+        allowed[msg.sender][spender] = tokens;
+        Approval(msg.sender, spender, tokens);
 
-        // Only the minter or the owner can mint
-        require(msg.sender == minter || msg.sender == owner);
-
-        // Mint the tokens
-        balances[to] = balances[to].add(tokens);
-        totalSupply = totalSupply.add(tokens);
-        Transfer(0x0, to, tokens);
+        ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens,
+            this, data);
 
         return true;
     }
 
 
     // ------------------------------------------------------------------------
-    // Don't accept ethers - no payable modifier
+    // Mint tokens - internal
     // ------------------------------------------------------------------------
-    function () public {
+    function mintInternal(address tokenOwner, uint tokens)
+        internal returns (bool success)
+    {
+        // Check we are in the minting stage
+        require(mintable);
+
+        // Mint the tokens
+        balances[tokenOwner] = balances[tokenOwner].add(tokens);
+        _totalSupply = _totalSupply.add(tokens);
+        Transfer(address(0), tokenOwner, tokens);
+
+        return true;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // Mint tokens
+    // ------------------------------------------------------------------------
+    function mint(address tokenOwner, uint tokens)
+        public returns (bool success)
+    {
+        // Only the minter or the owner can mint
+        require(msg.sender == minter || msg.sender == owner);
+
+        return mintInternal(tokenOwner, tokens);
+    }
+
+
+    // ------------------------------------------------------------------------
+    // Don't accept ethers
+    // ------------------------------------------------------------------------
+    function () public payable {
+        revert();
     }
 
 
@@ -577,30 +714,6 @@ contract ERC20Token is ERC20Interface, Owned {
 // ----------------------------------------------------------------------------
 contract BTTSToken is ERC20Token, BTTSInterface {
     using SafeMath for uint;
-
-    // ------------------------------------------------------------------------
-    // Constants used for recovery
-    //
-    // signedTransfer(...) function signature
-    // web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
-    // => "0x7532eaac"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
-
-    // ------------------------------------------------------------------------
-    // signedApprove(...) function signature
-    // web3.sha3("signedApprove(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
-    // => "0xe9afa7a1"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedApproveSig = "\xe9\xaf\xa7\xa1";
-
-    // ------------------------------------------------------------------------
-    // signedTransferFrom(...) function signature
-    // web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,bytes,address)").substring(0,10)
-    // => "0x344bcc7d"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferFromSig = "\x34\x4b\xcc\x7d";
-
 
     // ------------------------------------------------------------------------
     // Constructor
@@ -858,6 +971,85 @@ contract BTTSToken is ERC20Token, BTTSInterface {
 
         return true;
     }
+
+
+    // ------------------------------------------------------------------------
+    // signedApproveAndCall functions
+    //
+    // Generate the hash used to create the signed approve message
+    // ------------------------------------------------------------------------
+    function signedApproveAndCallHash(address signer, address spender,
+        uint tokens, bytes data, uint fee, uint nonce)
+        public view returns (bytes32 hash) 
+    {
+        hash = keccak256(signedApproveAndCallSig, address(this),
+            signer, spender, tokens, data, fee, nonce);
+    }
+
+    // ------------------------------------------------------------------------
+    // Check whether an approveAndCall can be executed on behalf of the user
+    // who signed the approve message
+    // ------------------------------------------------------------------------
+    function signedApproveAndCallCheck(address tokenOwner, address spender,
+        uint tokens, bytes data, uint fee, uint nonce, bytes sig,
+        address feeAccount) public constant returns (CheckResult result) 
+    {
+        // Check tokens are transferable
+        if (!transferable) return CheckResult.NotTransferable;
+
+        // Check tokenOwner is the message signer
+        bytes32 hash = signedApproveAndCallHash(tokenOwner, spender, tokens,
+            data, fee, nonce);
+        if (tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig))
+            return CheckResult.SignerMismatch;
+
+        // Check message not already executed
+        if (executed[tokenOwner][hash]) return CheckResult.AlreadyExecuted;
+
+        // Check there are sufficient tokens to pay for fees
+        if (balances[tokenOwner] < fee)
+            return CheckResult.InsufficientTokensForFees;
+
+        // Check for overflows
+        if (balances[feeAccount] + fee < balances[feeAccount])
+            return CheckResult.OverflowError;
+
+        return CheckResult.Success;
+    }
+
+    // ------------------------------------------------------------------------
+    // Execute an approveAndCall on behalf of the user who signed the approve
+    // message
+    // ------------------------------------------------------------------------
+    function signedApproveAndCall(address tokenOwner, address spender,
+        uint tokens, bytes data, uint fee, uint nonce, bytes sig,
+        address feeAccount) public returns (bool success) 
+    {
+        require(transferable);
+
+        // Check tokenOwner is the message signer
+        bytes32 hash = signedApproveAndCallHash(tokenOwner, spender, tokens,
+            data, fee, nonce);
+        require(tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+
+        // Check message not already executed
+        require(!executed[tokenOwner][hash]);
+        executed[tokenOwner][hash] = true;
+
+        // Approve
+        allowed[tokenOwner][spender] = tokens;
+        Approval(tokenOwner, spender, tokens);
+
+        // Fee
+        balances[tokenOwner] = balances[tokenOwner].sub(fee);
+        balances[feeAccount] = balances[feeAccount].add(fee);
+        Transfer(tokenOwner, feeAccount, fee);
+
+        ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens,
+            this, data);
+
+        return true;
+    }
 }
 
 
@@ -991,8 +1183,9 @@ contract BTTSTokenFactory is Owned {
 
 
     // ------------------------------------------------------------------------
-    // Don't accept ethers - no payable modifier
+    // Don't accept ethers
     // ------------------------------------------------------------------------
-    function () public {
+    function () public payable {
+        revert();
     }
 }

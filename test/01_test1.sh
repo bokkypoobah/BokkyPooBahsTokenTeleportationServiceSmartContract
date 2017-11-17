@@ -133,12 +133,12 @@ var deployFactoryMessage = "Deploy BTTSTokenFactory";
 // -----------------------------------------------------------------------------
 console.log("RESULT: " + deployFactoryMessage);
 // console.log("RESULT: old='" + factoryBin + "'");
-var newFactoryBin = factoryBin.replace(/__BTTSToken\.sol\:SafeMath________________/g, libAddress.substring(2, 42));
+var newFactoryBin = factoryBin.replace(/__BTTSToken100\.sol\:SafeMath_____________/g, libAddress.substring(2, 42));
 // console.log("RESULT: new='" + newFactoryBin + "'");
 
 var factoryContract = web3.eth.contract(factoryAbi);
-console.log(JSON.stringify(factoryAbi));
-console.log(factoryBin);
+// console.log(JSON.stringify(factoryAbi));
+// console.log(factoryBin);
 var factoryTx = null;
 var factoryAddress = null;
 
@@ -170,7 +170,7 @@ console.log("RESULT: ");
 // -----------------------------------------------------------------------------
 var tokenMessage = "Deploy Crowdsale/Token Contract";
 // console.log("RESULT: old='" + tokenBin + "'");
-var newTokenBin = tokenBin.replace(/__BTTSToken\.sol\:SafeMath________________/g, libAddress.substring(2, 42));
+var newTokenBin = tokenBin.replace(/__BTTSToken100\.sol\:SafeMath_____________/g, libAddress.substring(2, 42));
 // console.log("RESULT: new='" + newTokenBin + "'");
 var symbol = "GZETest";
 var name = "GazeCoin Test";

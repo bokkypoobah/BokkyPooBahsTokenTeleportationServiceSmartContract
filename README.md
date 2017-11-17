@@ -240,7 +240,7 @@ Transfer 1 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa88a05d2b8
 
 ## BTTS Interface
 
-See [contracts/BTTSToken.sol](contracts/BTTSToken.sol) for a sample implementation.
+See [contracts/BTTSToken100.sol](contracts/BTTSToken100.sol) for a sample implementation.
 
 ```javascript
 // ----------------------------------------------------------------------------
@@ -688,4 +688,4 @@ Later on.
 <br />
 
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd - Oct 15 2017. The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd - Nov 18 2017. The MIT Licence.
