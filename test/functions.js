@@ -296,7 +296,7 @@ function printTokenContractDetails() {
     var approvalEvents = contract.Approval({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
     i = 0;
     approvalEvents.watch(function (error, result) {
-      console.log("RESULT: Approval " + i++ + " #" + result.blockNumber + " owner=" + result.args.owner +
+      console.log("RESULT: Approval " + i++ + " #" + result.blockNumber + " tokenOwner=" + result.args.tokenOwner +
         " spender=" + result.args.spender + " tokens=" + result.args.tokens.shift(-decimals));
     });
     approvalEvents.stopWatching();
