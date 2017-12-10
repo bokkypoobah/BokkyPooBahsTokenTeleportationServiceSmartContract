@@ -56,6 +56,7 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
 * [How It Works](#how-it-works)
 * [BTTS Interface](#btts-interface)
 * [Sample BTTS Implementation](#sample-btts-implementation)
+* [Code Review](#code-review)
 * [Demo On Ropsten Testnet](#demo-on-ropsten-testnet)
 
 <br />

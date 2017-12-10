@@ -1,0 +1,914 @@
+MODE            = 'test'
+GETHATTACHPOINT = 'ipc:./testchain/geth.ipc'
+PASSWORD        = 'testtest'
+SOURCEDIR       = '../contracts'
+CROWDSALESOL    = 'BTTSTokenFactory.sol'
+CROWDSALEJS     = 'BTTSTokenFactory.js'
+DEPLOYMENTDATA  = 'deploymentData.txt'
+INCLUDEJS       = './include.js'
+TEST1OUTPUT     = 'test1output.txt'
+TEST1RESULTS    = 'test1results.txt'
+CURRENTTIME     = '1512873573' 'Sun 10 Dec 2017 02:39:33 UTC'
+STARTTIME       = '1512873663' 'Sun 10 Dec 2017 02:41:03 UTC'
+ENDTIME         = '1512873753' 'Sun 10 Dec 2017 02:42:33 UTC'
+--- Differences ../contracts/BTTSTokenFactory.sol BTTSTokenFactory.sol ---
+
+solc, the solidity compiler commandline interface
+Version: 0.4.18+commit.9cf6e910.Darwin.appleclang
+Welcome to the Geth JavaScript console!
+
+instance: Geth/v1.7.3-stable-4bb3c89d/darwin-amd64/go1.9.2
+coinbase: 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e
+at block: 1075 (Sun, 10 Dec 2017 13:39:30 AEDT)
+ datadir: /Users/bok/Projects/BokkyPooBahsTokenTeleportationServiceSmartContract/test/testchain
+ modules: admin:1.0 debug:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 txpool:1.0 web3:1.0
+
+> 
+true
+> 
+true
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+> 
+undefined
+> 
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        9.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433        0.000000000000000000           0.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                                     0.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
+undefined
+> 
+RESULT: 
+undefined
+> 
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+RESULT: --- Deploy BTTS Library ---
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+... 
+...... 
+......... 
+............ 
+............ 
+............ 
+............ 
+............ 
+............ 
+......... 
+...... 
+... 
+undefined
+> 
+... 
+undefined
+> 
+DATA: libBTTSAddress=0x18fcb68f05d3d1f07eb1188c801ae69b45b21904
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       15.174755150000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.174755150000000000           0.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
+RESULT:  9 0x18fcb68f05d3d1f07eb1188c801ae69b45b21904        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                                     0.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
+undefined
+> 
+RESULT: PASS Deploy BTTS Library
+1
+> 
+RESULT: libBTTSTx status=0x1 Success gas=6000000 gasUsed=3495103 costETH=0.17475515 costUSD=85.532160616 @ ETH/USD=489.44 gasPrice=50 gwei block=1080 txIx=0 txId=0x95b621e850f384ad43f33e9dd863833cfb6b8354e9f6e7db34f3a57b6b9d9cdb @ 1512873597 Sun, 10 Dec 2017 02:39:57 UTC
+undefined
+> 
+RESULT: tokenContractAddress=null
+undefined
+> 
+RESULT: 
+undefined
+> 
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+RESULT: --- Deploy BTTSTokenFactory ---
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+> 
+... 
+...... 
+......... 
+............ 
+............ 
+............ 
+............ 
+............ 
+............ 
+............ 
+......... 
+...... 
+... 
+undefined
+> 
+> 
+... 
+undefined
+> 
+> 
+DATA: factoryAddress=0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       21.328565250000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.328565250000000000           0.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
+RESULT:  9 0x18fcb68f05d3d1f07eb1188c801ae69b45b21904        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 10 0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                                     0.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
+undefined
+> 
+RESULT: PASS Deploy BTTSTokenFactory
+1
+> 
+RESULT: factoryTx status=0x1 Success gas=6000000 gasUsed=3076202 costETH=0.1538101 costUSD=75.280815344 @ ETH/USD=489.44 gasPrice=50 gwei block=1082 txIx=0 txId=0xa2970b8cc04e343a86ff8046808918110868e548558d4c8e80086caedfac8d79 @ 1512873603 Sun, 10 Dec 2017 02:40:03 UTC
+undefined
+> 
+RESULT: factoryContractAddress=0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4
+RESULT: factory.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
+RESULT: factory.newOwner=0x0000000000000000000000000000000000000000
+undefined
+> 
+RESULT: 
+undefined
+> 
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+RESULT: --- Deploy Token Contract ---
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+... 
+undefined
+> 
+RESULT: factoryContractAddress=0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4
+RESULT: get BTTSTokenListing 0 #1084 {"bttsTokenAddress":"0x6756ae7c008139a9130e1118efc3402455f45cbf","decimals":"18","initialSupply":"1e+25","mintable":true,"name":"GazeCoin Test","ownerAddress":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","symbol":"GZETest","transferable":false}
+undefined
+> 
+RESULT: bttsTokens=#1 ["0x6756ae7c008139a9130e1118efc3402455f45cbf"]
+undefined
+> 
+undefined
+> 
+"0x6756ae7c008139a9130e1118efc3402455f45cbf"
+> 
+{
+  abi: [{
+      constant: true,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedApproveAndCallHash",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "name",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "minter",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}],
+      name: "approve",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}, {...}, {...}, {...}, {...}],
+      name: "signedApproveHash",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "totalSupply",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedTransferFromHash",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "signedApproveAndCallSig",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}, {...}],
+      name: "transferFrom",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "decimals",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedTransferFrom",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "mintable",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "signedTransferSig",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}],
+      name: "balanceOf",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedTransfer",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [],
+      name: "acceptOwnership",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedTransferCheck",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [],
+      name: "disableMinting",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}],
+      name: "transferOwnershipImmediately",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "bttsVersion",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "owner",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}],
+      name: "unlockAccount",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "transferable",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "symbol",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedApproveAndCallCheck",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}, {...}, {...}, {...}, {...}],
+      name: "signedTransferHash",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "signedApproveSig",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}],
+      name: "transfer",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [],
+      name: "enableTransfers",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "signedTransferFromSig",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedApproveCheck",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}, {...}],
+      name: "approveAndCall",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}, {...}],
+      name: "mint",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "newOwner",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}],
+      name: "transferAnyERC20Token",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}, {...}],
+      name: "allowance",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [],
+      name: "signingPrefix",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedApprove",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedApproveAndCall",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}],
+      name: "transferOwnership",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      constant: true,
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      name: "signedTransferFromCheck",
+      outputs: [{...}],
+      payable: false,
+      stateMutability: "view",
+      type: "function"
+  }, {
+      constant: false,
+      inputs: [{...}],
+      name: "setMinter",
+      outputs: [],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function"
+  }, {
+      inputs: [{...}, {...}, {...}, {...}, {...}, {...}, {...}],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "constructor"
+  }, {
+      payable: true,
+      stateMutability: "payable",
+      type: "fallback"
+  }, {
+      anonymous: false,
+      inputs: [{...}, {...}],
+      name: "OwnershipTransferred",
+      type: "event"
+  }, {
+      anonymous: false,
+      inputs: [{...}, {...}],
+      name: "MinterUpdated",
+      type: "event"
+  }, {
+      anonymous: false,
+      inputs: [{...}, {...}, {...}],
+      name: "Mint",
+      type: "event"
+  }, {
+      anonymous: false,
+      inputs: [],
+      name: "MintingDisabled",
+      type: "event"
+  }, {
+      anonymous: false,
+      inputs: [],
+      name: "TransfersEnabled",
+      type: "event"
+  }, {
+      anonymous: false,
+      inputs: [{...}],
+      name: "AccountUnlocked",
+      type: "event"
+  }, {
+      anonymous: false,
+      inputs: [{...}, {...}, {...}],
+      name: "Transfer",
+      type: "event"
+  }, {
+      anonymous: false,
+      inputs: [{...}, {...}, {...}],
+      name: "Approval",
+      type: "event"
+  }],
+  address: "0x6756ae7c008139a9130e1118efc3402455f45cbf",
+  transactionHash: null,
+  AccountUnlocked: function(),
+  Approval: function(),
+  Mint: function(),
+  MinterUpdated: function(),
+  MintingDisabled: function(),
+  OwnershipTransferred: function(),
+  Transfer: function(),
+  TransfersEnabled: function(),
+  acceptOwnership: function(),
+  allEvents: function(),
+  allowance: function(),
+  approve: function(),
+  approveAndCall: function(),
+  balanceOf: function(),
+  bttsVersion: function(),
+  decimals: function(),
+  disableMinting: function(),
+  enableTransfers: function(),
+  mint: function(),
+  mintable: function(),
+  minter: function(),
+  name: function(),
+  newOwner: function(),
+  owner: function(),
+  setMinter: function(),
+  signedApprove: function(),
+  signedApproveAndCall: function(),
+  signedApproveAndCallCheck: function(),
+  signedApproveAndCallHash: function(),
+  signedApproveAndCallSig: function(),
+  signedApproveCheck: function(),
+  signedApproveHash: function(),
+  signedApproveSig: function(),
+  signedTransfer: function(),
+  signedTransferCheck: function(),
+  signedTransferFrom: function(),
+  signedTransferFromCheck: function(),
+  signedTransferFromHash: function(),
+  signedTransferFromSig: function(),
+  signedTransferHash: function(),
+  signedTransferSig: function(),
+  signingPrefix: function(),
+  symbol: function(),
+  totalSupply: function(),
+  transfer: function(),
+  transferAnyERC20Token: function(),
+  transferFrom: function(),
+  transferOwnership: function(),
+  transferOwnershipImmediately: function(),
+  transferable: function(),
+  unlockAccount: function()
+}
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       27.424925200000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.424925200000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
+RESULT:  9 0x18fcb68f05d3d1f07eb1188c801ae69b45b21904        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 10 0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 11 0x6756ae7c008139a9130e1118efc3402455f45cbf        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                              10000000.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
+undefined
+> 
+RESULT: deployTokenTx status=0x1 Success gas=4000000 gasUsed=1927199 costETH=0.09635995 costUSD=47.162413928 @ ETH/USD=489.44 gasPrice=50 gwei block=1084 txIx=0 txId=0x2f06e632c2a5280f9877f192230ff2dd92d7de9386b2cff740d7e787c9561c68 @ 1512873612 Sun, 10 Dec 2017 02:40:12 UTC
+undefined
+> 
+RESULT: factoryContractAddress=0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4
+RESULT: factory.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
+RESULT: factory.newOwner=0x0000000000000000000000000000000000000000
+RESULT: BTTSTokenListing 0 #1084 {"bttsTokenAddress":"0x6756ae7c008139a9130e1118efc3402455f45cbf","decimals":"18","initialSupply":"1e+25","mintable":true,"name":"GazeCoin Test","ownerAddress":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","symbol":"GZETest","transferable":false}
+undefined
+> 
+RESULT: tokenContractAddress=0x6756ae7c008139a9130e1118efc3402455f45cbf
+RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
+RESULT: token.newOwner=0x0000000000000000000000000000000000000000
+RESULT: token.symbol=GZETest
+RESULT: token.name=GazeCoin Test
+RESULT: token.decimals=18
+RESULT: token.totalSupply=10000000
+RESULT: token.transferable=false
+RESULT: token.mintable=true
+RESULT: token.minter=0x0000000000000000000000000000000000000000
+RESULT: Mint 0 #1084 {"lockAccount":false,"tokenOwner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","tokens":"1e+25"}
+RESULT: Transfer 0 #1084: from=0x0000000000000000000000000000000000000000 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=10000000
+undefined
+> 
+RESULT: 
+undefined
+> 
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+RESULT: --- Mint Tokens ---
+undefined
+> 
+undefined
+> 
+undefined
+> 
+... 
+undefined
+> 
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       33.430313600000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.430313600000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000000.000000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
+RESULT:  9 0x18fcb68f05d3d1f07eb1188c801ae69b45b21904        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 10 0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 11 0x6756ae7c008139a9130e1118efc3402455f45cbf        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                              12000000.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
+undefined
+> 
+RESULT: PASS Mint Tokens - mint 1,000,000 tokens 0x0 -> ac3
+1
+> 
+RESULT: PASS Mint Tokens - mint 1,000,000 tokens 0x0 -> ac4
+1
+> 
+RESULT: mintTokens1Tx status=0x1 Success gas=100000 gasUsed=53884 costETH=0.0026942 costUSD=1.318649248 @ ETH/USD=489.44 gasPrice=50 gwei block=1086 txIx=0 txId=0xe3fcaac321c5599dfb5cda1697dd0ed135bfb7e04f671663443d8f27b424c631 @ 1512873622 Sun, 10 Dec 2017 02:40:22 UTC
+undefined
+> 
+RESULT: mintTokens2Tx status=0x1 Success gas=100000 gasUsed=53884 costETH=0.0026942 costUSD=1.318649248 @ ETH/USD=489.44 gasPrice=50 gwei block=1086 txIx=1 txId=0x5aec2c8f012da03424fbecdfe09a89a7fff401db374100d3c95812f205fbb531 @ 1512873622 Sun, 10 Dec 2017 02:40:22 UTC
+undefined
+> 
+RESULT: tokenContractAddress=0x6756ae7c008139a9130e1118efc3402455f45cbf
+RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
+RESULT: token.newOwner=0x0000000000000000000000000000000000000000
+RESULT: token.symbol=GZETest
+RESULT: token.name=GazeCoin Test
+RESULT: token.decimals=18
+RESULT: token.totalSupply=12000000
+RESULT: token.transferable=false
+RESULT: token.mintable=true
+RESULT: token.minter=0x0000000000000000000000000000000000000000
+RESULT: Mint 0 #1086 {"lockAccount":false,"tokenOwner":"0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0","tokens":"1e+24"}
+RESULT: Mint 1 #1086 {"lockAccount":false,"tokenOwner":"0xa44a08d3f6933c69212114bb66e2df1813651844","tokens":"1e+24"}
+RESULT: Transfer 0 #1086: from=0x0000000000000000000000000000000000000000 to=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 tokens=1000000
+RESULT: Transfer 1 #1086: from=0x0000000000000000000000000000000000000000 to=0xa44a08d3f6933c69212114bb66e2df1813651844 tokens=1000000
+undefined
+> 
+RESULT: 
+undefined
+> 
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+RESULT: --- Start Transfers ---
+undefined
+> 
+undefined
+> 
+undefined
+> 
+... 
+undefined
+> 
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       39.433238400000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.433238400000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000000.000000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
+RESULT:  9 0x18fcb68f05d3d1f07eb1188c801ae69b45b21904        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 10 0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 11 0x6756ae7c008139a9130e1118efc3402455f45cbf        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                              12000000.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
+undefined
+> 
+RESULT: PASS Start Transfers - Disable Minting
+1
+> 
+RESULT: PASS Start Transfers - Enable Transfers
+1
+> 
+RESULT: startTransfers1Tx status=0x1 Success gas=100000 gasUsed=14577 costETH=0.00072885 costUSD=0.356728344 @ ETH/USD=489.44 gasPrice=50 gwei block=1088 txIx=0 txId=0x296093af6a87ab22287a7468daa8ef690dd0ab755cd4c0b8e71d4fcd0ab967b5 @ 1512873630 Sun, 10 Dec 2017 02:40:30 UTC
+undefined
+> 
+RESULT: startTransfers2Tx status=0x1 Success gas=100000 gasUsed=43919 costETH=0.00219595 costUSD=1.074785768 @ ETH/USD=489.44 gasPrice=50 gwei block=1088 txIx=1 txId=0xd0aded87e1c5e788ae2face05671871d7e1bdaa81aac7a8550ecd7ce969f13c7 @ 1512873630 Sun, 10 Dec 2017 02:40:30 UTC
+undefined
+> 
+RESULT: tokenContractAddress=0x6756ae7c008139a9130e1118efc3402455f45cbf
+RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
+RESULT: token.newOwner=0x0000000000000000000000000000000000000000
+RESULT: token.symbol=GZETest
+RESULT: token.name=GazeCoin Test
+RESULT: token.decimals=18
+RESULT: token.totalSupply=12000000
+RESULT: token.transferable=true
+RESULT: token.mintable=false
+RESULT: token.minter=0x0000000000000000000000000000000000000000
+RESULT: MintingDisabled 0 #1088 {}
+RESULT: TransfersEnabled 0 #1088 {}
+undefined
+> 
+RESULT: 
+undefined
+> 
+> 
+> 

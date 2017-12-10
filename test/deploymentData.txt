@@ -1,0 +1,2 @@
+libBTTSAddress=0x18fcb68f05d3d1f07eb1188c801ae69b45b21904
+factoryAddress=0xf7b8de4484d33d9a64d220f83d28d9a03fa73ec4

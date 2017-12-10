@@ -120,7 +120,6 @@ library BTTSLib {
         string symbol;
         string name;
         uint8 decimals;
-        uint decimalsFactor;
         uint totalSupply;
         mapping(address => uint) balances;
         mapping(address => mapping(address => uint)) allowed;
@@ -159,10 +158,10 @@ library BTTSLib {
         self.symbol = symbol;
         self.name = name;
         self.decimals = decimals;
-        self.decimalsFactor = 10**uint(decimals);
         if (initialSupply > 0) {
             self.balances[owner] = initialSupply;
             self.totalSupply = initialSupply;
+            Mint(self.owner, initialSupply, false);
             Transfer(address(0), self.owner, initialSupply);
         }
         self.mintable = mintable;
@@ -530,9 +529,6 @@ contract BTTSToken is BTTSTokenInterface {
     }
     function decimals() public view returns (uint8) {
         return data.decimals;
-    }
-    function decimalsFactor() public view returns (uint) {
-        return data.decimalsFactor;
     }
 
     // ------------------------------------------------------------------------

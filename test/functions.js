@@ -243,7 +243,6 @@ function printTokenContractDetails() {
     console.log("RESULT: token.symbol=" + contract.symbol());
     console.log("RESULT: token.name=" + contract.name());
     console.log("RESULT: token.decimals=" + decimals);
-    console.log("RESULT: token.decimalsFactor=" + contract.decimalsFactor());
     console.log("RESULT: token.totalSupply=" + contract.totalSupply().shift(-decimals));
     console.log("RESULT: token.transferable=" + contract.transferable());
     console.log("RESULT: token.mintable=" + contract.mintable());
@@ -266,6 +265,13 @@ function printTokenContractDetails() {
     });
     minterUpdatedEvents.stopWatching();
 
+    var mintEvents = contract.Mint({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
+    i = 0;
+    mintEvents.watch(function (error, result) {
+      console.log("RESULT: Mint " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    mintEvents.stopWatching();
+
     var mintingDisabledEvents = contract.MintingDisabled({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
     i = 0;
     mintingDisabledEvents.watch(function (error, result) {
@@ -273,12 +279,19 @@ function printTokenContractDetails() {
     });
     mintingDisabledEvents.stopWatching();
 
-    var minterUpdatedEvents = contract.MinterUpdated({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
+    var transfersEnabledEvents = contract.TransfersEnabled({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
     i = 0;
-    minterUpdatedEvents.watch(function (error, result) {
-      console.log("RESULT: MinterUpdated " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    transfersEnabledEvents.watch(function (error, result) {
+      console.log("RESULT: TransfersEnabled " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
-    minterUpdatedEvents.stopWatching();
+    transfersEnabledEvents.stopWatching();
+
+    var accountUnlockedEvents = contract.AccountUnlocked({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
+    i = 0;
+    accountUnlockedEvents.watch(function (error, result) {
+      console.log("RESULT: AccountUnlocked " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    accountUnlockedEvents.stopWatching();
 
     var approvalEvents = contract.Approval({}, { fromBlock: tokenFromBlock, toBlock: latestBlock });
     i = 0;
