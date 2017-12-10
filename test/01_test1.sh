@@ -356,7 +356,7 @@ var hash = web3.sha3(hashOf, {encoding: 'hex'});
 console.log("RESULT: hash=" + hash);
 
 // -----------------------------------------------------------------------------
-console.log("RESULT: " + signedTransferMessage);
+console.log("RESULT: --- " + signedTransferMessage + " ---");
 console.log("RESULT: functionSig=" + functionSig + " (should be '0x7532eaac')");
 
 console.log("RESULT: from=" + from);
@@ -388,9 +388,9 @@ var signedTransfer2Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, 
   {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-printTxData("signedTransfer2Tx", signedTransfer2Tx);
 printBalances();
 passIfTxStatusError(signedTransfer2Tx, signedTransferMessage + " - Duplicated Signed Transfers - Expecting Failure");
+printTxData("signedTransfer2Tx", signedTransfer2Tx);
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -411,7 +411,7 @@ var signedApproveHash = token.signedApproveHash(tokenContractAddress,
 console.log("RESULT: signedApproveHash=" + signedApproveHash);
 
 // -----------------------------------------------------------------------------
-console.log("RESULT: " + signedApproveMessage);
+console.log("RESULT: --- " + signedApproveMessage + " ---");
 console.log("RESULT: functionSig=" + functionSig + " (should be '0xe9afa7a1')");
 
 var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(owner) + addressToHex(spender) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
@@ -441,11 +441,11 @@ var signedApprove2Tx = token.signedApprove(owner, spender, tokens, fee, nonce, s
   {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-printTxData("signedApprove1Tx", signedApprove1Tx);
-printTxData("signedApprove2Tx", signedApprove2Tx);
 printBalances();
 failIfTxStatusError(signedApprove1Tx, signedApproveMessage + " - Signed Approve ");
 passIfTxStatusError(signedApprove2Tx, signedApproveMessage + " - Duplicated Signed Approve - Expecting Failure");
+printTxData("signedApprove1Tx", signedApprove1Tx);
+printTxData("signedApprove2Tx", signedApprove2Tx);
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -465,7 +465,7 @@ var signedTransferFromHash = token.signedTransferFromHash(spender, from, to, tok
 console.log("RESULT: signedTransferFromHash=" + signedTransferFromHash);
 
 // -----------------------------------------------------------------------------
-console.log("RESULT: " + signedTransferFromMessage);
+console.log("RESULT: --- " + signedTransferFromMessage + " ---");
 console.log("RESULT: functionSig=" + functionSig + " (should be '0x344bcc7d')");
 
 var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(spender) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
@@ -495,31 +495,28 @@ var signedTransferFrom2Tx = token.signedTransferFrom(spender, from, to, tokens, 
   {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-printTxData("signedTransferFrom1Tx", signedTransferFrom1Tx);
-printTxData("signedTransferFrom2Tx", signedTransferFrom2Tx);
 printBalances();
 failIfTxStatusError(signedTransferFrom1Tx, signedTransferMessage + " - Signed TransferFrom ");
 passIfTxStatusError(signedTransferFrom2Tx, signedTransferMessage + " - Duplicated Signed TransfersFrom - Expecting Failure");
+printTxData("signedTransferFrom1Tx", signedTransferFrom1Tx);
+printTxData("signedTransferFrom2Tx", signedTransferFrom2Tx);
 printTokenContractDetails();
 console.log("RESULT: ");
-
-
-exit;
 
 
 // -----------------------------------------------------------------------------
 var transferTokenMessage = "Transfer Tokens";
 // -----------------------------------------------------------------------------
-console.log("RESULT: " + transferTokenMessage);
+console.log("RESULT: --- " + transferTokenMessage + " ---");
 var transferToken1Tx = token.transfer(account3, "100000000000000000000", {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
 var transferToken2Tx = token.transfer(account4, "100000000000000000000", {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
+printBalances();
+failIfTxStatusError(transferToken1Tx, transferTokenMessage + " - transfer 100 tokens ac1 -> ac3");
+failIfTxStatusError(transferToken2Tx, transferTokenMessage + " - transfer 100 tokens ac1 -> ac4");
 printTxData("transferToken1Tx", transferToken1Tx);
 printTxData("transferToken2Tx", transferToken2Tx);
-printBalances();
-failIfTxStatusError(transferToken1Tx, transferTokenMessage + " - transfer 10,000 tokens ac1 -> ac3");
-failIfTxStatusError(transferToken2Tx, transferTokenMessage + " - transfer 10,000 tokens ac1 -> ac4");
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -527,16 +524,16 @@ console.log("RESULT: ");
 // -----------------------------------------------------------------------------
 var moveTokenMessage = "Move 0 Tokens After Transfers Allowed";
 // -----------------------------------------------------------------------------
-console.log("RESULT: " + moveTokenMessage);
+console.log("RESULT: --- " + moveTokenMessage + " ---");
 var moveToken1Tx = token.transfer(account5, "0", {from: account3, gas: 100000, gasPrice: defaultGasPrice});
 var moveToken3Tx = token.transferFrom(account4, account7, "0", {from: account6, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-printTxData("moveToken1Tx", moveToken1Tx);
-printTxData("moveToken3Tx", moveToken3Tx);
 printBalances();
 failIfTxStatusError(moveToken1Tx, moveTokenMessage + " - transfer 0 tokens ac3 -> ac5. SHOULD not throw");
 failIfTxStatusError(moveToken3Tx, moveTokenMessage + " - transferFrom 0 tokens ac4 -> ac7 by ac6. SHOULD not throw");
+printTxData("moveToken1Tx", moveToken1Tx);
+printTxData("moveToken3Tx", moveToken3Tx);
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -544,7 +541,7 @@ console.log("RESULT: ");
 // -----------------------------------------------------------------------------
 var moveTokenMessage = "Move More Tokens Than Owned";
 // -----------------------------------------------------------------------------
-console.log("RESULT: " + moveTokenMessage);
+console.log("RESULT: --- " + moveTokenMessage + " ---");
 var moveToken1Tx = token.transfer(account5, "3000000000000000000000001", {from: account3, gas: 100000, gasPrice: defaultGasPrice});
 var moveToken2Tx = token.approve(account6,  "3000000000000000000000001", {from: account4, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
@@ -552,13 +549,13 @@ while (txpool.status.pending > 0) {
 var moveToken3Tx = token.transferFrom(account4, account7, "3000000000000000000000001", {from: account6, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-printTxData("moveToken1Tx", moveToken1Tx);
-printTxData("moveToken2Tx", moveToken2Tx);
-printTxData("moveToken3Tx", moveToken3Tx);
 printBalances();
 passIfTxStatusError(moveToken1Tx, moveTokenMessage + " - transfer 300K+1e-18 tokens ac3 -> ac5. SHOULD throw");
 failIfTxStatusError(moveToken2Tx, moveTokenMessage + " - approve 300K+1e-18 tokens ac4 -> ac6");
 passIfTxStatusError(moveToken3Tx, moveTokenMessage + " - transferFrom 300K+1e-18 tokens ac4 -> ac7 by ac6. SHOULD throw");
+printTxData("moveToken1Tx", moveToken1Tx);
+printTxData("moveToken2Tx", moveToken2Tx);
+printTxData("moveToken3Tx", moveToken3Tx);
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -566,32 +563,13 @@ console.log("RESULT: ");
 // -----------------------------------------------------------------------------
 var approveTokenMessage = "Change Approval Without Setting To 0";
 // -----------------------------------------------------------------------------
-console.log("RESULT: " + approveTokenMessage);
+console.log("RESULT: --- " + approveTokenMessage + " ---");
 var approveToken2Tx = token.approve(account6,  "3000000000000000000000002", {from: account4, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-printTxData("approveToken2Tx", approveToken2Tx);
 printBalances();
-passIfTxStatusError(approveToken2Tx, approveTokenMessage + " - approve 300K+2e-18 tokens ac4 -> ac6. SHOULD throw");
-printTokenContractDetails();
-console.log("RESULT: ");
-
-
-// -----------------------------------------------------------------------------
-var approveTokenMessage = "Change Approval By Setting To 0 In Between";
-// -----------------------------------------------------------------------------
-console.log("RESULT: " + approveTokenMessage);
-var approveToken2Tx = token.approve(account6,  "0", {from: account4, gas: 100000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
-var approveToken3Tx = token.approve(account6,  "3000000000000000000000002", {from: account4, gas: 100000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
+failIfTxStatusError(approveToken2Tx, approveTokenMessage + " - approve 300K+2e-18 tokens ac4 -> ac6");
 printTxData("approveToken2Tx", approveToken2Tx);
-printTxData("approveToken3Tx", approveToken3Tx);
-printBalances();
-failIfTxStatusError(approveToken2Tx, approveTokenMessage + " - approve 0 tokens ac4 -> ac6");
-failIfTxStatusError(approveToken3Tx, approveTokenMessage + " - approve 300K+2e-18 tokens ac4 -> ac6");
 printTokenContractDetails();
 console.log("RESULT: ");
 
