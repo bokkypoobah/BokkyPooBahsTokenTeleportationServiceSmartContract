@@ -315,6 +315,7 @@ library BTTSLib {
     //
     // Parts from https://gist.github.com/axic/5b33912c6f61ae6fd96d6c4a47afde6d
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Pure function
     function ecrecoverFromSig(Data storage /*self*/, bytes32 hash, bytes sig) public pure returns (address recoveredAddress) {
         bytes32 r;
         bytes32 s;
@@ -339,6 +340,7 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Get CheckResult message
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Pure function
     function getCheckResultMessage(Data storage /*self*/, BTTSTokenInterface.CheckResult result) public pure returns (string) {
         if (result == BTTSTokenInterface.CheckResult.Success) {
             return "Success";
@@ -368,6 +370,10 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Token functions
     // ------------------------------------------------------------------------
+    // BK NOTE - Anyone can call when the token are transferable
+    // BK NOTE - And owner or minter can call when mintable but not transferable
+    // BK NOTE - And the account is not locked
+    // BK Next function Ok
     function transfer(Data storage self, address to, uint tokens) public returns (bool success) {
         // Owner and minter can move tokens before the tokens are transferable 
         require(self.transferable || (self.mintable && (msg.sender == self.owner  || msg.sender == self.minter)));
@@ -377,12 +383,17 @@ library BTTSLib {
         Transfer(msg.sender, to, tokens);
         return true;
     }
+    // BK NOTE - Anyone can call when the account is not locked
+    // BK Next function Ok
     function approve(Data storage self, address spender, uint tokens) public returns (bool success) {
         require(!self.accountLocked[msg.sender]);
         self.allowed[msg.sender][spender] = tokens;
         Approval(msg.sender, spender, tokens);
         return true;
     }
+    // BK NOTE - Anyone can call when the token are transferable
+    // BK NOTE - And the from account is not locked
+    // BK Next function Ok
     function transferFrom(Data storage self, address from, address to, uint tokens) public returns (bool success) {
         require(self.transferable);
         require(!self.accountLocked[from]);
@@ -392,6 +403,10 @@ library BTTSLib {
         Transfer(from, to, tokens);
         return true;
     }
+    // BK NOTE - Anyone can call when the token are transferable
+    // BK NOTE - As the receiveApproval may try a transferFrom(...) which will fail if the tokens are not transferable
+    // BK NOTE - And the from account is not locked
+    // BK Next function Ok
     function approveAndCall(Data storage self, address tokenContract, address spender, uint tokens, bytes data) public returns (bool success) {
         require(!self.accountLocked[msg.sender]);
         self.allowed[msg.sender][spender] = tokens;
@@ -403,9 +418,12 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Signed function
     // ------------------------------------------------------------------------
+    // BK NOTE - Token owner signs [functionSig, tokenContractAddress, tokenOwner, toAccount, fees, nonce]
+    // BK Next function Ok - Pure function
     function signedTransferHash(Data storage /*self*/, address tokenContract, address tokenOwner, address to, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
         hash = keccak256(signedTransferSig, tokenContract, tokenOwner, to, tokens, fee, nonce);
     }
+    // BK Next function Ok - View function
     function signedTransferCheck(Data storage self, address tokenContract, address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
         bytes32 hash = signedTransferHash(self, tokenContract, tokenOwner, to, tokens, fee, nonce);
@@ -434,9 +452,12 @@ library BTTSLib {
         Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
-    function signedApproveHash(Data storage /*self*/, address tokenContract, address signer, address spender, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
-        hash = keccak256(signedApproveSig, tokenContract, signer, spender, tokens, fee, nonce);
+    // BK NOTE - Token owner signs [functionSig, tokenContractAddress, tokenOwner, spender, toAccount, fees, nonce]
+    // BK Next function Ok - Pure function
+    function signedApproveHash(Data storage /*self*/, address tokenContract, address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
+        hash = keccak256(signedApproveSig, tokenContract, tokenOwner, spender, tokens, fee, nonce);
     }
+    // BK Next function Ok - View function
     function signedApproveCheck(Data storage self, address tokenContract, address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
         bytes32 hash = signedApproveHash(self, tokenContract, tokenOwner, spender, tokens, fee, nonce);
@@ -461,9 +482,11 @@ library BTTSLib {
         Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
+    // BK Next function Ok - Pure function
     function signedTransferFromHash(Data storage /*self*/, address tokenContract, address spender, address from, address to, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
         hash = keccak256(signedTransferFromSig, tokenContract, spender, from, to, tokens, fee, nonce);
     }
+    // BK Next function Ok - View function
     function signedTransferFromCheck(Data storage self, address tokenContract, address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
         bytes32 hash = signedTransferFromHash(self, tokenContract, spender, from, to, tokens, fee, nonce);
@@ -496,9 +519,11 @@ library BTTSLib {
         Transfer(from, feeAccount, fee);
         return true;
     }
-    function signedApproveAndCallHash(Data storage /*self*/, address tokenContract, address signer, address spender, uint tokens, bytes data, uint fee, uint nonce) public pure returns (bytes32 hash) {
-        hash = keccak256(signedApproveAndCallSig, tokenContract, signer, spender, tokens, data, fee, nonce);
+    // BK Next function Ok - Pure function
+    function signedApproveAndCallHash(Data storage /*self*/, address tokenContract, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce) public pure returns (bytes32 hash) {
+        hash = keccak256(signedApproveAndCallSig, tokenContract, tokenOwner, spender, tokens, data, fee, nonce);
     }
+    // BK Next function Ok - View function
     function signedApproveAndCallCheck(Data storage self, address tokenContract, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
         bytes32 hash = signedApproveAndCallHash(self, tokenContract, tokenOwner, spender, tokens, data, fee, nonce);

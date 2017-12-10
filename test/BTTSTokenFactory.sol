@@ -381,8 +381,8 @@ library BTTSLib {
         Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
-    function signedApproveHash(Data storage /*self*/, address tokenContract, address signer, address spender, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
-        hash = keccak256(signedApproveSig, tokenContract, signer, spender, tokens, fee, nonce);
+    function signedApproveHash(Data storage /*self*/, address tokenContract, address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
+        hash = keccak256(signedApproveSig, tokenContract, tokenOwner, spender, tokens, fee, nonce);
     }
     function signedApproveCheck(Data storage self, address tokenContract, address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
@@ -443,8 +443,8 @@ library BTTSLib {
         Transfer(from, feeAccount, fee);
         return true;
     }
-    function signedApproveAndCallHash(Data storage /*self*/, address tokenContract, address signer, address spender, uint tokens, bytes data, uint fee, uint nonce) public pure returns (bytes32 hash) {
-        hash = keccak256(signedApproveAndCallSig, tokenContract, signer, spender, tokens, data, fee, nonce);
+    function signedApproveAndCallHash(Data storage /*self*/, address tokenContract, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce) public pure returns (bytes32 hash) {
+        hash = keccak256(signedApproveAndCallSig, tokenContract, tokenOwner, spender, tokens, data, fee, nonce);
     }
     function signedApproveAndCallCheck(Data storage self, address tokenContract, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
