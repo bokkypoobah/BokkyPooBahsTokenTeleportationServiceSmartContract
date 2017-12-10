@@ -683,13 +683,13 @@ contract BTTSToken is ERC20Token, BTTSInterface {
 ## Code Review
 
 * [ ] [code-review/BTTSTokenFactory.md](code-review/BTTSTokenFactory.md)
-  * [ ] contract ERC20Interface
-  * [ ] contract ApproveAndCallFallBack
-  * [ ] contract BTTSTokenInterface is ERC20Interface
+  * [x] contract ERC20Interface
+  * [x] contract ApproveAndCallFallBack
+  * [x] contract BTTSTokenInterface is ERC20Interface
   * [ ] library BTTSLib
   * [ ] contract BTTSToken is BTTSTokenInterface
-  * [ ] contract Owned
-  * [ ] contract BTTSTokenFactory is Owned
+  * [x] contract Owned
+  * [x] contract BTTSTokenFactory is Owned
 
 <br />
 

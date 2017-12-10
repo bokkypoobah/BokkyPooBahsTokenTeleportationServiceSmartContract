@@ -63,9 +63,9 @@ contract BTTSTokenInterface is ERC20Interface {
     function signedTransferFromCheck(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
     function signedTransferFrom(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
 
-    function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce) public view returns (bytes32 hash);
-    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
-    function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
+    function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash);
+    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
+    function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
 
     function mint(address tokenOwner, uint tokens, bool lockAccount) public returns (bool success);
     function unlockAccount(address tokenOwner) public;
@@ -145,6 +145,7 @@ library BTTSLib {
     // Initialisation
     // ------------------------------------------------------------------------
     function init(Data storage self, address owner, string symbol, string name, uint8 decimals, uint initialSupply, bool mintable, bool transferable) public {
+        require(self.owner == address(0));
         self.owner = owner;
         self.symbol = symbol;
         self.name = name;
@@ -208,7 +209,7 @@ library BTTSLib {
         MinterUpdated(self.minter, minter);
         self.minter = minter;
     }
-    function mint(Data storage self, address tokenOwner, uint tokens, bool lockAccount) internal returns (bool success) {
+    function mint(Data storage self, address tokenOwner, uint tokens, bool lockAccount) public returns (bool success) {
         require(self.mintable);
         require(msg.sender == self.minter || msg.sender == self.owner);
         if (lockAccount) {
@@ -601,8 +602,8 @@ contract BTTSToken is BTTSTokenInterface {
     function signedTransfer(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         return data.signedTransfer(address(this), tokenOwner, to, tokens, fee, nonce, sig, feeAccount);
     }
-    function signedApproveHash(address signer, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
-        return data.signedApproveHash(address(this), signer, spender, tokens, fee, nonce);
+    function signedApproveHash(address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
+        return data.signedApproveHash(address(this), tokenOwner, spender, tokens, fee, nonce);
     }
     function signedApproveCheck(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
         return data.signedApproveCheck(address(this), tokenOwner, spender, tokens, fee, nonce, sig, feeAccount);
@@ -619,10 +620,10 @@ contract BTTSToken is BTTSTokenInterface {
     function signedTransferFrom(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         return data.signedTransferFrom(address(this), spender, from, to, tokens, fee, nonce, sig, feeAccount);
     }
-    function signedApproveAndCallHash(address signer, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash) {
-        return data.signedApproveAndCallHash(address(this), signer, spender, tokens, _data, fee, nonce);
+    function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash) {
+        return data.signedApproveAndCallHash(address(this), tokenOwner, spender, tokens, _data, fee, nonce);
     }
-    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
+    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
         return data.signedApproveAndCallCheck(address(this), tokenOwner, spender, tokens, _data, fee, nonce, sig, feeAccount);
     }
     function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {

@@ -7,13 +7,16 @@ Source file [../contracts/BTTSTokenFactory.sol](../contracts/BTTSTokenFactory.so
 <hr />
 
 ```javascript
+// BK Ok
 pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
 // ERC Token Standard #20 Interface
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
 // ----------------------------------------------------------------------------
+// BK Ok
 contract ERC20Interface {
+    // BK Next 6 Ok
     function totalSupply() public constant returns (uint);
     function balanceOf(address tokenOwner) public constant returns (uint balance);
     function allowance(address tokenOwner, address spender) public constant returns (uint remaining);
@@ -21,6 +24,7 @@ contract ERC20Interface {
     function approve(address spender, uint tokens) public returns (bool success);
     function transferFrom(address from, address to, uint tokens) public returns (bool success);
 
+    // BK Next 2 Ok - Events
     event Transfer(address indexed from, address indexed to, uint tokens);
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 }
@@ -29,7 +33,9 @@ contract ERC20Interface {
 // ----------------------------------------------------------------------------
 // Contracts that can have tokens approved, and then a function execute
 // ----------------------------------------------------------------------------
+// BK Ok
 contract ApproveAndCallFallBack {
+    // BK Ok
     function receiveApproval(address from, uint256 tokens, address token, bytes data) public;
 }
 
@@ -39,15 +45,19 @@ contract ApproveAndCallFallBack {
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
+// BK Ok
 contract BTTSTokenInterface is ERC20Interface {
+    // BK Ok
     uint public constant bttsVersion = 100;
 
+    // BK Next 5 Ok
     bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
     bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
     bytes4 public constant signedApproveSig = "\xe9\xaf\xa7\xa1";
     bytes4 public constant signedTransferFromSig = "\x34\x4b\xcc\x7d";
     bytes4 public constant signedApproveAndCallSig = "\xf1\x6f\x9b\x53";
 
+    // BK Next 6 Ok
     event OwnershipTransferred(address indexed from, address indexed to);
     event MinterUpdated(address from, address to);
     event Mint(address indexed tokenOwner, uint tokens, bool lockAccount);
@@ -55,27 +65,33 @@ contract BTTSTokenInterface is ERC20Interface {
     event TransfersEnabled();
     event AccountUnlocked(address indexed tokenOwner);
 
+    // BK Ok
     function approveAndCall(address spender, uint tokens, bytes data) public returns (bool success);
 
     // ------------------------------------------------------------------------
     // signed{X} functions
     // ------------------------------------------------------------------------
+    // BK Next 3 Ok
     function signedTransferHash(address tokenOwner, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
     function signedTransferCheck(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
     function signedTransfer(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
 
+    // BK Next 3 Ok
     function signedApproveHash(address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
     function signedApproveCheck(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
     function signedApprove(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
 
+    // BK Next 3 Ok
     function signedTransferFromHash(address spender, address from, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
     function signedTransferFromCheck(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
     function signedTransferFrom(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
 
-    function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce) public view returns (bytes32 hash);
-    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
-    function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
+    // BK Next 3 Ok
+    function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash);
+    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
+    function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
 
+    // BK Next 4 Ok
     function mint(address tokenOwner, uint tokens, bool lockAccount) public returns (bool success);
     function unlockAccount(address tokenOwner) public;
     function disableMinting() public;
@@ -84,6 +100,7 @@ contract BTTSTokenInterface is ERC20Interface {
     // ------------------------------------------------------------------------
     // signed{X}Check return status
     // ------------------------------------------------------------------------
+    // BK Next block Ok
     enum CheckResult {
         Success,                           // 0 Success
         NotTransferable,                   // 1 Tokens not transferable yet
@@ -104,19 +121,24 @@ contract BTTSTokenInterface is ERC20Interface {
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
+// BK Ok
 library BTTSLib {
+    // BK Ok
     struct Data {
         // Ownership
+        // BK Next 2 Ok
         address owner;
         address newOwner;
 
         // Minting and management
+        // BK Next 4 Ok
         address minter;
         bool mintable;
         bool transferable;
         mapping(address => bool) accountLocked;
 
         // Token
+        // BK Next 7 Ok
         string symbol;
         string name;
         uint8 decimals;
@@ -130,6 +152,7 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------------------
+    // BK Next 6 Ok
     uint public constant bttsVersion = 100;
     bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
     bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
@@ -140,6 +163,7 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Event
     // ------------------------------------------------------------------------
+    // BK Next 8 Ok
     event OwnershipTransferred(address indexed from, address indexed to);
     event MinterUpdated(address from, address to);
     event Mint(address indexed tokenOwner, uint tokens, bool lockAccount);
@@ -153,17 +177,25 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Initialisation
     // ------------------------------------------------------------------------
+    // BK Ok
     function init(Data storage self, address owner, string symbol, string name, uint8 decimals, uint initialSupply, bool mintable, bool transferable) public {
+        // BK Ok
+        require(self.owner == address(0));
+        // BK Next 4 Ok
         self.owner = owner;
         self.symbol = symbol;
         self.name = name;
         self.decimals = decimals;
+        // BK Ok
         if (initialSupply > 0) {
+            // BK Next 2 Ok
             self.balances[owner] = initialSupply;
             self.totalSupply = initialSupply;
+            // BK Next 2 Ok - Log events
             Mint(self.owner, initialSupply, false);
             Transfer(address(0), self.owner, initialSupply);
         }
+        // BK Next 2 Ok
         self.mintable = mintable;
         self.transferable = transferable;
     }
@@ -171,18 +203,22 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Safe maths
     // ------------------------------------------------------------------------
+    // BK Next function Ok
     function safeAdd(uint a, uint b) internal pure returns (uint c) {
         c = a + b;
         require(c >= a);
     }
+    // BK Next function Ok
     function safeSub(uint a, uint b) internal pure returns (uint c) {
         require(b <= a);
         c = a - b;
     }
+    // BK Next function Ok
     function safeMul(uint a, uint b) internal pure returns (uint c) {
         c = a * b;
         require(a == 0 || c / a == b);
     }
+    // BK Next function Ok
     function safeDiv(uint a, uint b) internal pure returns (uint c) {
         require(b > 0);
         c = a / b;
@@ -191,16 +227,19 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Ownership
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Only owner can execute
     function transferOwnership(Data storage self, address newOwner) public {
         require(msg.sender == self.owner);
         self.newOwner = newOwner;
     }
+    // BK Next function Ok - Only new owner can execute
     function acceptOwnership(Data storage self) public {
         require(msg.sender == self.newOwner);
         OwnershipTransferred(self.owner, self.newOwner);
         self.owner = self.newOwner;
         self.newOwner = address(0);
     }
+    // BK Next function Ok - Only owner can execute
     function transferOwnershipImmediately(Data storage self, address newOwner) public {
         require(msg.sender == self.owner);
         OwnershipTransferred(self.owner, newOwner);
@@ -211,13 +250,15 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Minting and management
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Only owner can execute
     function setMinter(Data storage self, address minter) public {
         require(msg.sender == self.owner);
         require(self.mintable);
         MinterUpdated(self.minter, minter);
         self.minter = minter;
     }
-    function mint(Data storage self, address tokenOwner, uint tokens, bool lockAccount) internal returns (bool success) {
+    // BK Next function Ok - Only owner or minter can execute
+    function mint(Data storage self, address tokenOwner, uint tokens, bool lockAccount) public returns (bool success) {
         require(self.mintable);
         require(msg.sender == self.minter || msg.sender == self.owner);
         if (lockAccount) {
@@ -229,12 +270,14 @@ library BTTSLib {
         Transfer(address(0), tokenOwner, tokens);
         return true;
     }
+    // BK Next function Ok - Only owner can execute
     function unlockAccount(Data storage self, address tokenOwner) public {
         require(msg.sender == self.owner);
         require(self.accountLocked[tokenOwner]);
         self.accountLocked[tokenOwner] = false;
         AccountUnlocked(tokenOwner);
     }
+    // BK Next function Ok - Only owner or minter can execute
     function disableMinting(Data storage self) public {
         require(self.mintable);
         require(msg.sender == self.minter || msg.sender == self.owner);
@@ -245,6 +288,7 @@ library BTTSLib {
         }
         MintingDisabled();
     }
+    // BK Next function Ok - Only owner can execute
     function enableTransfers(Data storage self) public {
         require(msg.sender == self.owner);
         require(!self.transferable);
@@ -255,6 +299,7 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Other functions
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Only owner can execute
     function transferAnyERC20Token(Data storage self, address tokenAddress, uint tokens) public returns (bool success) {
         require(msg.sender == self.owner);
         return ERC20Interface(tokenAddress).transfer(self.owner, tokens);
@@ -610,8 +655,8 @@ contract BTTSToken is BTTSTokenInterface {
     function signedTransfer(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         return data.signedTransfer(address(this), tokenOwner, to, tokens, fee, nonce, sig, feeAccount);
     }
-    function signedApproveHash(address signer, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
-        return data.signedApproveHash(address(this), signer, spender, tokens, fee, nonce);
+    function signedApproveHash(address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
+        return data.signedApproveHash(address(this), tokenOwner, spender, tokens, fee, nonce);
     }
     function signedApproveCheck(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
         return data.signedApproveCheck(address(this), tokenOwner, spender, tokens, fee, nonce, sig, feeAccount);
@@ -628,10 +673,10 @@ contract BTTSToken is BTTSTokenInterface {
     function signedTransferFrom(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         return data.signedTransferFrom(address(this), spender, from, to, tokens, fee, nonce, sig, feeAccount);
     }
-    function signedApproveAndCallHash(address signer, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash) {
-        return data.signedApproveAndCallHash(address(this), signer, spender, tokens, _data, fee, nonce);
+    function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash) {
+        return data.signedApproveAndCallHash(address(this), tokenOwner, spender, tokens, _data, fee, nonce);
     }
-    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
+    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
         return data.signedApproveAndCallCheck(address(this), tokenOwner, spender, tokens, _data, fee, nonce, sig, feeAccount);
     }
     function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
@@ -642,27 +687,35 @@ contract BTTSToken is BTTSTokenInterface {
 // ----------------------------------------------------------------------------
 // Owned contract
 // ----------------------------------------------------------------------------
+// BK Ok
 contract Owned {
+    // BK Next 2 Ok
     address public owner;
     address public newOwner;
+    // BK Ok - Event
     event OwnershipTransferred(address indexed _from, address indexed _to);
 
+    // BK Next function Ok - Constructor
     function Owned() public {
         owner = msg.sender;
     }
+    // BK Next modifier Ok
     modifier onlyOwner {
         require(msg.sender == owner);
         _;
     }
+    // BK Next function Ok - Only owner can execute
     function transferOwnership(address _newOwner) public onlyOwner {
         newOwner = _newOwner;
     }
+    // BK Next function Ok - Only new owner can execute
     function acceptOwnership() public {
         require(msg.sender == newOwner);
         OwnershipTransferred(owner, newOwner);
         owner = newOwner;
         newOwner = address(0);
     }
+    // BK Next function Ok - Only owner can execute
     function transferOwnershipImmediately(address _newOwner) public onlyOwner {
         OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
@@ -676,16 +729,19 @@ contract Owned {
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
+// BK Ok
 contract BTTSTokenFactory is Owned {
 
     // ------------------------------------------------------------------------
     // Internal data
     // ------------------------------------------------------------------------
+    // BK Ok
     mapping(address => bool) _verify;
 
     // ------------------------------------------------------------------------
     // Event
     // ------------------------------------------------------------------------
+    // BK Ok - Event
     event BTTSTokenListing(address indexed ownerAddress,
         address indexed bttsTokenAddress, 
         string symbol, string name, uint8 decimals, 
@@ -706,6 +762,7 @@ contract BTTSTokenFactory is Owned {
     //   mintable       is the token mintable after deployment?
     //   transferable   are the tokens transferable after deployment?
     // ------------------------------------------------------------------------
+    // BK Next function Ok - View function
     function verify(address tokenContract) public view returns (
         bool    valid,
         address owner,
@@ -755,6 +812,7 @@ contract BTTSTokenFactory is Owned {
     //   mintable       can tokens be minted after deployment?
     //   transferable   are the tokens transferable after deployment?
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Anyone can execute to create their own token contract
     function deployBTTSTokenContract(
         string symbol,
         string name,
@@ -786,6 +844,7 @@ contract BTTSTokenFactory is Owned {
     //                 from
     //   tokens        number of tokens
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Only owner can execute
     function transferAnyERC20Token(address tokenAddress, uint tokens) public onlyOwner returns (bool success) {
         return ERC20Interface(tokenAddress).transfer(owner, tokens);
     }
@@ -793,6 +852,7 @@ contract BTTSTokenFactory is Owned {
     // ------------------------------------------------------------------------
     // Don't accept ethers
     // ------------------------------------------------------------------------
+    // BK Next function Ok
     function () public payable {
         revert();
     }
