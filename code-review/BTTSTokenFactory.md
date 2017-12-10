@@ -250,14 +250,14 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Minting and management
     // ------------------------------------------------------------------------
-    // BK Next function Ok - Only owner can execute
+    // BK Next function Ok - Only owner can execute when mintable
     function setMinter(Data storage self, address minter) public {
         require(msg.sender == self.owner);
         require(self.mintable);
         MinterUpdated(self.minter, minter);
         self.minter = minter;
     }
-    // BK Next function Ok - Only owner or minter can execute
+    // BK Next function Ok - Only owner or minter can execute when mintable
     function mint(Data storage self, address tokenOwner, uint tokens, bool lockAccount) public returns (bool success) {
         require(self.mintable);
         require(msg.sender == self.minter || msg.sender == self.owner);
@@ -418,7 +418,7 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Signed function
     // ------------------------------------------------------------------------
-    // BK NOTE - Token owner signs [functionSig, tokenContractAddress, tokenOwner, toAccount, fees, nonce]
+    // BK NOTE - Token owner signs [functionSig, tokenContractAddress, tokenOwner, to, tokens, fee, nonce]
     // BK Next function Ok - Pure function
     function signedTransferHash(Data storage /*self*/, address tokenContract, address tokenOwner, address to, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
         hash = keccak256(signedTransferSig, tokenContract, tokenOwner, to, tokens, fee, nonce);
@@ -437,6 +437,7 @@ library BTTSLib {
         if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
         return BTTSTokenInterface.CheckResult.Success;
     }
+    // BK Next function Ok
     function signedTransfer(Data storage self, address tokenContract, address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         require(self.transferable);
         bytes32 hash = signedTransferHash(self, tokenContract, tokenOwner, to, tokens, fee, nonce);
@@ -452,7 +453,7 @@ library BTTSLib {
         Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
-    // BK NOTE - Token owner signs [functionSig, tokenContractAddress, tokenOwner, spender, toAccount, fees, nonce]
+    // BK NOTE - Token owner signs [functionSig, tokenContractAddress, tokenOwner, spender, tokens, fee, nonce]
     // BK Next function Ok - Pure function
     function signedApproveHash(Data storage /*self*/, address tokenContract, address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
         hash = keccak256(signedApproveSig, tokenContract, tokenOwner, spender, tokens, fee, nonce);
@@ -468,6 +469,7 @@ library BTTSLib {
         if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
         return BTTSTokenInterface.CheckResult.Success;
     }
+    // BK Next function Ok
     function signedApprove(Data storage self, address tokenContract, address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         require(self.transferable);
         bytes32 hash = signedApproveHash(self, tokenContract, tokenOwner, spender, tokens, fee, nonce);
@@ -482,6 +484,7 @@ library BTTSLib {
         Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
+    // BK NOTE - Token owner signs [functionSig, tokenContractAddress, spender, from, to, tokens, fee, nonce]
     // BK Next function Ok - Pure function
     function signedTransferFromHash(Data storage /*self*/, address tokenContract, address spender, address from, address to, uint tokens, uint fee, uint nonce) public pure returns (bytes32 hash) {
         hash = keccak256(signedTransferFromSig, tokenContract, spender, from, to, tokens, fee, nonce);
@@ -502,6 +505,7 @@ library BTTSLib {
         if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
         return BTTSTokenInterface.CheckResult.Success;
     }
+    // BK Next function Ok
     function signedTransferFrom(Data storage self, address tokenContract, address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         require(self.transferable);
         bytes32 hash = signedTransferFromHash(self, tokenContract, spender, from, to, tokens, fee, nonce);
@@ -519,6 +523,7 @@ library BTTSLib {
         Transfer(from, feeAccount, fee);
         return true;
     }
+    // BK NOTE - Spender signs [functionSig, tokenContractAddress, tokenOwner, spender, tokens, data, fee, nonce]
     // BK Next function Ok - Pure function
     function signedApproveAndCallHash(Data storage /*self*/, address tokenContract, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce) public pure returns (bytes32 hash) {
         hash = keccak256(signedApproveAndCallSig, tokenContract, tokenOwner, spender, tokens, data, fee, nonce);
@@ -534,6 +539,7 @@ library BTTSLib {
         if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
         return BTTSTokenInterface.CheckResult.Success;
     }
+    // BK Next function Ok
     function signedApproveAndCall(Data storage self, address tokenContract, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         require(self.transferable);
         bytes32 hash = signedApproveAndCallHash(self, tokenContract, tokenOwner, spender, tokens, data, fee, nonce);
@@ -557,14 +563,18 @@ library BTTSLib {
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
+// BK Ok
 contract BTTSToken is BTTSTokenInterface {
+    // BK Ok
     using BTTSLib for BTTSLib.Data;
 
+    // BK Ok
     BTTSLib.Data data;
 
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Constructor calling the library init
     function BTTSToken(address owner, string symbol, string name, uint8 decimals, uint initialSupply, bool mintable, bool transferable) public {
         data.init(owner, symbol, name, decimals, initialSupply, mintable, transferable);
     }
@@ -572,18 +582,23 @@ contract BTTSToken is BTTSTokenInterface {
     // ------------------------------------------------------------------------
     // Ownership
     // ------------------------------------------------------------------------
+    // BK Next function Ok - View function
     function owner() public view returns (address) {
         return data.owner;
     }
+    // BK Next function Ok - View function
     function newOwner() public view returns (address) {
         return data.newOwner;
     }
+    // BK Next function Ok - Only owner can execute
     function transferOwnership(address _newOwner) public {
         data.transferOwnership(_newOwner);
     }
+    // BK Next function Ok - Only new owner can execute
     function acceptOwnership() public {
         data.acceptOwnership();
     }
+    // BK Next function Ok - Only owner can execute
     function transferOwnershipImmediately(address _newOwner) public {
         data.transferOwnershipImmediately(_newOwner);
     }
@@ -591,12 +606,15 @@ contract BTTSToken is BTTSTokenInterface {
     // ------------------------------------------------------------------------
     // Token
     // ------------------------------------------------------------------------
+    // BK Next function Ok - View function
     function symbol() public view returns (string) {
         return data.symbol;
     }
+    // BK Next function Ok - View function
     function name() public view returns (string) {
         return data.name;
     }
+    // BK Next function Ok - View function
     function decimals() public view returns (uint8) {
         return data.decimals;
     }
@@ -604,27 +622,35 @@ contract BTTSToken is BTTSTokenInterface {
     // ------------------------------------------------------------------------
     // Minting and management
     // ------------------------------------------------------------------------
+    // BK Next function Ok - View function
     function minter() public view returns (address) {
         return data.minter;
     }
+    // BK Next function Ok - Only owner can execute when mintable
     function setMinter(address _minter) public {
         data.setMinter(_minter);
     }
+    // BK Next function Ok - Only owner or minter can execute when mintable
     function mint(address tokenOwner, uint tokens, bool lockAccount) public returns (bool success) {
         return data.mint(tokenOwner, tokens, lockAccount);
     }
+    // BK Next function Ok - Only owner can execute
     function unlockAccount(address tokenOwner) public {
         return data.unlockAccount(tokenOwner);
     }
+    // BK Next function Ok - View function
     function mintable() public view returns (bool) {
         return data.mintable;
     }
+    // BK Next function Ok - View function
     function transferable() public view returns (bool) {
         return data.transferable;
     }
+    // BK Next function Ok - Only owner or minter can execute
     function disableMinting() public {
         data.disableMinting();
     }
+    // BK Next function Ok - Only owner can execute
     function enableTransfers() public {
         data.enableTransfers();
     }
@@ -632,6 +658,7 @@ contract BTTSToken is BTTSTokenInterface {
     // ------------------------------------------------------------------------
     // Other functions
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Only owner can execute
     function transferAnyERC20Token(address tokenAddress, uint tokens) public returns (bool success) {
         return data.transferAnyERC20Token(tokenAddress, tokens);
     }
@@ -639,6 +666,7 @@ contract BTTSToken is BTTSTokenInterface {
     // ------------------------------------------------------------------------
     // Don't accept ethers
     // ------------------------------------------------------------------------
+    // BK Next function Ok
     function () public payable {
         revert();
     }
@@ -646,24 +674,31 @@ contract BTTSToken is BTTSTokenInterface {
     // ------------------------------------------------------------------------
     // Token functions
     // ------------------------------------------------------------------------
+    // BK Next function Ok - Constant function
     function totalSupply() public constant returns (uint) {
         return data.totalSupply - data.balances[address(0)];
     }
+    // BK Next function Ok - Constant function
     function balanceOf(address tokenOwner) public constant returns (uint balance) {
         return data.balances[tokenOwner];
     }
+    // BK Next function Ok - Constant function
     function allowance(address tokenOwner, address spender) public constant returns (uint remaining) {
         return data.allowed[tokenOwner][spender];
     }
+    // BK Next function Ok
     function transfer(address to, uint tokens) public returns (bool success) {
         return data.transfer(to, tokens);
     }
+    // BK Next function Ok
     function approve(address spender, uint tokens) public returns (bool success) {
         return data.approve(spender, tokens);
     }
+    // BK Next function Ok
     function transferFrom(address from, address to, uint tokens) public returns (bool success) {
         return data.transferFrom(from, to, tokens);
     }
+    // BK Next function Ok
     function approveAndCall(address spender, uint tokens, bytes _data) public returns (bool success) {
         success = data.approveAndCall(this, spender, tokens, _data);
     }
@@ -671,39 +706,51 @@ contract BTTSToken is BTTSTokenInterface {
     // ------------------------------------------------------------------------
     // Signed function
     // ------------------------------------------------------------------------
+    // BK Next function Ok
     function signedTransferHash(address tokenOwner, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
         return data.signedTransferHash(address(this), tokenOwner, to, tokens, fee, nonce);
     }
+    // BK Next function Ok
     function signedTransferCheck(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
         return data.signedTransferCheck(address(this), tokenOwner, to, tokens, fee, nonce, sig, feeAccount);
     }
+    // BK Next function Ok
     function signedTransfer(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         return data.signedTransfer(address(this), tokenOwner, to, tokens, fee, nonce, sig, feeAccount);
     }
+    // BK Next function Ok
     function signedApproveHash(address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
         return data.signedApproveHash(address(this), tokenOwner, spender, tokens, fee, nonce);
     }
+    // BK Next function Ok
     function signedApproveCheck(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
         return data.signedApproveCheck(address(this), tokenOwner, spender, tokens, fee, nonce, sig, feeAccount);
     }
+    // BK Next function Ok
     function signedApprove(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         return data.signedApprove(address(this), tokenOwner, spender, tokens, fee, nonce, sig, feeAccount);
     }
+    // BK Next function Ok
     function signedTransferFromHash(address spender, address from, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
         return data.signedTransferFromHash(address(this), spender, from, to, tokens, fee, nonce);
     }
+    // BK Next function Ok
     function signedTransferFromCheck(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
         return data.signedTransferFromCheck(address(this), spender, from, to, tokens, fee, nonce, sig, feeAccount);
     }
+    // BK Next function Ok
     function signedTransferFrom(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         return data.signedTransferFrom(address(this), spender, from, to, tokens, fee, nonce, sig, feeAccount);
     }
+    // BK Next function Ok
     function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash) {
         return data.signedApproveAndCallHash(address(this), tokenOwner, spender, tokens, _data, fee, nonce);
     }
+    // BK Next function Ok
     function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
         return data.signedApproveAndCallCheck(address(this), tokenOwner, spender, tokens, _data, fee, nonce, sig, feeAccount);
     }
+    // BK Next function Ok
     function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         return data.signedApproveAndCall(address(this), tokenOwner, spender, tokens, _data, fee, nonce, sig, feeAccount);
     }
