@@ -202,8 +202,8 @@ console.log("RESULT: ");
 var mintTokensMessage = "Mint Tokens";
 // -----------------------------------------------------------------------------
 console.log("RESULT: --- " + mintTokensMessage + " ---");
-var mintTokens1Tx = token.mint(account3, "1000000000000000000000000", false, {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
-var mintTokens2Tx = token.mint(account4, "1000000000000000000000000", false, {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
+var mintTokens1Tx = token.mint(account3, "1000000000000000000000000", true, {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
+var mintTokens2Tx = token.mint(account4, "1000000000000000000000000", true, {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printBalances();
@@ -232,7 +232,21 @@ printTokenContractDetails();
 console.log("RESULT: ");
 
 
-exit;
+// -----------------------------------------------------------------------------
+var unlockAccountsMessage = "Unlock Accounts";
+// -----------------------------------------------------------------------------
+console.log("RESULT: --- " + unlockAccountsMessage + " ---");
+var unlockAccounts1Tx = token.unlockAccount(account3, {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
+var unlockAccounts2Tx = token.unlockAccount(account4, {from: contractOwnerAccount, gas: 100000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printBalances();
+failIfTxStatusError(unlockAccounts1Tx, unlockAccountsMessage + " - unlock ac3");
+failIfTxStatusError(unlockAccounts2Tx, unlockAccountsMessage + " - unlock ac4");
+printTxData("unlockAccounts1Tx", unlockAccounts1Tx);
+printTxData("unlockAccounts2Tx", unlockAccounts2Tx);
+printTokenContractDetails();
+console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------
@@ -245,7 +259,7 @@ function signedTransferCheckResultString(e) {
   } else if (e == 1) {
     text = "NotTransferable";
   } else if (e == 2) {
-    text = "NotExecutable";
+    text = "AccountLocked";
   } else if (e == 3) {
     text = "SignerMismatch";
   } else if (e == 4) {
@@ -361,9 +375,9 @@ var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, 
   {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
-printTxData("signedTransfer1Tx", signedTransfer1Tx);
 printBalances();
 failIfTxStatusError(signedTransfer1Tx, signedTransferMessage + " - Signed Transfer ");
+printTxData("signedTransfer1Tx", signedTransfer1Tx);
 printTokenContractDetails();
 console.log("RESULT: ");
 
@@ -488,6 +502,7 @@ failIfTxStatusError(signedTransferFrom1Tx, signedTransferMessage + " - Signed Tr
 passIfTxStatusError(signedTransferFrom2Tx, signedTransferMessage + " - Duplicated Signed TransfersFrom - Expecting Failure");
 printTokenContractDetails();
 console.log("RESULT: ");
+
 
 exit;
 
