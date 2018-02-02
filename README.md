@@ -1,6 +1,14 @@
 # BokkyPooBah's Token Teleportation Service Smart Contract
 
-Status: Work in progress, still some medium size changes to be done
+## Mainnet Deployment
+
+* BTTSTokenFactory: [0x594dd662b580ca58b1186af45551f34312e91e88](https://etherscan.io/address/0x594dd662b580ca58b1186af45551f34312e91e88#code)
+* GazeCoin token: [0x8c65e992297d5f092a756def24f4781a280198ff](https://etherscan.io/address/0x8c65e992297d5f092a756def24f4781a280198ff#code)
+* Devery token: [0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c](https://etherscan.io/address/0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c#code)
+
+<br />
+
+<hr />
 
 ## Summary
 
