@@ -3,9 +3,8 @@ PASSWORD=testtest
 
 SOURCEDIR=../contracts
 
-CROWDSALESOL=BTTSToken.sol
-CROWDSALEJS=BTTSToken.js
-# ECVERIFYSOL=ECVerify.sol
+CROWDSALESOL=BTTSTokenFactory.sol
+CROWDSALEJS=BTTSTokenFactory.js
 
 DEPLOYMENTDATA=deploymentData.txt
 
