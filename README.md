@@ -79,7 +79,7 @@ session.
 
 In the testing [script](test/01_test1.sh) and [results](test/test1results.txt):
 
-* The account `0xa33a` wants to transfer 1 token to account `0xa55a` and pay a fee of 0.1 token
+* The account `0xa33a` wants to transfer 1 token to account `0xa55a` and pay a 0.01 token fee 
 * The parameters for the signed transfers are:
   * `from` = `0xa33a`
   * `to` = `0xa55a`
