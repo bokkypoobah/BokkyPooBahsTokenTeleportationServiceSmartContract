@@ -2,9 +2,16 @@
 
 ## Mainnet Deployment
 
+[BTTSTokenFactory.sol](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/d8806edfea0c2f318dd0262a34c1323df0779220/contracts/BTTSTokenFactory.sol) has been deployed to:
+
 * BTTSTokenFactory: [0x594dd662b580ca58b1186af45551f34312e91e88](https://etherscan.io/address/0x594dd662b580ca58b1186af45551f34312e91e88#code)
 * GazeCoin token: [0x8c65e992297d5f092a756def24f4781a280198ff](https://etherscan.io/address/0x8c65e992297d5f092a756def24f4781a280198ff#code)
 * Devery token: [0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c](https://etherscan.io/address/0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c#code)
+
+**Note** that there is a MAJOR bug [#5 Incorrect parameter passed to ApproveAndCallFallBack() function](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/5)
+in the deployed token factory and token contracts above.
+
+A fix and migration path is currently being worked out.
 
 <br />
 
@@ -79,7 +86,7 @@ session.
 
 In the testing [script](test/01_test1.sh) and [results](test/test1results.txt):
 
-* The account `0xa33a` wants to transfer 1 token to account `0xa55a` and pay a fee of 0.1 token
+* The account `0xa33a` wants to transfer 1 token to account `0xa55a` and pay a 0.01 token fee 
 * The parameters for the signed transfers are:
   * `from` = `0xa33a`
   * `to` = `0xa55a`
