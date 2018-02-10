@@ -471,7 +471,7 @@ library BTTSLib {
         self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
         self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
         Transfer(tokenOwner, feeAccount, fee);
-        ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, tokenContract, data);
+        ApproveAndCallFallBack(spender).receiveApproval(tokenOwner, tokens, tokenContract, data);
         return true;
     }
 }
