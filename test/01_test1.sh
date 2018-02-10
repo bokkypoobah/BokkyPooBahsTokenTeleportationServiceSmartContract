@@ -301,7 +301,7 @@ var spender = testAddress;
 var tokens = "456789000000000000000";
 var data = "World";
 var fee = "123000000000000000";
-var nonce = "0";
+var nonce = token.nextNonce(spender);
 // -----------------------------------------------------------------------------
 
 var signedApproveAndCallHash = token.signedApproveAndCallHash(owner, spender, tokens, data, fee, nonce);
@@ -368,7 +368,7 @@ var to = account5;
 var tokens = new BigNumber("1000000000000000000");
 var fee = new BigNumber("10000000000000000");
 var feeToken = token;
-var nonce = "0";
+var nonce = token.nextNonce(from);
 // -----------------------------------------------------------------------------
 
 var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(from) + addressToHex(to) + uint256ToHex(tokens) + uint256ToHex(fee) + uint256ToHex(nonce);
@@ -425,7 +425,7 @@ var owner = account4;
 var spender = account6;
 var tokens = "50000000000000000000";
 var fee = "500000000000000000";
-var nonce = "0";
+var nonce = token.nextNonce(account4);
 // -----------------------------------------------------------------------------
 
 var signedApproveHash = token.signedApproveHash(owner, spender, tokens, fee, nonce);
@@ -481,6 +481,7 @@ var from = account4;
 var to = account7;
 var tokens = "3000000000000000000";
 var fee = "30000000000000000";
+var nonce = token.nextNonce(spender);
 
 var signedTransferFromHash = token.signedTransferFromHash(spender, from, to, tokens, fee, nonce);
 console.log("RESULT: signedTransferFromHash=" + signedTransferFromHash);

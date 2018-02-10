@@ -249,6 +249,11 @@ function printTokenContractDetails() {
     console.log("RESULT: token.minter=" + contract.minter());
     console.log("RESULT: token.accountLocked(account3)=" + contract.accountLocked(account3));
     console.log("RESULT: token.accountLocked(account4)=" + contract.accountLocked(account4));
+    console.log("RESULT: token.nextNonce(account3)=" + contract.nextNonce(account3));
+    console.log("RESULT: token.nextNonce(account4)=" + contract.nextNonce(account4));
+    console.log("RESULT: token.nextNonce(account5)=" + contract.nextNonce(account5));
+    console.log("RESULT: token.nextNonce(account6)=" + contract.nextNonce(account6));
+    console.log("RESULT: token.nextNonce(account7)=" + contract.nextNonce(account7));
 
     var latestBlock = eth.blockNumber;
     var i;

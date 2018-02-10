@@ -12,7 +12,7 @@ function signedTransferCheckResultString(e) {
   } else if (e == 3) {
     text = "SignerMismatch";
   } else if (e == 4) {
-    text = "AlreadyExecuted";
+    text = "InvalidNonce";
   } else if (e == 5) {
     text = "InsufficientApprovedTokens";
   } else if (e == 6) {

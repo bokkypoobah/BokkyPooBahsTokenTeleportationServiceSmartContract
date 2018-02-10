@@ -80,7 +80,7 @@ contract BTTSTokenInterface is ERC20Interface {
         NotTransferable,                   // 1 Tokens not transferable yet
         AccountLocked,                     // 2 Account locked
         SignerMismatch,                    // 3 Mismatch in signing account
-        AlreadyExecuted,                   // 4 Transfer already executed
+        InvalidNonce,                      // 4 Invalid nonce
         InsufficientApprovedTokens,        // 5 Insufficient approved tokens
         InsufficientApprovedTokensForFees, // 6 Insufficient approved tokens for fees
         InsufficientTokens,                // 7 Insufficient tokens
@@ -116,7 +116,7 @@ library BTTSLib {
         uint totalSupply;
         mapping(address => uint) balances;
         mapping(address => mapping(address => uint)) allowed;
-        mapping(address => mapping(bytes32 => bool)) executed;
+        mapping(address => uint) nextNonce;
     }
 
 
@@ -298,8 +298,8 @@ library BTTSLib {
             return "Account locked";
         } else if (result == BTTSTokenInterface.CheckResult.SignerMismatch) {
             return "Mismatch in signing account";
-        } else if (result == BTTSTokenInterface.CheckResult.AlreadyExecuted) {
-            return "Transfer already executed";
+        } else if (result == BTTSTokenInterface.CheckResult.InvalidNonce) {
+            return "Invalid nonce";
         } else if (result == BTTSTokenInterface.CheckResult.InsufficientApprovedTokens) {
             return "Insufficient approved tokens";
         } else if (result == BTTSTokenInterface.CheckResult.InsufficientApprovedTokensForFees) {
@@ -361,7 +361,7 @@ library BTTSLib {
         bytes32 hash = signedTransferHash(self, tokenOwner, to, tokens, fee, nonce);
         if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
         if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
-        if (self.executed[tokenOwner][hash]) return BTTSTokenInterface.CheckResult.AlreadyExecuted;
+        if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
         uint total = safeAdd(tokens, fee);
         if (self.balances[tokenOwner] < tokens) return BTTSTokenInterface.CheckResult.InsufficientTokens;
         if (self.balances[tokenOwner] < total) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
@@ -374,8 +374,8 @@ library BTTSLib {
         bytes32 hash = signedTransferHash(self, tokenOwner, to, tokens, fee, nonce);
         require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
         require(!self.accountLocked[tokenOwner]);
-        require(!self.executed[tokenOwner][hash]);
-        self.executed[tokenOwner][hash] = true;
+        require(self.nextNonce[tokenOwner] == nonce);
+        self.nextNonce[tokenOwner] = nonce + 1;
         self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], tokens);
         self.balances[to] = safeAdd(self.balances[to], tokens);
         Transfer(tokenOwner, to, tokens);
@@ -392,7 +392,7 @@ library BTTSLib {
         bytes32 hash = signedApproveHash(self, tokenOwner, spender, tokens, fee, nonce);
         if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
         if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
-        if (self.executed[tokenOwner][hash]) return BTTSTokenInterface.CheckResult.AlreadyExecuted;
+        if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
         if (self.balances[tokenOwner] < fee) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
         if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
         return BTTSTokenInterface.CheckResult.Success;
@@ -402,8 +402,8 @@ library BTTSLib {
         bytes32 hash = signedApproveHash(self, tokenOwner, spender, tokens, fee, nonce);
         require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
         require(!self.accountLocked[tokenOwner]);
-        require(!self.executed[tokenOwner][hash]);
-        self.executed[tokenOwner][hash] = true;
+        require(self.nextNonce[tokenOwner] == nonce);
+        self.nextNonce[tokenOwner] = nonce + 1;
         self.allowed[tokenOwner][spender] = tokens;
         Approval(tokenOwner, spender, tokens);
         self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
@@ -419,7 +419,7 @@ library BTTSLib {
         bytes32 hash = signedTransferFromHash(self, spender, from, to, tokens, fee, nonce);
         if (spender == address(0) || spender != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
         if (self.accountLocked[from]) return BTTSTokenInterface.CheckResult.AccountLocked;
-        if (self.executed[spender][hash]) return BTTSTokenInterface.CheckResult.AlreadyExecuted;
+        if (self.nextNonce[spender] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
         uint total = safeAdd(tokens, fee);
         if (self.allowed[from][spender] < tokens) return BTTSTokenInterface.CheckResult.InsufficientApprovedTokens;
         if (self.allowed[from][spender] < total) return BTTSTokenInterface.CheckResult.InsufficientApprovedTokensForFees;
@@ -434,8 +434,8 @@ library BTTSLib {
         bytes32 hash = signedTransferFromHash(self, spender, from, to, tokens, fee, nonce);
         require(spender != address(0) && spender == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
         require(!self.accountLocked[from]);
-        require(!self.executed[spender][hash]);
-        self.executed[spender][hash] = true;
+        require(self.nextNonce[spender] == nonce);
+        self.nextNonce[spender] = nonce + 1;
         self.balances[from] = safeSub(self.balances[from], tokens);
         self.allowed[from][spender] = safeSub(self.allowed[from][spender], tokens);
         self.balances[to] = safeAdd(self.balances[to], tokens);
@@ -454,7 +454,7 @@ library BTTSLib {
         bytes32 hash = signedApproveAndCallHash(self, tokenOwner, spender, tokens, data, fee, nonce);
         if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
         if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
-        if (self.executed[tokenOwner][hash]) return BTTSTokenInterface.CheckResult.AlreadyExecuted;
+        if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
         if (self.balances[tokenOwner] < fee) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
         if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
         return BTTSTokenInterface.CheckResult.Success;
@@ -464,8 +464,8 @@ library BTTSLib {
         bytes32 hash = signedApproveAndCallHash(self, tokenOwner, spender, tokens, data, fee, nonce);
         require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
         require(!self.accountLocked[tokenOwner]);
-        require(!self.executed[tokenOwner][hash]);
-        self.executed[tokenOwner][hash] = true;
+        require(self.nextNonce[tokenOwner] == nonce);
+        self.nextNonce[tokenOwner] = nonce + 1;
         self.allowed[tokenOwner][spender] = tokens;
         Approval(tokenOwner, spender, tokens);
         self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
@@ -555,6 +555,9 @@ contract BTTSToken is BTTSTokenInterface {
     }
     function enableTransfers() public {
         data.enableTransfers();
+    }
+    function nextNonce(address spender) public view returns (uint) {
+        return data.nextNonce[spender];
     }
 
     // ------------------------------------------------------------------------
