@@ -535,6 +535,9 @@ contract BTTSToken is BTTSTokenInterface {
     function mint(address tokenOwner, uint tokens, bool lockAccount) public returns (bool success) {
         return data.mint(tokenOwner, tokens, lockAccount);
     }
+    function accountLocked(address tokenOwner) public view returns (bool) {
+        return data.accountLocked[tokenOwner];
+    }
     function unlockAccount(address tokenOwner) public {
         return data.unlockAccount(tokenOwner);
     }
