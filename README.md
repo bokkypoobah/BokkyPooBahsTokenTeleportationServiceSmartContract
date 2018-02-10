@@ -695,6 +695,34 @@ contract BTTSToken is ERC20Token, BTTSInterface {
 
 <hr />
 
+## Testing
+
+Details of the testing environment can be found in [test](test).
+
+The following functions were tested using the script [test/01_test1.sh](test/01_test1.sh) with the summary results saved
+in [test/test1results.txt](test/test1results.txt) and the detailed output saved in [test/test1output.txt](test/test1output.txt):
+
+* [x] Deploy test ApproveAndCallFallBack contract
+* [x] Deploy BTTS library
+* [x] Deploy BTTSTokenFactory contract
+* [x] Deploy BTTSToken contract using BTTSTokenFactory
+* [x] Mint tokens for accounts 3 and 4 with tokens locked
+* [x] Disable minting and enable transfers
+* [x] Unlock tokens for accounts 3 and 4
+* [x] Execute a `signedTransfer(...)` and check that a duplicate fails
+* [x] Execute a `signedApprove(...)` and check that a duplicate fails
+* [x] Execute a `signedTransferFrom(...)` and check that a duplicate fails
+* [x] Execute a `signedApproveAndCall(...)` and check that a duplicate fails
+* [x] Execute `transfer(...)`'s
+* [x] Execute a `approveAndCall(...)`
+* [x] Execute `transfer(...)` and `transferFrom(...)` of 0 tokens
+* [x] Execute `transfer(...)`, `approve(...)` and `transferFrom(...)` for more tokens that owned, expecting failure
+* [x] Execute `approve(...)` to change a non-0 allowance
+
+<br />
+
+<hr />
+
 ## Code Review
 
 * [x] [code-review/BTTSTokenFactory.md](code-review/BTTSTokenFactory.md)
@@ -705,14 +733,6 @@ contract BTTSToken is ERC20Token, BTTSInterface {
   * [x] contract BTTSToken is BTTSTokenInterface
   * [x] contract Owned
   * [x] contract BTTSTokenFactory is Owned
-
-<br />
-
-<hr />
-
-## Demo On Ropsten Testnet
-
-Later on.
 
 <br />
 

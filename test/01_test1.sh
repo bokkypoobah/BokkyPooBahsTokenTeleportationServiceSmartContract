@@ -26,8 +26,6 @@ TEST1RESULTS=`grep ^TEST1RESULTS= settings.txt | sed "s/^.*=//"`
 CURRENTTIME=`date +%s`
 CURRENTTIMES=`date -r $CURRENTTIME -u`
 
-BLOCKSINDAY=10
-
 if [ "$MODE" == "dev" ]; then
   # Start time now
   STARTTIME=`echo "$CURRENTTIME" | bc`
@@ -62,11 +60,6 @@ printf "ENDTIME         = '$ENDTIME' '$ENDTIME_S'\n" | tee -a $TEST1OUTPUT
 
 # --- Modify parameters ---
 # `perl -pi -e "s/bool transferable/bool public transferable/" $TOKENSOL`
-# `perl -pi -e "s/MULTISIG_WALLET_ADDRESS \= 0xc79ab28c5c03f1e7fbef056167364e6782f9ff4f;/MULTISIG_WALLET_ADDRESS \= 0xa22AB8A9D641CE77e06D98b7D7065d324D3d6976;/" GimliCrowdsale.sol`
-# `perl -pi -e "s/START_DATE = 1505736000;.*$/START_DATE \= $STARTTIME; \/\/ $STARTTIME_S/" GimliCrowdsale.sol`
-# `perl -pi -e "s/END_DATE = 1508500800;.*$/END_DATE \= $ENDTIME; \/\/ $ENDTIME_S/" GimliCrowdsale.sol`
-# `perl -pi -e "s/VESTING_1_DATE = 1537272000;.*$/VESTING_1_DATE \= $VESTING1TIME; \/\/ $VESTING1TIME_S/" GimliCrowdsale.sol`
-# `perl -pi -e "s/VESTING_2_DATE = 1568808000;.*$/VESTING_2_DATE \= $VESTING2TIME; \/\/ $VESTING2TIME_S/" GimliCrowdsale.sol`
 
 DIFFS1=`diff $SOURCEDIR/$TOKENFACTORYSOL $TOKENFACTORYSOL`
 echo "--- Differences $SOURCEDIR/$TOKENFACTORYSOL $TOKENFACTORYSOL ---" | tee -a $TEST1OUTPUT
@@ -107,7 +100,7 @@ console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------
-var deployTestMessage = "Deploy Test Contract";
+var deployTestMessage = "Deploy Test ApproveAndCallFallBack Contract";
 // -----------------------------------------------------------------------------
 console.log("RESULT: --- " + deployTestMessage + " ---");
 var testContract = web3.eth.contract(testAbi);
@@ -121,7 +114,7 @@ var test = testContract.new({from: contractOwnerAccount, data: testBin, gas: 600
         testTx = contract.transactionHash;
       } else {
         testAddress = contract.address;
-        addAccount(testAddress, "TestApproveAndCallFallBack");
+        addAccount(testAddress, "Test ApproveAndCallFallBack");
         addTestContractAddressAndAbi(testAddress, testAbi);
         console.log("DATA: testAddress=" + testAddress);
       }
@@ -293,73 +286,6 @@ console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------
-var signedApproveAndCallMessage = "Test Signed ApproveAndCall 456.789 tokens with 'World' message";
-var functionSig = web3.sha3("signedApproveAndCall(address,address,uint256,bytes,uint256,uint256,bytes,address)").substring(0,10);
-var tokenContractAddress = tokenAddress;
-var owner = account4;
-var spender = testAddress;
-var tokens = "456789000000000000000";
-var data = "World";
-var fee = "123000000000000000";
-var nonce = token.nextNonce(spender);
-// -----------------------------------------------------------------------------
-
-var signedApproveAndCallHash = token.signedApproveAndCallHash(owner, spender, tokens, data, fee, nonce);
-console.log("RESULT: signedApproveAndCallHash=" + signedApproveAndCallHash);
-
-// -----------------------------------------------------------------------------
-console.log("RESULT: --- " + signedApproveAndCallMessage + " ---");
-console.log("RESULT: functionSig=" + functionSig + " (should be '0xf16f9b53')");
-
-var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(owner) + addressToHex(spender) + uint256ToHex(tokens) + stringToHex(data) + uint256ToHex(fee) + uint256ToHex(nonce);
-
-console.log("RESULT: hashOf=" + hashOf);
-var hash = web3.sha3(hashOf, {encoding: 'hex'});
-console.log("RESULT: hash=" + hash);
-console.log("RESULT: Should match signedApproveAndCallHash=" + signedApproveAndCallHash);
-var sig = web3.eth.sign(account4, hash);
-
-// var sig = web3.eth.sign(account4, signedApproveAndCallHash);
-console.log("RESULT: sig=" + sig);
-
-var signedApproveAndCall1Check = token.signedApproveAndCallCheck(owner, spender, tokens, data, fee, nonce, sig, feeAccount);
-console.log("RESULT: signedApproveAndCall1Check=" + signedApproveAndCall1Check + " " + signedTransferCheckResultString(signedApproveAndCall1Check));
-var signedApproveAndCall1Tx = token.signedApproveAndCall(owner, spender, tokens, data, fee, nonce, sig, feeAccount,
-  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
-var signedApproveAndCall2Check = token.signedApproveAndCallCheck(owner, spender, tokens, data, fee, nonce, sig, feeAccount);
-console.log("RESULT: signedApproveAndCall2Check=" + signedApproveAndCall2Check + " " + signedTransferCheckResultString(signedApproveAndCall2Check));
-var signedApproveAndCall2Tx = token.signedApproveAndCall(owner, spender, tokens, data, fee, nonce, sig, feeAccount,
-  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
-printBalances();
-failIfTxStatusError(signedApproveAndCall1Tx, signedApproveAndCallMessage);
-passIfTxStatusError(signedApproveAndCall2Tx, signedApproveAndCallMessage + " - Duplicated - Expecting Failure");
-printTxData("signedApproveAndCall1Tx", signedApproveAndCall1Tx);
-printTxData("signedApproveAndCall2Tx", signedApproveAndCall2Tx);
-printTokenContractDetails();
-printTestContractDetails();
-console.log("RESULT: ");
-
-
-// -----------------------------------------------------------------------------
-var approveAndCallTestMessage = "Test approveAndCall 123.456 tokens with 'Hello' message";
-// -----------------------------------------------------------------------------
-console.log("RESULT: --- " + approveAndCallTestMessage + " ---");
-var approveAndCallTest1Tx = token.approveAndCall(testAddress,  "123456000000000000000", "Hello", {from: account3, gas: 400000, gasPrice: defaultGasPrice});
-while (txpool.status.pending > 0) {
-}
-printBalances();
-failIfTxStatusError(approveAndCallTest1Tx, approveAndCallTestMessage);
-printTxData("approveToken2Tx", approveAndCallTest1Tx);
-printTokenContractDetails();
-printTestContractDetails();
-console.log("RESULT: ");
-
-
-// -----------------------------------------------------------------------------
 var signedTransferMessage = "Signed Transfers";
 var functionSig = web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,bytes,address)").substring(0,10);
 var tokenContractAddress = tokenAddress;
@@ -393,7 +319,7 @@ console.log("RESULT: sig=" + sig);
 
 var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig, feeAccount);
 console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check + " " + signedTransferCheckResultString(signedTransfer1Check));
-var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, feeAccount, 
+var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, feeAccount,
   {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
@@ -528,6 +454,58 @@ console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------
+var signedApproveAndCallMessage = "Test Signed ApproveAndCall 456.789 tokens with 'World' message";
+var functionSig = web3.sha3("signedApproveAndCall(address,address,uint256,bytes,uint256,uint256,bytes,address)").substring(0,10);
+var tokenContractAddress = tokenAddress;
+var owner = account4;
+var spender = testAddress;
+var tokens = "456789000000000000000";
+var data = "World";
+var fee = "123000000000000000";
+var nonce = token.nextNonce(owner);
+// -----------------------------------------------------------------------------
+
+var signedApproveAndCallHash = token.signedApproveAndCallHash(owner, spender, tokens, data, fee, nonce);
+console.log("RESULT: signedApproveAndCallHash=" + signedApproveAndCallHash);
+
+// -----------------------------------------------------------------------------
+console.log("RESULT: --- " + signedApproveAndCallMessage + " ---");
+console.log("RESULT: functionSig=" + functionSig + " (should be '0xf16f9b53')");
+
+var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress) + addressToHex(owner) + addressToHex(spender) + uint256ToHex(tokens) + stringToHex(data) + uint256ToHex(fee) + uint256ToHex(nonce);
+
+console.log("RESULT: hashOf=" + hashOf);
+var hash = web3.sha3(hashOf, {encoding: 'hex'});
+console.log("RESULT: hash=" + hash);
+console.log("RESULT: Should match signedApproveAndCallHash=" + signedApproveAndCallHash);
+var sig = web3.eth.sign(account4, hash);
+
+// var sig = web3.eth.sign(account4, signedApproveAndCallHash);
+console.log("RESULT: sig=" + sig);
+
+var signedApproveAndCall1Check = token.signedApproveAndCallCheck(owner, spender, tokens, data, fee, nonce, sig, feeAccount);
+console.log("RESULT: signedApproveAndCall1Check=" + signedApproveAndCall1Check + " " + signedTransferCheckResultString(signedApproveAndCall1Check));
+var signedApproveAndCall1Tx = token.signedApproveAndCall(owner, spender, tokens, data, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+var signedApproveAndCall2Check = token.signedApproveAndCallCheck(owner, spender, tokens, data, fee, nonce, sig, feeAccount);
+console.log("RESULT: signedApproveAndCall2Check=" + signedApproveAndCall2Check + " " + signedTransferCheckResultString(signedApproveAndCall2Check));
+var signedApproveAndCall2Tx = token.signedApproveAndCall(owner, spender, tokens, data, fee, nonce, sig, feeAccount,
+  {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printBalances();
+failIfTxStatusError(signedApproveAndCall1Tx, signedApproveAndCallMessage);
+passIfTxStatusError(signedApproveAndCall2Tx, signedApproveAndCallMessage + " - Duplicated - Expecting Failure");
+printTxData("signedApproveAndCall1Tx", signedApproveAndCall1Tx);
+printTxData("signedApproveAndCall2Tx", signedApproveAndCall2Tx);
+printTokenContractDetails();
+printTestContractDetails();
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
 var transferTokenMessage = "Transfer Tokens";
 // -----------------------------------------------------------------------------
 console.log("RESULT: --- " + transferTokenMessage + " ---");
@@ -545,7 +523,22 @@ console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------
-var moveTokenMessage = "Move 0 Tokens After Transfers Allowed";
+var approveAndCallTestMessage = "Test approveAndCall 123.456 tokens with 'Hello' message";
+// -----------------------------------------------------------------------------
+console.log("RESULT: --- " + approveAndCallTestMessage + " ---");
+var approveAndCallTest1Tx = token.approveAndCall(testAddress,  "123456000000000000000", "Hello", {from: account3, gas: 400000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printBalances();
+failIfTxStatusError(approveAndCallTest1Tx, approveAndCallTestMessage);
+printTxData("approveToken2Tx", approveAndCallTest1Tx);
+printTokenContractDetails();
+printTestContractDetails();
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
+var moveTokenMessage = "Move 0 Tokens";
 // -----------------------------------------------------------------------------
 console.log("RESULT: --- " + moveTokenMessage + " ---");
 var moveToken1Tx = token.transfer(account5, "0", {from: account3, gas: 100000, gasPrice: defaultGasPrice});
