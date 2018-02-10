@@ -539,7 +539,7 @@ contract BTTSToken is BTTSTokenInterface {
         return data.accountLocked[tokenOwner];
     }
     function unlockAccount(address tokenOwner) public {
-        return data.unlockAccount(tokenOwner);
+        data.unlockAccount(tokenOwner);
     }
     function mintable() public view returns (bool) {
         return data.mintable;
