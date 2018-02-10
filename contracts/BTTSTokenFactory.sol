@@ -1,6 +1,15 @@
 pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
+// BokkyPooBah's Token Teleportation Service v1.10
+//
+// https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract
+//
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
+// ----------------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------------
 // ERC Token Standard #20 Interface
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
 // ----------------------------------------------------------------------------
@@ -28,7 +37,7 @@ contract ApproveAndCallFallBack {
 // ----------------------------------------------------------------------------
 // BokkyPooBah's Token Teleportation Service Interface v1.10
 //
-// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
 contract BTTSTokenInterface is ERC20Interface {
     uint public constant bttsVersion = 110;
@@ -93,7 +102,7 @@ contract BTTSTokenInterface is ERC20Interface {
 // ----------------------------------------------------------------------------
 // BokkyPooBah's Token Teleportation Service Library v1.00
 //
-// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
 library BTTSLib {
     struct Data {
@@ -164,7 +173,7 @@ library BTTSLib {
     }
 
     // ------------------------------------------------------------------------
-    // Safe maths
+    // Safe maths, inspired by OpenZeppelin
     // ------------------------------------------------------------------------
     function safeAdd(uint a, uint b) internal pure returns (uint c) {
         c = a + b;
@@ -478,9 +487,9 @@ library BTTSLib {
 
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service Token Factory v1.00
+// BokkyPooBah's Token Teleportation Service Token v1.10
 //
-// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
 contract BTTSToken is BTTSTokenInterface {
     using BTTSLib for BTTSLib.Data;
@@ -673,9 +682,9 @@ contract Owned {
 
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service Token Factory v1.00
+// BokkyPooBah's Token Teleportation Service Token Factory v1.10
 //
-// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
 contract BTTSTokenFactory is Owned {
 
@@ -683,6 +692,7 @@ contract BTTSTokenFactory is Owned {
     // Internal data
     // ------------------------------------------------------------------------
     mapping(address => bool) _verify;
+    address[] public deployedTokens;
 
     // ------------------------------------------------------------------------
     // Event
@@ -774,10 +784,18 @@ contract BTTSTokenFactory is Owned {
             transferable);
         // Record that this factory created the trader
         _verify[bttsTokenAddress] = true;
+        deployedTokens.push(bttsTokenAddress);
         BTTSTokenListing(msg.sender, bttsTokenAddress, symbol, name, decimals,
             initialSupply, mintable, transferable);
     }
 
+
+    // ------------------------------------------------------------------------
+    // Number of deployed tokens
+    // ------------------------------------------------------------------------
+    function numberOfDeployedTokens() public view returns (uint) {
+        return deployedTokens.length;
+    }
 
     // ------------------------------------------------------------------------
     // Factory owner can transfer out any accidentally sent ERC20 tokens

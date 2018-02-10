@@ -66,7 +66,7 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
 * Feb 9 2018 - Audit by [Oleksii Matiiasevych](https://github.com/lastperson) identified a major bug
   [#5 Incorrect parameter passed to ApproveAndCallFallBack() function](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/5)
   that would prevent `signedApproveAndCall(...)` from being used correctly
-* Feb 11 2018 - [BTTSTokenFactory.sol v1.10](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/4f8f16d10d79337d9edb62faf2c9e176715c2199/contracts/BTTSTokenFactory.sol)
+* Feb 11 2018 - [BTTSTokenFactory.sol v1.10](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/ec58bced28ed996cb8cb36bc5783472017fb3689/contracts/BTTSTokenFactory.sol)
   fixes and improvements:
   * **MEDIUM IMPORTANCE** [#5 Incorrect parameter passed to `ApproveAndCallFallBack()` function](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/5)
   * **LOW IMPORTANCE** [#2 Provide function to check account lock status](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/2)
@@ -77,6 +77,7 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
   * **LOW IMPORTANCE** [#9 Return style differs from general style](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/9)
   * **LOW IMPORTANCE** [#10 Remove unnecessary parameter](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/10)
   * **LOW IMPORTANCE** [#11 Use of deprecated constant modifier for functions](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/11)
+  * **LOW IMPORTANCE** [#12 Store array of deployed tokens in the factory ](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/12)
 * Feb 11 2018 - Outstanding - A migration from v1.00 token to v1.10 token is being worked out
 
 <br />
