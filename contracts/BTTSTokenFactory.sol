@@ -97,6 +97,8 @@ contract BTTSTokenInterface is ERC20Interface {
 // ----------------------------------------------------------------------------
 library BTTSLib {
     struct Data {
+        bool initialised;
+
         // Ownership
         address owner;
         address newOwner;
@@ -145,7 +147,8 @@ library BTTSLib {
     // Initialisation
     // ------------------------------------------------------------------------
     function init(Data storage self, address owner, string symbol, string name, uint8 decimals, uint initialSupply, bool mintable, bool transferable) public {
-        require(self.owner == address(0));
+        require(!self.initialised);
+        self.initialised = true;
         self.owner = owner;
         self.symbol = symbol;
         self.name = name;
