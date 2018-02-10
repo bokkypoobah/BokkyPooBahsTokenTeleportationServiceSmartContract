@@ -360,9 +360,13 @@ function printFactoryContractDetails() {
     var contract = eth.contract(factoryContractAbi).at(factoryContractAddress);
     console.log("RESULT: factory.owner=" + contract.owner());
     console.log("RESULT: factory.newOwner=" + contract.newOwner());
+    console.log("RESULT: factory.numberOfDeployedTokens=" + contract.numberOfDeployedTokens());
+    var i;
+    for (i = 0; i < contract.numberOfDeployedTokens(); i++) {
+        console.log("RESULT: factory.deployedTokens(" + i + ")=" + contract.deployedTokens(i));
+    }
 
     var latestBlock = eth.blockNumber;
-    var i;
 
     var ownershipTransferredEvents = contract.OwnershipTransferred({}, { fromBlock: factoryFromBlock, toBlock: latestBlock });
     i = 0;
