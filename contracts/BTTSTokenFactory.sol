@@ -18,7 +18,7 @@ contract ERC20Interface {
 
 
 // ----------------------------------------------------------------------------
-// Contracts that can have tokens approved, and then a function execute
+// Contracts that can have tokens approved, and then a function executed
 // ----------------------------------------------------------------------------
 contract ApproveAndCallFallBack {
     function receiveApproval(address from, uint256 tokens, address token, bytes data) public;
@@ -26,12 +26,12 @@ contract ApproveAndCallFallBack {
 
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service Interface v1.00
+// BokkyPooBah's Token Teleportation Service Interface v1.10
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
 contract BTTSTokenInterface is ERC20Interface {
-    uint public constant bttsVersion = 100;
+    uint public constant bttsVersion = 110;
 
     bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
     bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
@@ -123,7 +123,7 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------------------
-    uint public constant bttsVersion = 100;
+    uint public constant bttsVersion = 110;
     bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
     bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
     bytes4 public constant signedApproveSig = "\xe9\xaf\xa7\xa1";
