@@ -590,7 +590,7 @@ contract BTTSToken is BTTSTokenInterface {
         return data.transferFrom(from, to, tokens);
     }
     function approveAndCall(address spender, uint tokens, bytes _data) public returns (bool success) {
-        success = data.approveAndCall(this, spender, tokens, _data);
+        return data.approveAndCall(this, spender, tokens, _data);
     }
 
     // ------------------------------------------------------------------------
