@@ -249,6 +249,7 @@ printTokenContractDetails();
 console.log("RESULT: ");
 
 
+
 // -----------------------------------------------------------------------------
 // BTTS support functions
 // -----------------------------------------------------------------------------
@@ -366,6 +367,7 @@ console.log("RESULT: fee=" + fee + " " + fee.shift(-decimals));
 console.log("RESULT: nonce=" + nonce);
 var signedTransferHash = token.signedTransferHash(from, to, tokens, fee, nonce);
 console.log("RESULT: signedTransferHash=" + signedTransferHash);
+console.log("RESULT: Should match hash=" + hash);
 var sig = web3.eth.sign(from, signedTransferHash);
 console.log("RESULT: sig=" + sig);
 
@@ -406,8 +408,7 @@ var fee = "500000000000000000";
 var nonce = "0";
 // -----------------------------------------------------------------------------
 
-var signedApproveHash = token.signedApproveHash(tokenContractAddress,
-  owner, spender, tokens, fee);
+var signedApproveHash = token.signedApproveHash(owner, spender, tokens, fee, nonce);
 console.log("RESULT: signedApproveHash=" + signedApproveHash);
 
 // -----------------------------------------------------------------------------
@@ -418,6 +419,7 @@ var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress
 console.log("RESULT: hashOf=" + hashOf);
 var hash = web3.sha3(hashOf, {encoding: 'hex'});
 console.log("RESULT: hash=" + hash);
+console.log("RESULT: Should match signedApproveHash=" + signedApproveHash);
 var sig = web3.eth.sign(account4, hash);
 
 // var sig = web3.eth.sign(account4, signedApproveHash);
@@ -460,7 +462,6 @@ var to = account7;
 var tokens = "3000000000000000000";
 var fee = "30000000000000000";
 
-
 var signedTransferFromHash = token.signedTransferFromHash(spender, from, to, tokens, fee, nonce);
 console.log("RESULT: signedTransferFromHash=" + signedTransferFromHash);
 
@@ -472,6 +473,7 @@ var hashOf = "0x" + bytes4ToHex(functionSig) + addressToHex(tokenContractAddress
 console.log("RESULT: hashOf=" + hashOf);
 var hash = web3.sha3(hashOf, {encoding: 'hex'});
 console.log("RESULT: hash=" + hash);
+console.log("RESULT: Should match signedTransferFromHash=" + signedTransferFromHash);
 var sig = web3.eth.sign(account6, hash);
 
 // var sig = web3.eth.sign(account4, signedTransferFromHash);

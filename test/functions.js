@@ -1,6 +1,6 @@
-//ETH/USD 9 Dec 2017 11:00 EST => 9 Dec 2017 16:00 UTC => 10 Dec 2017 03:00 AEST => 489.44 from CMC
-var ethPriceUSD = 489.44;
-var defaultGasPrice = web3.toWei(50, "gwei");
+//ETH/USD 10 Feb 2018 22:19:17 AEDT
+var ethPriceUSD = 871.31;
+var defaultGasPrice = web3.toWei(1, "gwei");
 
 
 // -----------------------------------------------------------------------------
