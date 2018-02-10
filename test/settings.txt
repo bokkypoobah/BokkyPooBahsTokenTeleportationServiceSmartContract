@@ -3,8 +3,10 @@ PASSWORD=testtest
 
 SOURCEDIR=../contracts
 
-CROWDSALESOL=BTTSTokenFactory.sol
-CROWDSALEJS=BTTSTokenFactory.js
+TOKENFACTORYSOL=BTTSTokenFactory.sol
+TOKENFACTORYJS=BTTSTokenFactory.js
+TESTSOL=TestApproveAndCallFallback.sol
+TESTJS=TestApproveAndCallFallback.js
 
 DEPLOYMENTDATA=deploymentData.txt
 

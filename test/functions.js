@@ -247,6 +247,8 @@ function printTokenContractDetails() {
     console.log("RESULT: token.transferable=" + contract.transferable());
     console.log("RESULT: token.mintable=" + contract.mintable());
     console.log("RESULT: token.minter=" + contract.minter());
+    console.log("RESULT: token.accountLocked(account3)=" + contract.accountLocked(account3));
+    console.log("RESULT: token.accountLocked(account4)=" + contract.accountLocked(account4));
 
     var latestBlock = eth.blockNumber;
     var i;
@@ -372,6 +374,39 @@ function printFactoryContractDetails() {
     bttsTokenListingEvents.stopWatching();
 
     factoryFromBlock = latestBlock + 1;
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+// Test Contract
+//-----------------------------------------------------------------------------
+var testContractAddress = null;
+var testContractAbi = null;
+
+function addTestContractAddressAndAbi(address, tokenAbi) {
+  testContractAddress = address;
+  testContractAbi = tokenAbi;
+}
+
+var testFromBlock = 0;
+
+function printTestContractDetails() {
+  console.log("RESULT: testContractAddress=" + testContractAddress);
+  if (testContractAddress != null && testContractAbi != null) {
+    var contract = eth.contract(testContractAbi).at(testContractAddress);
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    var logBytesEvents = contract.LogBytes({}, { fromBlock: testFromBlock, toBlock: latestBlock });
+    i = 0;
+    logBytesEvents.watch(function (error, result) {
+      console.log("RESULT: LogBytes " + i++ + " #" + result.blockNumber + " " + result.args.data + " '" + web3.toAscii(result.args.data) + "'");
+    });
+    logBytesEvents.stopWatching();
+
+    testFromBlock = latestBlock + 1;
   }
 }
 

@@ -2,15 +2,17 @@ MODE            = 'test'
 GETHATTACHPOINT = 'ipc:./testchain/geth.ipc'
 PASSWORD        = 'testtest'
 SOURCEDIR       = '../contracts'
-CROWDSALESOL    = 'BTTSTokenFactory.sol'
-CROWDSALEJS     = 'BTTSTokenFactory.js'
+TOKENFACTORYSOL = 'BTTSTokenFactory.sol'
+TOKENFACTORYJS  = 'BTTSTokenFactory.js'
+TESTSOL         = 'TestApproveAndCallFallback.sol'
+TESTJS          = 'TestApproveAndCallFallback.js'
 DEPLOYMENTDATA  = 'deploymentData.txt'
 INCLUDEJS       = './include.js'
 TEST1OUTPUT     = 'test1output.txt'
 TEST1RESULTS    = 'test1results.txt'
-CURRENTTIME     = '1518264039' 'Sat 10 Feb 2018 12:00:39 UTC'
-STARTTIME       = '1518264129' 'Sat 10 Feb 2018 12:02:09 UTC'
-ENDTIME         = '1518264219' 'Sat 10 Feb 2018 12:03:39 UTC'
+CURRENTTIME     = '1518270465' 'Sat 10 Feb 2018 13:47:45 UTC'
+STARTTIME       = '1518270555' 'Sat 10 Feb 2018 13:49:15 UTC'
+ENDTIME         = '1518270645' 'Sat 10 Feb 2018 13:50:45 UTC'
 --- Differences ../contracts/BTTSTokenFactory.sol BTTSTokenFactory.sol ---
 
 solc, the solidity compiler commandline interface
@@ -19,7 +21,7 @@ Welcome to the Geth JavaScript console!
 
 instance: Geth/v1.7.3-stable-4bb3c89d/darwin-amd64/go1.9.2
 coinbase: 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e
-at block: 960 (Sat, 10 Feb 2018 23:00:38 AEDT)
+at block: 2334 (Sun, 11 Feb 2018 00:47:37 AEDT)
  datadir: /Users/bok/Projects/BokkyPooBahsTokenTeleportationServiceSmartContract/test/testchain
  modules: admin:1.0 debug:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 txpool:1.0 web3:1.0
 
@@ -28,6 +30,10 @@ true
 > 
 true
 > 
+true
+> 
+true
+> 
 > 
 undefined
 > 
@@ -41,6 +47,14 @@ undefined
 > 
 undefined
 > 
+undefined
+> 
+undefined
+> 
+> 
+undefined
+> 
+undefined
 > 
 undefined
 > 
@@ -59,7 +73,7 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       24.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        9.000000000000000000           0.000000000000000000 Account #0 - Miner
 RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433        0.000000000000000000           0.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
@@ -72,6 +86,74 @@ RESULT: -- ------------------------------------------ --------------------------
 RESULT:                                                                                     0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT: 
+undefined
+> 
+RESULT: 
+undefined
+> 
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+RESULT: --- Deploy Test Contract ---
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+... 
+...... 
+......... 
+............ 
+............ 
+............ 
+............ 
+............ 
+............ 
+............ 
+......... 
+...... 
+... 
+undefined
+> 
+... 
+undefined
+> 
+DATA: testAddress=0xb7d21d62762c0bb80b6c723824582e728fe44964
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       15.000205316000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.000205316000000000           0.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000           0.000000000000000000 TestApproveAndCallFallBack
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                                     0.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
+undefined
+> 
+RESULT: PASS Deploy Test Contract
+1
+> 
+RESULT: testTx status=0x1 Success gas=6000000 gasUsed=205316 costETH=0.000205316 costUSD=0.17889388396 @ ETH/USD=871.31 gasPrice=1 gwei block=2339 txIx=0 txId=0x1fd218cccf7dcb64d7ab240b648426686149831619334ded8474cc6f9dfd3a09 @ 1518270506 Sat, 10 Feb 2018 13:48:26 UTC
+undefined
+> 
+RESULT: testContractAddress=0xb7d21d62762c0bb80b6c723824582e728fe44964
 undefined
 > 
 RESULT: 
@@ -113,11 +195,11 @@ undefined
 ... 
 undefined
 > 
-DATA: libBTTSAddress=0x64f29474f8850c4593b085851c1746000b950cca
+DATA: libBTTSAddress=0xadb908cff8d006810e04a7b3b15695c321cb9c03
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       30.003543457000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.003543457000000000           0.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       21.003748773000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.003748773000000000           0.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
@@ -125,7 +207,8 @@ RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.00000000000000000
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
 RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000           0.000000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -135,7 +218,7 @@ undefined
 RESULT: PASS Deploy BTTS Library
 1
 > 
-RESULT: libBTTSTx status=0x1 Success gas=6000000 gasUsed=3543457 costETH=0.003543457 costUSD=3.08744951867 @ ETH/USD=871.31 gasPrice=1 gwei block=970 txIx=0 txId=0x61e1c482c31d63f0f1c1c0c547070942612b00385fabf267b5782767bba8479e @ 1518264065 Sat, 10 Feb 2018 12:01:05 UTC
+RESULT: libBTTSTx status=0x1 Success gas=6000000 gasUsed=3543457 costETH=0.003543457 costUSD=3.08744951867 @ ETH/USD=871.31 gasPrice=1 gwei block=2341 txIx=0 txId=0x950f9faa7028030777f051bb6b6b8cf0b65f5dccbd5457329179e79ca09214d7 @ 1518270508 Sat, 10 Feb 2018 13:48:28 UTC
 undefined
 > 
 RESULT: tokenContractAddress=null
@@ -193,11 +276,11 @@ undefined
 undefined
 > 
 > 
-DATA: factoryAddress=0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd
+DATA: factoryAddress=0xfb81531c7c5353a28f19e5fc286fd469d711c029
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       36.006530014000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.006530014000000000           0.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       27.006736994000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.006736994000000000           0.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
@@ -205,8 +288,9 @@ RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.00000000000000000
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
 RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000           0.000000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -216,10 +300,10 @@ undefined
 RESULT: PASS Deploy BTTSTokenFactory
 1
 > 
-RESULT: factoryTx status=0x1 Success gas=6000000 gasUsed=2986557 costETH=0.002986557 costUSD=2.60221697967 @ ETH/USD=871.31 gasPrice=1 gwei block=972 txIx=0 txId=0xa55fd1e08513a6cc6f8755ac3566a7cfa4c07d72a0c0265aa92ce7da4428ae77 @ 1518264078 Sat, 10 Feb 2018 12:01:18 UTC
+RESULT: factoryTx status=0x1 Success gas=6000000 gasUsed=2988221 costETH=0.002988221 costUSD=2.60366683951 @ ETH/USD=871.31 gasPrice=1 gwei block=2343 txIx=0 txId=0x6f94e6114b30b8f26b82b8917ac8847820f36aa07a4ac00af42dfbc56ec4f920 @ 1518270513 Sat, 10 Feb 2018 13:48:33 UTC
 undefined
 > 
-RESULT: factoryContractAddress=0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd
+RESULT: factoryContractAddress=0xfb81531c7c5353a28f19e5fc286fd469d711c029
 RESULT: factory.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: factory.newOwner=0x0000000000000000000000000000000000000000
 undefined
@@ -269,16 +353,16 @@ undefined
 ... 
 undefined
 > 
-RESULT: factoryContractAddress=0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd
-RESULT: get BTTSTokenListing 0 #974 {"bttsTokenAddress":"0x00d11511029905be2ea6905d71711b76120fd08c","decimals":"18","initialSupply":"1e+25","mintable":true,"name":"GazeCoin Test","ownerAddress":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","symbol":"GZETest","transferable":false}
+RESULT: factoryContractAddress=0xfb81531c7c5353a28f19e5fc286fd469d711c029
+RESULT: get BTTSTokenListing 0 #2345 {"bttsTokenAddress":"0x96de8170cbc270ad84b0652d1ebb76dcb09fc122","decimals":"18","initialSupply":"1e+25","mintable":true,"name":"GazeCoin Test","ownerAddress":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","symbol":"GZETest","transferable":false}
 undefined
 > 
-RESULT: bttsTokens=#1 ["0x00d11511029905be2ea6905d71711b76120fd08c"]
+RESULT: bttsTokens=#1 ["0x96de8170cbc270ad84b0652d1ebb76dcb09fc122"]
 undefined
 > 
 undefined
 > 
-"0x00d11511029905be2ea6905d71711b76120fd08c"
+"0x96de8170cbc270ad84b0652d1ebb76dcb09fc122"
 > 
 {
   abi: [{
@@ -675,7 +759,7 @@ undefined
       name: "Approval",
       type: "event"
   }],
-  address: "0x00d11511029905be2ea6905d71711b76120fd08c",
+  address: "0x96de8170cbc270ad84b0652d1ebb76dcb09fc122",
   transactionHash: null,
   AccountUnlocked: function(),
   Approval: function(),
@@ -739,8 +823,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       42.008390570000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008390570000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       33.008597550000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008597550000000000    10000000.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000 Account #3
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000 Account #4
@@ -748,25 +832,26 @@ RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.00000000000000000
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
 RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000           0.000000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              10000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT: 
 undefined
 > 
-RESULT: deployTokenTx status=0x1 Success gas=4000000 gasUsed=1860556 costETH=0.001860556 costUSD=1.62112104836 @ ETH/USD=871.31 gasPrice=1 gwei block=974 txIx=0 txId=0xbd034d3b74221af415860787b8773c3a93d0d8b23c46f4af6a9f1556decda249 @ 1518264080 Sat, 10 Feb 2018 12:01:20 UTC
+RESULT: deployTokenTx status=0x1 Success gas=4000000 gasUsed=1860556 costETH=0.001860556 costUSD=1.62112104836 @ ETH/USD=871.31 gasPrice=1 gwei block=2345 txIx=0 txId=0x6ecc20f9502c5e0fbf1acd497f5d589b25fae6bce146900394ec973cc3ad49eb @ 1518270519 Sat, 10 Feb 2018 13:48:39 UTC
 undefined
 > 
-RESULT: factoryContractAddress=0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd
+RESULT: factoryContractAddress=0xfb81531c7c5353a28f19e5fc286fd469d711c029
 RESULT: factory.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: factory.newOwner=0x0000000000000000000000000000000000000000
-RESULT: BTTSTokenListing 0 #974 {"bttsTokenAddress":"0x00d11511029905be2ea6905d71711b76120fd08c","decimals":"18","initialSupply":"1e+25","mintable":true,"name":"GazeCoin Test","ownerAddress":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","symbol":"GZETest","transferable":false}
+RESULT: BTTSTokenListing 0 #2345 {"bttsTokenAddress":"0x96de8170cbc270ad84b0652d1ebb76dcb09fc122","decimals":"18","initialSupply":"1e+25","mintable":true,"name":"GazeCoin Test","ownerAddress":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","symbol":"GZETest","transferable":false}
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -776,8 +861,10 @@ RESULT: token.totalSupply=10000000
 RESULT: token.transferable=false
 RESULT: token.mintable=true
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Mint 0 #974 {"lockAccount":false,"tokenOwner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","tokens":"1e+25"}
-RESULT: Transfer 0 #974: from=0x0000000000000000000000000000000000000000 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=10000000
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Mint 0 #2345 {"lockAccount":false,"tokenOwner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433","tokens":"1e+25"}
+RESULT: Transfer 0 #2345: from=0x0000000000000000000000000000000000000000 to=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 tokens=10000000
 undefined
 > 
 RESULT: 
@@ -803,8 +890,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       48.008540978000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008540978000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       39.008747958000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008747958000000000    10000000.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000000.000000000000000000 Account #3
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
@@ -812,9 +899,10 @@ RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.00000000000000000
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
 RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000           0.000000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -827,13 +915,13 @@ RESULT: PASS Mint Tokens - mint 1,000,000 tokens 0x0 -> ac3
 RESULT: PASS Mint Tokens - mint 1,000,000 tokens 0x0 -> ac4
 1
 > 
-RESULT: mintTokens1Tx status=0x1 Success gas=100000 gasUsed=75204 costETH=0.000075204 costUSD=0.06552599724 @ ETH/USD=871.31 gasPrice=1 gwei block=976 txIx=0 txId=0xe4c9af2b1c7ac8930a6f5877bc463de7f201aaa63f3b95c1327e8bc6bf486a2f @ 1518264082 Sat, 10 Feb 2018 12:01:22 UTC
+RESULT: mintTokens1Tx status=0x1 Success gas=100000 gasUsed=75204 costETH=0.000075204 costUSD=0.06552599724 @ ETH/USD=871.31 gasPrice=1 gwei block=2347 txIx=0 txId=0xb4d6ca65d12784e8fd20280dbacb6d2ba10d7e12e292de93d6b14486a48a1297 @ 1518270527 Sat, 10 Feb 2018 13:48:47 UTC
 undefined
 > 
-RESULT: mintTokens2Tx status=0x1 Success gas=100000 gasUsed=75204 costETH=0.000075204 costUSD=0.06552599724 @ ETH/USD=871.31 gasPrice=1 gwei block=976 txIx=1 txId=0x2695f966338c7cf026b802efe496dafc6d4ea540dcd9405c05e99af94e66da18 @ 1518264082 Sat, 10 Feb 2018 12:01:22 UTC
+RESULT: mintTokens2Tx status=0x1 Success gas=100000 gasUsed=75204 costETH=0.000075204 costUSD=0.06552599724 @ ETH/USD=871.31 gasPrice=1 gwei block=2347 txIx=1 txId=0x47ebc5e5a491ea865ed74cae74b0c476e092a188d73a8e6a56e377f29ca111f8 @ 1518270527 Sat, 10 Feb 2018 13:48:47 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -843,10 +931,12 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=false
 RESULT: token.mintable=true
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Mint 0 #976 {"lockAccount":true,"tokenOwner":"0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0","tokens":"1e+24"}
-RESULT: Mint 1 #976 {"lockAccount":true,"tokenOwner":"0xa44a08d3f6933c69212114bb66e2df1813651844","tokens":"1e+24"}
-RESULT: Transfer 0 #976: from=0x0000000000000000000000000000000000000000 to=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 tokens=1000000
-RESULT: Transfer 1 #976: from=0x0000000000000000000000000000000000000000 to=0xa44a08d3f6933c69212114bb66e2df1813651844 tokens=1000000
+RESULT: token.accountLocked(account3)=true
+RESULT: token.accountLocked(account4)=true
+RESULT: Mint 0 #2347 {"lockAccount":true,"tokenOwner":"0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0","tokens":"1e+24"}
+RESULT: Mint 1 #2347 {"lockAccount":true,"tokenOwner":"0xa44a08d3f6933c69212114bb66e2df1813651844","tokens":"1e+24"}
+RESULT: Transfer 0 #2347: from=0x0000000000000000000000000000000000000000 to=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 tokens=1000000
+RESULT: Transfer 1 #2347: from=0x0000000000000000000000000000000000000000 to=0xa44a08d3f6933c69212114bb66e2df1813651844 tokens=1000000
 undefined
 > 
 RESULT: 
@@ -872,8 +962,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       54.008599534000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008599534000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       48.008806514000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008806514000000000    10000000.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000000.000000000000000000 Account #3
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
@@ -881,9 +971,10 @@ RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.00000000000000000
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
 RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000           0.000000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -896,13 +987,13 @@ RESULT: PASS Start Transfers - Disable Minting
 RESULT: PASS Start Transfers - Enable Transfers
 1
 > 
-RESULT: startTransfers1Tx status=0x1 Success gas=100000 gasUsed=14604 costETH=0.000014604 costUSD=0.01272461124 @ ETH/USD=871.31 gasPrice=1 gwei block=978 txIx=0 txId=0xe7063b8605515f6eefe80f8fd6e2dba585e31d66671de79dbd79eeed6f1ea9de @ 1518264086 Sat, 10 Feb 2018 12:01:26 UTC
+RESULT: startTransfers1Tx status=0x1 Success gas=100000 gasUsed=14604 costETH=0.000014604 costUSD=0.01272461124 @ ETH/USD=871.31 gasPrice=1 gwei block=2350 txIx=0 txId=0x11a10468a358fab5dcb2c569244bf65b3431f8108af68d3172786a2c42f77b95 @ 1518270534 Sat, 10 Feb 2018 13:48:54 UTC
 undefined
 > 
-RESULT: startTransfers2Tx status=0x1 Success gas=100000 gasUsed=43952 costETH=0.000043952 costUSD=0.03829581712 @ ETH/USD=871.31 gasPrice=1 gwei block=978 txIx=1 txId=0xc38ff6c3a83d40b41daae50a5acad7a398f14b9cf7bfb0920771c1eca2b33c78 @ 1518264086 Sat, 10 Feb 2018 12:01:26 UTC
+RESULT: startTransfers2Tx status=0x1 Success gas=100000 gasUsed=43952 costETH=0.000043952 costUSD=0.03829581712 @ ETH/USD=871.31 gasPrice=1 gwei block=2350 txIx=1 txId=0x68ec5242b93104d45d4e649931a4e6a24e2ad8623e9b8e29e40ffa4a0a19bee1 @ 1518270534 Sat, 10 Feb 2018 13:48:54 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -912,8 +1003,10 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: MintingDisabled 0 #978 {}
-RESULT: TransfersEnabled 0 #978 {}
+RESULT: token.accountLocked(account3)=true
+RESULT: token.accountLocked(account4)=true
+RESULT: MintingDisabled 0 #2350 {}
+RESULT: TransfersEnabled 0 #2350 {}
 undefined
 > 
 RESULT: 
@@ -939,8 +1032,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       63.008631414000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008631414000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       54.008838394000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008838394000000000    10000000.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000000.000000000000000000 Account #3
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
@@ -948,9 +1041,10 @@ RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.00000000000000000
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
 RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.000000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000           0.000000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -963,13 +1057,13 @@ RESULT: PASS Unlock Accounts - unlock ac3
 RESULT: PASS Unlock Accounts - unlock ac4
 1
 > 
-RESULT: unlockAccounts1Tx status=0x1 Success gas=100000 gasUsed=15940 costETH=0.00001594 costUSD=0.0138886814 @ ETH/USD=871.31 gasPrice=1 gwei block=981 txIx=0 txId=0x47a30c419c1a8bf200ff75384b8c79d13796db85bef3edb27c8b2295a4599540 @ 1518264101 Sat, 10 Feb 2018 12:01:41 UTC
+RESULT: unlockAccounts1Tx status=0x1 Success gas=100000 gasUsed=15940 costETH=0.00001594 costUSD=0.0138886814 @ ETH/USD=871.31 gasPrice=1 gwei block=2352 txIx=0 txId=0xcacbe740a73a4550044d9bd5bff92a0efef36affe9d5d77b13e7e1ebb4c2b25f @ 1518270549 Sat, 10 Feb 2018 13:49:09 UTC
 undefined
 > 
-RESULT: unlockAccounts2Tx status=0x1 Success gas=100000 gasUsed=15940 costETH=0.00001594 costUSD=0.0138886814 @ ETH/USD=871.31 gasPrice=1 gwei block=981 txIx=1 txId=0xc3f31282f12e1649354384d43f018b732e101a01d83ce359dd855d2358489118 @ 1518264101 Sat, 10 Feb 2018 12:01:41 UTC
+RESULT: unlockAccounts2Tx status=0x1 Success gas=100000 gasUsed=15940 costETH=0.00001594 costUSD=0.0138886814 @ ETH/USD=871.31 gasPrice=1 gwei block=2352 txIx=1 txId=0xd1960d40192b59da1dcdab9866d80f915d95442727d5b13567b6c67bfd9c26ac @ 1518270549 Sat, 10 Feb 2018 13:49:09 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -979,8 +1073,10 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: AccountUnlocked 0 #981 {"tokenOwner":"0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0"}
-RESULT: AccountUnlocked 1 #981 {"tokenOwner":"0xa44a08d3f6933c69212114bb66e2df1813651844"}
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: AccountUnlocked 0 #2352 {"tokenOwner":"0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0"}
+RESULT: AccountUnlocked 1 #2352 {"tokenOwner":"0xa44a08d3f6933c69212114bb66e2df1813651844"}
 undefined
 > 
 RESULT: 
@@ -988,103 +1084,210 @@ undefined
 > 
 > 
 > 
+undefined
 > 
 undefined
 > 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+> 
+undefined
+> 
+RESULT: signedApproveAndCallHash=0x0f714e576c677c9177221901b9c788c5da70d9b20a3897719be24470da2810a9
+undefined
+> 
+> 
+undefined
+> 
+RESULT: --- Test Signed ApproveAndCall 456.789 tokens with 'World' message ---
+undefined
+> 
+RESULT: functionSig=0xf16f9b53 (should be '0xf16f9b53')
+undefined
+> 
+> 
+undefined
+> 
+> 
+RESULT: hashOf=0xf16f9b5396de8170cbc270ad84b0652d1ebb76dcb09fc122a44a08d3f6933c69212114bb66e2df1813651844b7d21d62762c0bb80b6c723824582e728fe44964000000000000000000000000000000000000000000000018c338875401e88000576f726c6400000000000000000000000000000000000000000000000001b4fbd92b5f80000000000000000000000000000000000000000000000000000000000000000000
+undefined
+> 
+undefined
+> 
+RESULT: hash=0x0f714e576c677c9177221901b9c788c5da70d9b20a3897719be24470da2810a9
+undefined
+> 
+RESULT: Should match signedApproveAndCallHash=0x0f714e576c677c9177221901b9c788c5da70d9b20a3897719be24470da2810a9
+undefined
+> 
+undefined
+> 
+> 
+undefined
+> 
+RESULT: sig=0xfc9267d7c136527ed5dc816f63d29ddf443ec97fe11f62ab6287d81333221b2333009ba8045ea0ef1a11cd6aa87b108fb4d774c0d9f83adc1fe20352f80a58a71c
+undefined
+> 
+> 
+undefined
+> 
+RESULT: signedApproveAndCall1Check=0 Success
+undefined
+> 
+... 
+undefined
+> 
+... 
+undefined
+> 
+undefined
+> 
+RESULT: signedApproveAndCall2Check=4 AlreadyExecuted
+undefined
+> 
+... 
+undefined
+> 
+... 
+undefined
+> 
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       66.009015483000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009015483000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000000.000000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999543.088000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.123000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         456.789000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                              12000000.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
+undefined
+> 
+RESULT: PASS Test Signed ApproveAndCall 456.789 tokens with 'World' message
+1
+> 
+RESULT: PASS Test Signed ApproveAndCall 456.789 tokens with 'World' message - Duplicated - Expecting Failure
+1
+> 
+RESULT: signedApproveAndCall1Tx status=0x1 Success gas=200000 gasUsed=135163 costETH=0.000135163 costUSD=0.11776887353 @ ETH/USD=871.31 gasPrice=1 gwei block=2354 txIx=0 txId=0x36205f78d5767471eb513d7625a93190ded01494f361a193c077fdf50bc53da8 @ 1518270556 Sat, 10 Feb 2018 13:49:16 UTC
+undefined
+> 
+RESULT: signedApproveAndCall2Tx status=0x0 Failure gas=200000 gasUsed=41926 costETH=0.000041926 costUSD=0.03653054306 @ ETH/USD=871.31 gasPrice=1 gwei block=2356 txIx=0 txId=0x48ad1a039876a1683285125b5ca2e57754aa86bcd261ccab302bba76003272d1 @ 1518270599 Sat, 10 Feb 2018 13:49:59 UTC
+undefined
+> 
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
+RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
+RESULT: token.newOwner=0x0000000000000000000000000000000000000000
+RESULT: token.symbol=GZETest
+RESULT: token.name=GazeCoin Test
+RESULT: token.decimals=18
+RESULT: token.totalSupply=12000000
+RESULT: token.transferable=true
+RESULT: token.mintable=false
+RESULT: token.minter=0x0000000000000000000000000000000000000000
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Approval 0 #2354 tokenOwner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xb7d21d62762c0bb80b6c723824582e728fe44964 tokens=456.789
+RESULT: Transfer 0 #2354: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.123
+RESULT: Transfer 1 #2354: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xb7d21d62762c0bb80b6c723824582e728fe44964 tokens=456.789
+undefined
+> 
+RESULT: testContractAddress=0xb7d21d62762c0bb80b6c723824582e728fe44964
+RESULT: LogBytes 0 #2354 0x576f726c64 'World'
+undefined
+> 
+RESULT: 
+undefined
+> 
+> 
+> 
+undefined
+> 
+undefined
+> 
+undefined
+> 
+RESULT: --- Test approveAndCall 123.456 tokens with 'Hello' message ---
 undefined
 > 
 undefined
 > 
 ... 
-... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-...... 
-... 
-... 
 undefined
 > 
-> 
-... 
-... 
-...... 
-...... 
-... 
-... 
+RESULT:  # Account                                             EtherBalanceChange                          Token Name
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       75.009072332000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009015483000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000056849000000000      999876.544000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999543.088000000000000000 Account #4
+RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           0.000000000000000000 Account #5
+RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
+RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.123000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT:                                                                              12000000.000000000000000000 Total Token Balances
+RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
+RESULT: 
 undefined
 > 
+RESULT: PASS Test approveAndCall 123.456 tokens with 'Hello' message
+1
 > 
-... 
-...... 
-...... 
-...... 
-...... 
-... 
+RESULT: approveToken2Tx status=0x1 Success gas=400000 gasUsed=56849 costETH=0.000056849 costUSD=0.04953310219 @ ETH/USD=871.31 gasPrice=1 gwei block=2359 txIx=0 txId=0xb2fd6811900da8bcde70cb2e2a6912fc4989499c77c9d4a73a7a97f4d47fef50 @ 1518270621 Sat, 10 Feb 2018 13:50:21 UTC
 undefined
 > 
-> 
-... 
-...... 
-...... 
-...... 
-...... 
-... 
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
+RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
+RESULT: token.newOwner=0x0000000000000000000000000000000000000000
+RESULT: token.symbol=GZETest
+RESULT: token.name=GazeCoin Test
+RESULT: token.decimals=18
+RESULT: token.totalSupply=12000000
+RESULT: token.transferable=true
+RESULT: token.mintable=false
+RESULT: token.minter=0x0000000000000000000000000000000000000000
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Approval 0 #2359 tokenOwner=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 spender=0xb7d21d62762c0bb80b6c723824582e728fe44964 tokens=123.456
+RESULT: Transfer 0 #2359: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xb7d21d62762c0bb80b6c723824582e728fe44964 tokens=123.456
 undefined
 > 
-> 
-... 
-... 
-...... 
-...... 
-...... 
-...... 
-... 
+RESULT: testContractAddress=0xb7d21d62762c0bb80b6c723824582e728fe44964
+RESULT: LogBytes 0 #2359 0x48656c6c6f 'Hello'
 undefined
 > 
-> 
-... 
-...... 
-...... 
-...... 
-...... 
-... 
-undefined
-> 
-> 
-... 
-...... 
-...... 
-...... 
-...... 
-... 
-undefined
-> 
-> 
-... 
-...... 
-...... 
-...... 
-...... 
-... 
+RESULT: 
 undefined
 > 
 > 
@@ -1114,12 +1317,12 @@ undefined
 > 
 undefined
 > 
-RESULT: hashOf=0x7532eaac00d11511029905be2ea6905d71711b76120fd08ca33a6c312d9ad0e0f2e95541beed0cc081621fd0a55a151eb00fded1634d27d1127b4be4627079ea0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000000000000000000000
+RESULT: hashOf=0x7532eaac96de8170cbc270ad84b0652d1ebb76dcb09fc122a33a6c312d9ad0e0f2e95541beed0cc081621fd0a55a151eb00fded1634d27d1127b4be4627079ea0000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000000000000000000000
 undefined
 > 
 undefined
 > 
-RESULT: hash=0xaf20392bf3f42943cd55c05c3632f340af2d2da2eb1e504eefb360566cf122d1
+RESULT: hash=0xdbd8f6a92ad3e04fd63668b2d937224f2ba1dcd34a29b39da80aed6068effb5d
 undefined
 > 
 > 
@@ -1149,15 +1352,15 @@ undefined
 > 
 undefined
 > 
-RESULT: signedTransferHash=0xaf20392bf3f42943cd55c05c3632f340af2d2da2eb1e504eefb360566cf122d1
+RESULT: signedTransferHash=0xdbd8f6a92ad3e04fd63668b2d937224f2ba1dcd34a29b39da80aed6068effb5d
 undefined
 > 
-RESULT: Should match hash=0xaf20392bf3f42943cd55c05c3632f340af2d2da2eb1e504eefb360566cf122d1
+RESULT: Should match hash=0xdbd8f6a92ad3e04fd63668b2d937224f2ba1dcd34a29b39da80aed6068effb5d
 undefined
 > 
 undefined
 > 
-RESULT: sig=0x767867d33f886812f9879167daff623bbe3400bacc46e52e5363329b6a7d07d738c36d620157a4de517299f343cc9f31282a295c26b1ff2dc9a3f574100ad69a1b
+RESULT: sig=0x536312f29209de4c724397ce9d254273ae57cfb264d4ca4202ba5ae13c9bf94b04df34fe2bd615a76ab5728755306c8e223e45fb332b21f44d2ea02e7c9143f31b
 undefined
 > 
 > 
@@ -1174,18 +1377,19 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       69.008745636000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008745636000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       84.009171618000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009114769000000000    10000000.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
-RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
-RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000056849000000000      999875.534000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999543.088000000000000000 Account #4
 RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
-RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.010000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.133000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -1195,10 +1399,10 @@ undefined
 RESULT: PASS Signed Transfers - Signed Transfer 
 1
 > 
-RESULT: signedTransfer1Tx status=0x1 Success gas=200000 gasUsed=114222 costETH=0.000114222 costUSD=0.09952277082 @ ETH/USD=871.31 gasPrice=1 gwei block=983 txIx=0 txId=0x293d4e87e832e0c7ca830c979eb2dc131e2ee6017d7518ba7ead8c6e7e2887ab @ 1518264110 Sat, 10 Feb 2018 12:01:50 UTC
+RESULT: signedTransfer1Tx status=0x1 Success gas=200000 gasUsed=99286 costETH=0.000099286 costUSD=0.08650888466 @ ETH/USD=871.31 gasPrice=1 gwei block=2362 txIx=0 txId=0xd60e6a0c0d6dbbc0a7478661f77f36d1f36464aa2371f9d17fdd8843447aae94 @ 1518270643 Sat, 10 Feb 2018 13:50:43 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -1208,8 +1412,10 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Transfer 0 #983: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
-RESULT: Transfer 1 #983: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.01
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Transfer 0 #2362: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
+RESULT: Transfer 1 #2362: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.01
 undefined
 > 
 RESULT: 
@@ -1230,18 +1436,19 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       78.008784424000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008784424000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       90.009210470000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009153621000000000    10000000.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
-RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
-RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000000.000000000000000000 Account #4
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000056849000000000      999875.534000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999543.088000000000000000 Account #4
 RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
-RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.010000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.133000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -1251,10 +1458,10 @@ undefined
 RESULT: PASS Signed Transfers - Duplicated Signed Transfers - Expecting Failure
 1
 > 
-RESULT: signedTransfer2Tx status=0x0 Failure gas=200000 gasUsed=38788 costETH=0.000038788 costUSD=0.03379637228 @ ETH/USD=871.31 gasPrice=1 gwei block=986 txIx=0 txId=0x804fedd03dd51babbc582a528cb26435981851675baf51121a6d64c5aed1b59b @ 1518264127 Sat, 10 Feb 2018 12:02:07 UTC
+RESULT: signedTransfer2Tx status=0x0 Failure gas=200000 gasUsed=38852 costETH=0.000038852 costUSD=0.03385213612 @ ETH/USD=871.31 gasPrice=1 gwei block=2364 txIx=0 txId=0x095233e3843b595e5fa68edc83dda25b1f79e3e93621014d15bedcc550d8a5a1 @ 1518270661 Sat, 10 Feb 2018 13:51:01 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -1264,6 +1471,8 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
 undefined
 > 
 RESULT: 
@@ -1294,7 +1503,7 @@ undefined
 > 
 undefined
 > 
-RESULT: signedApproveHash=0x954f7763e7981d30cdef74dbadf1e488116980b79fc83703fea6983a750ffeef
+RESULT: signedApproveHash=0xb26faaa947393356f4c2a6b473f1abf92704c22c3da73f5ab0c412da35b576cf
 undefined
 > 
 > 
@@ -1309,38 +1518,38 @@ undefined
 > 
 undefined
 > 
-RESULT: hashOf=0xe9afa7a100d11511029905be2ea6905d71711b76120fd08ca44a08d3f6933c69212114bb66e2df1813651844a66a85ede0cbe03694aa9d9de0bb19c99ff55bd9000000000000000000000000000000000000000000000002b5e3af16b188000000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000000
+RESULT: hashOf=0xe9afa7a196de8170cbc270ad84b0652d1ebb76dcb09fc122a44a08d3f6933c69212114bb66e2df1813651844a66a85ede0cbe03694aa9d9de0bb19c99ff55bd9000000000000000000000000000000000000000000000002b5e3af16b188000000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000000
 undefined
 > 
 undefined
 > 
-RESULT: hash=0x954f7763e7981d30cdef74dbadf1e488116980b79fc83703fea6983a750ffeef
+RESULT: hash=0xb26faaa947393356f4c2a6b473f1abf92704c22c3da73f5ab0c412da35b576cf
 undefined
 > 
-RESULT: Should match signedApproveHash=0x954f7763e7981d30cdef74dbadf1e488116980b79fc83703fea6983a750ffeef
-undefined
-> 
-undefined
-> 
-> 
-undefined
-> 
-RESULT: sig=0x994efc8952f267338a7a061c5614ed9de92cc9f0ac18e23c217150c7f8caa4815b0ea01ea4e8d05d9f57f05ce3d8679340a224e99a65345a37ae030eb4f0dabd1b
+RESULT: Should match signedApproveHash=0xb26faaa947393356f4c2a6b473f1abf92704c22c3da73f5ab0c412da35b576cf
 undefined
 > 
 undefined
 > 
+> 
+undefined
+> 
+RESULT: sig=0xfe303c472e4ac58bdd45296d55db9a67d7e29a9fb8b300c7ce8f13ac0a3303390554cc7b3c6f4d621b98a1f57bed5ef89fbcd7e31e5712835258fe0439aae21a1c
 undefined
 > 
 undefined
 > 
-RESULT: sigR=0x994efc8952f267338a7a061c5614ed9de92cc9f0ac18e23c217150c7f8caa481
 undefined
 > 
-RESULT: sigS=0x5b0ea01ea4e8d05d9f57f05ce3d8679340a224e99a65345a37ae030eb4f0dabd
 undefined
 > 
-RESULT: sigV=0x1b
+RESULT: sigR=0xfe303c472e4ac58bdd45296d55db9a67d7e29a9fb8b300c7ce8f13ac0a330339
+undefined
+> 
+RESULT: sigS=0x0554cc7b3c6f4d621b98a1f57bed5ef89fbcd7e31e5712835258fe0439aae21a
+undefined
+> 
+RESULT: sigV=0x1c
 undefined
 > 
 > 
@@ -1368,18 +1577,19 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e       93.008918130000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.008918130000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      102.009344088000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009287239000000000    10000000.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
-RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
-RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999999.500000000000000000 Account #4
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000056849000000000      999875.534000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999542.588000000000000000 Account #4
 RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           0.000000000000000000 Account #7
-RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.510000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.633000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -1392,13 +1602,13 @@ RESULT: PASS Signed Approve - Signed Approve
 RESULT: PASS Signed Approve - Duplicated Signed Approve - Expecting Failure
 1
 > 
-RESULT: signedApprove1Tx status=0x1 Success gas=200000 gasUsed=94330 costETH=0.00009433 costUSD=0.0821906723 @ ETH/USD=871.31 gasPrice=1 gwei block=989 txIx=0 txId=0x441e967a844cef1c2d73cbe7e25c59d36c0e0d9b17d374396c3e90f1e7aeb5a7 @ 1518264134 Sat, 10 Feb 2018 12:02:14 UTC
+RESULT: signedApprove1Tx status=0x1 Success gas=200000 gasUsed=94286 costETH=0.000094286 costUSD=0.08215233466 @ ETH/USD=871.31 gasPrice=1 gwei block=2366 txIx=0 txId=0x08704aff2a6216693300dd1b34111d4377872d324afb6d2b3a7400f354caabaa @ 1518270684 Sat, 10 Feb 2018 13:51:24 UTC
 undefined
 > 
-RESULT: signedApprove2Tx status=0x0 Failure gas=200000 gasUsed=39376 costETH=0.000039376 costUSD=0.03430870256 @ ETH/USD=871.31 gasPrice=1 gwei block=991 txIx=0 txId=0x92eb17aa3e2d8bf9a4d6f62362b47bb1264b3421422f8a55ee36e074824e462d @ 1518264139 Sat, 10 Feb 2018 12:02:19 UTC
+RESULT: signedApprove2Tx status=0x0 Failure gas=200000 gasUsed=39332 costETH=0.000039332 costUSD=0.03427036492 @ ETH/USD=871.31 gasPrice=1 gwei block=2368 txIx=0 txId=0xb31b3979f00fa5541ed3c9c2910b19f21323bdfde3dcacbf9b99783b12a4cf56 @ 1518270699 Sat, 10 Feb 2018 13:51:39 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -1408,8 +1618,10 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Approval 0 #989 tokenOwner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9 tokens=50
-RESULT: Transfer 0 #989: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.5
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Approval 0 #2366 tokenOwner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9 tokens=50
+RESULT: Transfer 0 #2366: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.5
 undefined
 > 
 RESULT: 
@@ -1438,7 +1650,7 @@ undefined
 > 
 undefined
 > 
-RESULT: signedTransferFromHash=0x217548e4354d1d92146bec5a27d99ccf4cf46ee6f571bcd7117291ad20cf73b1
+RESULT: signedTransferFromHash=0x144e2a17dd4600776c11390a382c19138233c3e092182c655c3d5c22226a1ca3
 undefined
 > 
 > 
@@ -1453,38 +1665,38 @@ undefined
 > 
 undefined
 > 
-RESULT: hashOf=0x344bcc7d00d11511029905be2ea6905d71711b76120fd08ca66a85ede0cbe03694aa9d9de0bb19c99ff55bd9a44a08d3f6933c69212114bb66e2df1813651844a77a2b9d4b1c010a22a7c565dc418cef683dbcec00000000000000000000000000000000000000000000000029a2241af62c0000000000000000000000000000000000000000000000000000006a94d74f4300000000000000000000000000000000000000000000000000000000000000000000
+RESULT: hashOf=0x344bcc7d96de8170cbc270ad84b0652d1ebb76dcb09fc122a66a85ede0cbe03694aa9d9de0bb19c99ff55bd9a44a08d3f6933c69212114bb66e2df1813651844a77a2b9d4b1c010a22a7c565dc418cef683dbcec00000000000000000000000000000000000000000000000029a2241af62c0000000000000000000000000000000000000000000000000000006a94d74f4300000000000000000000000000000000000000000000000000000000000000000000
 undefined
 > 
 undefined
 > 
-RESULT: hash=0x217548e4354d1d92146bec5a27d99ccf4cf46ee6f571bcd7117291ad20cf73b1
+RESULT: hash=0x144e2a17dd4600776c11390a382c19138233c3e092182c655c3d5c22226a1ca3
 undefined
 > 
-RESULT: Should match signedTransferFromHash=0x217548e4354d1d92146bec5a27d99ccf4cf46ee6f571bcd7117291ad20cf73b1
-undefined
-> 
-undefined
-> 
-> 
-undefined
-> 
-RESULT: sig=0x95de6a7e8ad9d119a09219ca6ce2325803c77af63da68cd4e0fc8bcec0ad46ae2990a97840f1679f5a06b2ff0afdcdce977ec8818a9e3cdf1799312d329ae5941b
+RESULT: Should match signedTransferFromHash=0x144e2a17dd4600776c11390a382c19138233c3e092182c655c3d5c22226a1ca3
 undefined
 > 
 undefined
 > 
+> 
+undefined
+> 
+RESULT: sig=0x704a1e366276fa0a42afb5875739cbaaf5fa3283c6a3b6b2e5e9c684ad32bdda0a9dfaa5aedd451f258c1e5c11ec8368d0b7e1f7853633b47c599f295a41b6c71c
 undefined
 > 
 undefined
 > 
-RESULT: sigR=0x95de6a7e8ad9d119a09219ca6ce2325803c77af63da68cd4e0fc8bcec0ad46ae
 undefined
 > 
-RESULT: sigS=0x2990a97840f1679f5a06b2ff0afdcdce977ec8818a9e3cdf1799312d329ae594
 undefined
 > 
-RESULT: sigV=0x1b
+RESULT: sigR=0x704a1e366276fa0a42afb5875739cbaaf5fa3283c6a3b6b2e5e9c684ad32bdda
+undefined
+> 
+RESULT: sigS=0x0a9dfaa5aedd451f258c1e5c11ec8368d0b7e1f7853633b47c599f295a41b6c7
+undefined
+> 
+RESULT: sigV=0x1c
 undefined
 > 
 > 
@@ -1512,18 +1724,19 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      105.009070115000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009070115000000000    10000000.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      114.009496113000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009439264000000000    10000000.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
-RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000      999998.990000000000000000 Account #3
-RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999996.470000000000000000 Account #4
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000056849000000000      999875.534000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999539.558000000000000000 Account #4
 RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           3.000000000000000000 Account #7
-RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.540000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.663000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -1536,13 +1749,13 @@ RESULT: PASS Signed Transfers - Signed TransferFrom
 RESULT: PASS Signed Transfers - Duplicated Signed TransfersFrom - Expecting Failure
 1
 > 
-RESULT: signedTransferFrom1Tx status=0x1 Success gas=200000 gasUsed=111695 costETH=0.000111695 costUSD=0.09732097045 @ ETH/USD=871.31 gasPrice=1 gwei block=993 txIx=0 txId=0x2b7fc4c1a98d3665901a80138ec668614aee6a0b6faa769ef146fa5df186ea46 @ 1518264149 Sat, 10 Feb 2018 12:02:29 UTC
+RESULT: signedTransferFrom1Tx status=0x1 Success gas=200000 gasUsed=111715 costETH=0.000111715 costUSD=0.09733839665 @ ETH/USD=871.31 gasPrice=1 gwei block=2370 txIx=0 txId=0x7f6fa084c7b3c69ab440b4d02c20d0e9c5c9651540720c63ce27f671a1717631 @ 1518270717 Sat, 10 Feb 2018 13:51:57 UTC
 undefined
 > 
-RESULT: signedTransferFrom2Tx status=0x0 Failure gas=200000 gasUsed=40290 costETH=0.00004029 costUSD=0.0351050799 @ ETH/USD=871.31 gasPrice=1 gwei block=995 txIx=0 txId=0x0720e39a7e73b8b4a2f26637ad021a74321d5124c9cadb11134a517c006dd86f @ 1518264155 Sat, 10 Feb 2018 12:02:35 UTC
+RESULT: signedTransferFrom2Tx status=0x0 Failure gas=200000 gasUsed=40310 costETH=0.00004031 costUSD=0.0351225061 @ ETH/USD=871.31 gasPrice=1 gwei block=2372 txIx=0 txId=0x862f0fb3a71883c61cecea725cfef5db946ec0a76000a202c413104b44b84794 @ 1518270719 Sat, 10 Feb 2018 13:51:59 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -1552,8 +1765,10 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Transfer 0 #993: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec tokens=3
-RESULT: Transfer 1 #993: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.03
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Transfer 0 #2370: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec tokens=3
+RESULT: Transfer 1 #2370: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.03
 undefined
 > 
 RESULT: 
@@ -1579,18 +1794,19 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      114.009145257000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009145257000000000     9999800.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      123.009571255000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009514406000000000     9999800.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
-RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000     1000098.990000000000000000 Account #3
-RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000096.470000000000000000 Account #4
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000056849000000000      999975.534000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999639.558000000000000000 Account #4
 RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9        0.000000000000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           3.000000000000000000 Account #7
-RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.540000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.663000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -1603,13 +1819,13 @@ RESULT: PASS Transfer Tokens - transfer 100 tokens ac1 -> ac3
 RESULT: PASS Transfer Tokens - transfer 100 tokens ac1 -> ac4
 1
 > 
-RESULT: transferToken1Tx status=0x1 Success gas=100000 gasUsed=37571 costETH=0.000037571 costUSD=0.03273598801 @ ETH/USD=871.31 gasPrice=1 gwei block=997 txIx=0 txId=0x96330c30585b6830e35ec619f556ffd41c12a845bf7ed9e27d54145effd22aa7 @ 1518264157 Sat, 10 Feb 2018 12:02:37 UTC
+RESULT: transferToken1Tx status=0x1 Success gas=100000 gasUsed=37571 costETH=0.000037571 costUSD=0.03273598801 @ ETH/USD=871.31 gasPrice=1 gwei block=2375 txIx=0 txId=0xde8469d095ab0d7f773a1438c38f2f9d89449563b462ef6cb4f80b9746479532 @ 1518270750 Sat, 10 Feb 2018 13:52:30 UTC
 undefined
 > 
-RESULT: transferToken2Tx status=0x1 Success gas=100000 gasUsed=37571 costETH=0.000037571 costUSD=0.03273598801 @ ETH/USD=871.31 gasPrice=1 gwei block=998 txIx=0 txId=0x4429d6c37757fd200a1c97507c1c4e0a712729745a4777c0116951788957afa5 @ 1518264159 Sat, 10 Feb 2018 12:02:39 UTC
+RESULT: transferToken2Tx status=0x1 Success gas=100000 gasUsed=37571 costETH=0.000037571 costUSD=0.03273598801 @ ETH/USD=871.31 gasPrice=1 gwei block=2375 txIx=1 txId=0x990df02cd3ff5b049cc074a5c032d585dbc331bf2f5e05191c66f833bd80db22 @ 1518270750 Sat, 10 Feb 2018 13:52:30 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -1619,8 +1835,10 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Transfer 0 #997: from=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 to=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 tokens=100
-RESULT: Transfer 1 #998: from=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 to=0xa44a08d3f6933c69212114bb66e2df1813651844 tokens=100
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Transfer 0 #2375: from=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 to=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 tokens=100
+RESULT: Transfer 1 #2375: from=0xa11aae29840fbb5c86e6fd4cf809eba183aef433 to=0xa44a08d3f6933c69212114bb66e2df1813651844 tokens=100
 undefined
 > 
 RESULT: 
@@ -1646,18 +1864,19 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      123.009226235000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009145257000000000     9999800.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      129.009652233000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009514406000000000     9999800.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
-RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000037123000000000     1000098.990000000000000000 Account #3
-RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000     1000096.470000000000000000 Account #4
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000093972000000000      999975.534000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000      999639.558000000000000000 Account #4
 RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9       -0.000043855000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           3.000000000000000000 Account #7
-RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.540000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.663000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -1670,13 +1889,13 @@ RESULT: PASS Move 0 Tokens After Transfers Allowed - transfer 0 tokens ac3 -> ac
 RESULT: PASS Move 0 Tokens After Transfers Allowed - transferFrom 0 tokens ac4 -> ac7 by ac6. SHOULD not throw
 1
 > 
-RESULT: moveToken1Tx status=0x1 Success gas=100000 gasUsed=37123 costETH=0.000037123 costUSD=0.03234564113 @ ETH/USD=871.31 gasPrice=1 gwei block=1001 txIx=1 txId=0xd94225418eeca2a1506743dad7d1e2daeea91bc3fa26bdd69fb7c31c0147315f @ 1518264163 Sat, 10 Feb 2018 12:02:43 UTC
+RESULT: moveToken1Tx status=0x1 Success gas=100000 gasUsed=37123 costETH=0.000037123 costUSD=0.03234564113 @ ETH/USD=871.31 gasPrice=1 gwei block=2377 txIx=0 txId=0xc7ae30fb68c78b7903fb5bd96a5feaef5b19f16e4747939bc6539240513b154d @ 1518270766 Sat, 10 Feb 2018 13:52:46 UTC
 undefined
 > 
-RESULT: moveToken3Tx status=0x1 Success gas=100000 gasUsed=43855 costETH=0.000043855 costUSD=0.03821130005 @ ETH/USD=871.31 gasPrice=1 gwei block=1001 txIx=0 txId=0x73cd786ae25d3c07745b39e996c2c233ec6a68fc120ffa880b6b4bc776e1302f @ 1518264163 Sat, 10 Feb 2018 12:02:43 UTC
+RESULT: moveToken3Tx status=0x1 Success gas=100000 gasUsed=43855 costETH=0.000043855 costUSD=0.03821130005 @ ETH/USD=871.31 gasPrice=1 gwei block=2377 txIx=1 txId=0xd48463225fc59bc19d5b34b73f326c1eb786903602a83b7906392e1de2c46d93 @ 1518270766 Sat, 10 Feb 2018 13:52:46 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -1686,8 +1905,10 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Transfer 0 #1001: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec tokens=0
-RESULT: Transfer 1 #1001: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=0
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Transfer 0 #2377: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=0
+RESULT: Transfer 1 #2377: from=0xa44a08d3f6933c69212114bb66e2df1813651844 to=0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec tokens=0
 undefined
 > 
 RESULT: 
@@ -1718,18 +1939,19 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      135.009309989000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009145257000000000     9999800.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      141.009735987000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009514406000000000     9999800.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
-RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000062358000000000     1000098.990000000000000000 Account #3
-RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844       -0.000032035000000000     1000096.470000000000000000 Account #4
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000119207000000000      999975.534000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844       -0.000032035000000000      999639.558000000000000000 Account #4
 RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9       -0.000070339000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           3.000000000000000000 Account #7
-RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.540000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.663000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -1745,16 +1967,16 @@ RESULT: PASS Move More Tokens Than Owned - approve 300K+1e-18 tokens ac4 -> ac6
 RESULT: PASS Move More Tokens Than Owned - transferFrom 300K+1e-18 tokens ac4 -> ac7 by ac6. SHOULD throw
 1
 > 
-RESULT: moveToken1Tx status=0x0 Failure gas=100000 gasUsed=25235 costETH=0.000025235 costUSD=0.02198750785 @ ETH/USD=871.31 gasPrice=1 gwei block=1003 txIx=0 txId=0x18bb26c11564e1a5ff8515488970f0bf7594fc9950e06a6a031d9e930a99c594 @ 1518264176 Sat, 10 Feb 2018 12:02:56 UTC
+RESULT: moveToken1Tx status=0x0 Failure gas=100000 gasUsed=25235 costETH=0.000025235 costUSD=0.02198750785 @ ETH/USD=871.31 gasPrice=1 gwei block=2379 txIx=0 txId=0x92ce69e9700ce3f7a6a8402e3c4a1a1207e521fccfdcf6405b22a9550f5ce1b9 @ 1518270786 Sat, 10 Feb 2018 13:53:06 UTC
 undefined
 > 
-RESULT: moveToken2Tx status=0x1 Success gas=100000 gasUsed=32035 costETH=0.000032035 costUSD=0.02791241585 @ ETH/USD=871.31 gasPrice=1 gwei block=1003 txIx=1 txId=0xe9168635d2c6f98db0924aa49b9452bbce7a78d7b3b06682486f9aad58309ec6 @ 1518264176 Sat, 10 Feb 2018 12:02:56 UTC
+RESULT: moveToken2Tx status=0x1 Success gas=100000 gasUsed=32035 costETH=0.000032035 costUSD=0.02791241585 @ ETH/USD=871.31 gasPrice=1 gwei block=2379 txIx=1 txId=0xecaff8602e266d3f882c6d48c8d9afc85e823f5819d9b71153808d21954dc2f1 @ 1518270786 Sat, 10 Feb 2018 13:53:06 UTC
 undefined
 > 
-RESULT: moveToken3Tx status=0x0 Failure gas=100000 gasUsed=26484 costETH=0.000026484 costUSD=0.02307577404 @ ETH/USD=871.31 gasPrice=1 gwei block=1005 txIx=0 txId=0xe97c151c38c6689b1e67b0f7cfdea486dd49bc2b195f5854e8758a7f895e8a00 @ 1518264180 Sat, 10 Feb 2018 12:03:00 UTC
+RESULT: moveToken3Tx status=0x0 Failure gas=100000 gasUsed=26484 costETH=0.000026484 costUSD=0.02307577404 @ ETH/USD=871.31 gasPrice=1 gwei block=2381 txIx=0 txId=0x32aaefe422342384c3bc6d37644a37a8dac7ea32c81d0e51c3e40159755401dd @ 1518270795 Sat, 10 Feb 2018 13:53:15 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -1764,7 +1986,9 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Approval 0 #1003 tokenOwner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9 tokens=3000000.000000000000000001
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Approval 0 #2379 tokenOwner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9 tokens=3000000.000000000000000001
 undefined
 > 
 RESULT: 
@@ -1788,18 +2012,19 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                          Token Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      141.009342024000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009145257000000000     9999800.000000000000000000 Account #1 - Contract Owner
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e      150.009768022000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.009514406000000000     9999800.000000000000000000 Account #1 - Contract Owner
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000 Account #2 - Wallet
-RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000062358000000000     1000098.990000000000000000 Account #3
-RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844       -0.000064070000000000     1000096.470000000000000000 Account #4
+RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0       -0.000119207000000000      999975.534000000000000000 Account #3
+RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844       -0.000064070000000000      999639.558000000000000000 Account #4
 RESULT:  5 0xa55a151eb00fded1634d27d1127b4be4627079ea        0.000000000000000000           1.000000000000000000 Account #5
 RESULT:  6 0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9       -0.000070339000000000           0.000000000000000000 Account #6
 RESULT:  7 0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec        0.000000000000000000           3.000000000000000000 Account #7
-RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.540000000000000000 Fee Account
-RESULT:  9 0x64f29474f8850c4593b085851c1746000b950cca        0.000000000000000000           0.000000000000000000 BTTS Library
-RESULT: 10 0x26a5fcd005b5207a19bb11334ed7ff5f8d4dddcd        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
-RESULT: 11 0x00d11511029905be2ea6905d71711b76120fd08c        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
+RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.000000000000000000           0.663000000000000000 Fee Account
+RESULT:  9 0xb7d21d62762c0bb80b6c723824582e728fe44964        0.000000000000000000         580.245000000000000000 TestApproveAndCallFallBack
+RESULT: 10 0xadb908cff8d006810e04a7b3b15695c321cb9c03        0.000000000000000000           0.000000000000000000 BTTS Library
+RESULT: 11 0xfb81531c7c5353a28f19e5fc286fd469d711c029        0.000000000000000000           0.000000000000000000 BTTSTokenFactory
+RESULT: 12 0x96de8170cbc270ad84b0652d1ebb76dcb09fc122        0.000000000000000000           0.000000000000000000 Token 'GZETest' 'GazeCoin Test'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 RESULT:                                                                              12000000.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
@@ -1809,10 +2034,10 @@ undefined
 RESULT: PASS Change Approval Without Setting To 0 - approve 300K+2e-18 tokens ac4 -> ac6
 1
 > 
-RESULT: approveToken2Tx status=0x1 Success gas=100000 gasUsed=32035 costETH=0.000032035 costUSD=0.02791241585 @ ETH/USD=871.31 gasPrice=1 gwei block=1007 txIx=0 txId=0xccf7783accda8e126d86ff5a450caf12865c21bc3eb903b66c0b6d3a862bf2e6 @ 1518264187 Sat, 10 Feb 2018 12:03:07 UTC
+RESULT: approveToken2Tx status=0x1 Success gas=100000 gasUsed=32035 costETH=0.000032035 costUSD=0.02791241585 @ ETH/USD=871.31 gasPrice=1 gwei block=2383 txIx=0 txId=0x3353a82f7be6d87a088c8e29d95cfe78018b97f5917ccfa99d33733291651cc5 @ 1518270802 Sat, 10 Feb 2018 13:53:22 UTC
 undefined
 > 
-RESULT: tokenContractAddress=0x00d11511029905be2ea6905d71711b76120fd08c
+RESULT: tokenContractAddress=0x96de8170cbc270ad84b0652d1ebb76dcb09fc122
 RESULT: token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: token.newOwner=0x0000000000000000000000000000000000000000
 RESULT: token.symbol=GZETest
@@ -1822,7 +2047,9 @@ RESULT: token.totalSupply=12000000
 RESULT: token.transferable=true
 RESULT: token.mintable=false
 RESULT: token.minter=0x0000000000000000000000000000000000000000
-RESULT: Approval 0 #1007 tokenOwner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9 tokens=3000000.000000000000000002
+RESULT: token.accountLocked(account3)=false
+RESULT: token.accountLocked(account4)=false
+RESULT: Approval 0 #2383 tokenOwner=0xa44a08d3f6933c69212114bb66e2df1813651844 spender=0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9 tokens=3000000.000000000000000002
 undefined
 > 
 RESULT: 
