@@ -1,41 +1,20 @@
 # BokkyPooBah's Token Teleportation Service Smart Contract
 
-## Mainnet Deployment
-
-[BTTSTokenFactory.sol](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/d8806edfea0c2f318dd0262a34c1323df0779220/contracts/BTTSTokenFactory.sol) has been deployed to:
-
-* BTTSTokenFactory: [0x594dd662b580ca58b1186af45551f34312e91e88](https://etherscan.io/address/0x594dd662b580ca58b1186af45551f34312e91e88#code)
-* GazeCoin token: [0x8c65e992297d5f092a756def24f4781a280198ff](https://etherscan.io/address/0x8c65e992297d5f092a756def24f4781a280198ff#code)
-* Devery token: [0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c](https://etherscan.io/address/0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c#code)
-
-**Note** that there is a MAJOR bug [#5 Incorrect parameter passed to ApproveAndCallFallBack() function](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/5)
-in the deployed token factory and token contracts above.
-
-A fix and migration path is currently being worked out.
-
-<br />
-
-<hr />
-
 ## Summary
 
-ERC20 token smart contract that implement the BokkyPooBah's Token Teleportation Service (BTTS)
-interface provides Ethereum accounts with the ability to transfer the ERC20 tokens without 
-having to pay for the Ethereum network transaction fees in ethers (ETH). Instead, the account
-pays for the token transfer fees in the token being transferred.
+[ERC20](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md) token smart contract that
+implement the BokkyPooBah's Token Teleportation Service (BTTS) interface provides Ethereum accounts with the ability
+to transfer the ERC20 tokens without having to pay for the Ethereum network transaction fees in ethers (ETH).
+Instead, the account pays for the token transfer fees in the token being transferred.
 
-<br />
-
-### Account Creates Signed Message
+#### Account Creates Signed Message
 
 Any ERC20 token contracts that implement the *BTTS Interface* with their own *BTTS Implementation*
 will be transferable using this *BTTS Service*. An account holding BTTS enabled tokens use
 the implemented functionality to create a message signed with the account's private key with the
 token transfer instructions, including the fees specified in the token being transferred.
 
-<br />
-
-### BTTS Service Provider Executes Token Transfer
+#### BTTS Service Provider Executes Token Transfer
 
 The account provides the transfer details and the signed message to the *BTTS Service Provider*.
 The *BTTS Service Provider* then executes the appropriate function to execute the token transfer,
@@ -45,9 +24,7 @@ be transferred to the *BTTS Service Provider*'s account.
 The signed message is used to validate the account and parameters for the transfer, and guarantees
 that the service provider cannot move more (or less) tokens that the signing account instructed.
 
-<br />
-
-### Use Cases
+#### Use Cases
 
 Application wallets that implement the message signing technology will be able to cryptographically
 sign the token transfer messages, and send the signed messages to the *BTTS Service Providers*.
@@ -68,11 +45,39 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
 ## Table Of Contents
 
 * [Summary](#summary)
+* [History](#history)
 * [How It Works](#how-it-works)
 * [BTTS Interface](#btts-interface)
 * [Sample BTTS Implementation](#sample-btts-implementation)
+* [Testing](#testing)
 * [Code Review](#code-review)
-* [Demo On Ropsten Testnet](#demo-on-ropsten-testnet)
+
+<br />
+
+<hr />
+
+## History
+
+* Dec 10 2017 - Deployed [BTTSTokenFactory.sol v1.00](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/d8806edfea0c2f318dd0262a34c1323df0779220/contracts/BTTSTokenFactory.sol)
+  to [0x594dd662b580ca58b1186af45551f34312e91e88](https://etherscan.io/address/0x594dd662b580ca58b1186af45551f34312e91e88#code).
+  From this factory, the following BTTSToken contracts were deployed:
+  * Dec 10 2017 - GazeCoin token at [0x8c65e992297d5f092a756def24f4781a280198ff](https://etherscan.io/address/0x8c65e992297d5f092a756def24f4781a280198ff#code)
+  * Jan 18 2018 0 Devery token at [0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c](https://etherscan.io/address/0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c#code)
+* Feb 9 2018 - Audit by [Oleksii Matiiasevych](https://github.com/lastperson) identified a major bug
+  [#5 Incorrect parameter passed to ApproveAndCallFallBack() function](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/5)
+  that would prevent `signedApproveAndCall(...)` from being used correctly
+* Feb 11 2018 - [BTTSTokenFactory.sol v1.10](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/4f8f16d10d79337d9edb62faf2c9e176715c2199/contracts/BTTSTokenFactory.sol)
+  fixes and improvements:
+  * **MEDIUM IMPORTANCE** [#5 Incorrect parameter passed to `ApproveAndCallFallBack()` function](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/5)
+  * **LOW IMPORTANCE** [#2 Provide function to check account lock status](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/2)
+  * **LOW IMPORTANCE** [#3 Get first unused nonce?](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/3)
+  * **LOW IMPORTANCE** [#6 Possible reinitialisation to token contract](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/6)
+  * **LOW IMPORTANCE** [#7 Remove unnecessary first parameter](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/7)
+  * **LOW IMPORTANCE** [#8 Inconsistent return of status](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/8)
+  * **LOW IMPORTANCE** [#9 Return style differs from general style](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/9)
+  * **LOW IMPORTANCE** [#10 Remove unnecessary parameter](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/10)
+  * **LOW IMPORTANCE** [#11 Use of deprecated constant modifier for functions](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/11)
+* Feb 11 2018 - Outstanding - A migration from v1.00 token to v1.10 token is being worked out
 
 <br />
 
@@ -256,39 +261,72 @@ Transfer 1 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa88a05d2b8
 
 ## BTTS Interface
 
-See [contracts/BTTSToken100.sol](contracts/BTTSToken100.sol) for a sample implementation.
+From [contracts/BTTSTokenFactory.sol](contracts/BTTSTokenFactory.sol), ERC20 tokens that implement the
+following interface should be supported by *BTTS Service Providers*:
 
 ```javascript
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service (BTTS) Interface v1.00
-//
-// This consist of the signed message versions of the three ERC20 function:
-// - signedTransfer(...)
-// - signedApprove(...)
-// - signedTransferFrom(...)
-//
-// Each of these signed message functions have a helper to generate the signed
-// message hash:
-// - signedTransferHash(...)
-// - signedApproveHash(...)
-// - signedTransferFromHash(...)
-//
-// Each of these signed message functions have a help to check the status of
-// the signed message before the signed message functions are submitted for
-// execution:
-// - signedTransferCheck(...)
-// - signedApproveCheck(...)
-// - signedTransferFromCheck(...)
+// ERC Token Standard #20 Interface
+// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
+// ----------------------------------------------------------------------------
+contract ERC20Interface {
+    function totalSupply() public view returns (uint);
+    function balanceOf(address tokenOwner) public view returns (uint balance);
+    function allowance(address tokenOwner, address spender) public view returns (uint remaining);
+    function transfer(address to, uint tokens) public returns (bool success);
+    function approve(address spender, uint tokens) public returns (bool success);
+    function transferFrom(address from, address to, uint tokens) public returns (bool success);
+
+    event Transfer(address indexed from, address indexed to, uint tokens);
+    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
+}
+
+// ----------------------------------------------------------------------------
+// BokkyPooBah's Token Teleportation Service Interface v1.10
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
-contract BTTSInterface {
+contract BTTSTokenInterface is ERC20Interface {
+    uint public constant bttsVersion = 110;
+
+    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
+    bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
+    bytes4 public constant signedApproveSig = "\xe9\xaf\xa7\xa1";
+    bytes4 public constant signedTransferFromSig = "\x34\x4b\xcc\x7d";
+    bytes4 public constant signedApproveAndCallSig = "\xf1\x6f\x9b\x53";
+
+    event OwnershipTransferred(address indexed from, address indexed to);
+    event MinterUpdated(address from, address to);
+    event Mint(address indexed tokenOwner, uint tokens, bool lockAccount);
+    event MintingDisabled();
+    event TransfersEnabled();
+    event AccountUnlocked(address indexed tokenOwner);
+
+    function approveAndCall(address spender, uint tokens, bytes data) public returns (bool success);
 
     // ------------------------------------------------------------------------
-    // Version
+    // signed{X} functions
     // ------------------------------------------------------------------------
-    uint public constant bttsVersion = 100;
+    function signedTransferHash(address tokenOwner, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
+    function signedTransferCheck(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
+    function signedTransfer(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
 
+    function signedApproveHash(address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
+    function signedApproveCheck(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
+    function signedApprove(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
+
+    function signedTransferFromHash(address spender, address from, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
+    function signedTransferFromCheck(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
+    function signedTransferFrom(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
+
+    function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash);
+    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result);
+    function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success);
+
+    function mint(address tokenOwner, uint tokens, bool lockAccount) public returns (bool success);
+    function unlockAccount(address tokenOwner) public;
+    function disableMinting() public;
+    function enableTransfers() public;
 
     // ------------------------------------------------------------------------
     // signed{X}Check return status
@@ -296,88 +334,15 @@ contract BTTSInterface {
     enum CheckResult {
         Success,                           // 0 Success
         NotTransferable,                   // 1 Tokens not transferable yet
-        SignerMismatch,                    // 2 Mismatch in signing account
-        AlreadyExecuted,                   // 3 Transfer already executed
-        InsufficientApprovedTokens,        // 4 Insufficient approved tokens
-        InsufficientApprovedTokensForFees, // 5 Insufficient approved tokens for fees
-        InsufficientTokens,                // 6 Insufficient tokens
-        InsufficientTokensForFees,         // 7 Insufficient tokens for fees
-        OverflowError                      // 8 Overflow error
+        AccountLocked,                     // 2 Account locked
+        SignerMismatch,                    // 3 Mismatch in signing account
+        InvalidNonce,                      // 4 Invalid nonce
+        InsufficientApprovedTokens,        // 5 Insufficient approved tokens
+        InsufficientApprovedTokensForFees, // 6 Insufficient approved tokens for fees
+        InsufficientTokens,                // 7 Insufficient tokens
+        InsufficientTokensForFees,         // 8 Insufficient tokens for fees
+        OverflowError                      // 9 Overflow error
     }
-
-
-    // ------------------------------------------------------------------------
-    // signedTransfer functions
-    //
-    // Generate the hash used to create the signed transfer message
-    // ------------------------------------------------------------------------
-    function signedTransferHash(address owner, address to, uint tokens,
-        uint fee, uint nonce) public view returns (bytes32 hash);
-
-    // ------------------------------------------------------------------------
-    // Check whether a transfer can be executed on behalf of the user who
-    // signed the transfer message
-    // ------------------------------------------------------------------------
-    function signedTransferCheck(address owner, address to, uint tokens,
-        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public constant returns (CheckResult result);
-
-    // ------------------------------------------------------------------------
-    // Execute a transfer on behalf of the user who signed the transfer 
-    // message
-    // ------------------------------------------------------------------------
-    function signedTransfer(address owner, address to, uint tokens, uint fee,
-        uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public returns (bool success);
-
-
-    // ------------------------------------------------------------------------
-    // signedApprove functions
-    //
-    // Generate the hash used to create the signed approve message
-    // ------------------------------------------------------------------------
-    function signedApproveHash(address owner, address spender, uint tokens,
-        uint fee, uint nonce) public view returns (bytes32 hash);
-
-    // ------------------------------------------------------------------------
-    // Check whether an approve can be executed on behalf of the user who
-    // signed the approve message
-    // ------------------------------------------------------------------------
-    function signedApproveCheck(address owner, address spender, uint tokens,
-        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public constant returns (CheckResult result);
-
-    // ------------------------------------------------------------------------
-    // Execute an approve on behalf of the user who signed the approve message
-    // ------------------------------------------------------------------------
-    function signedApprove(address owner, address spender, uint tokens,
-        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public returns (bool success);
-
-
-    // ------------------------------------------------------------------------
-    // signedTransferFrom functions
-    //
-    // Generate the hash used to create the signed transferFrom message
-    // ------------------------------------------------------------------------
-    function signedTransferFromHash(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce) public view returns (bytes32 hash);
-
-    // ------------------------------------------------------------------------
-    // Check whether a transferFrom can be executed on behalf of the user who
-    // signed the transferFrom message
-    // ------------------------------------------------------------------------
-    function signedTransferFromCheck(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public constant returns (CheckResult result);
-
-    // ------------------------------------------------------------------------
-    // Execute a transferFrom on behalf of the user who signed the transferFrom 
-    // message
-    // ------------------------------------------------------------------------
-    function signedTransferFrom(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public returns (bool success);
 }
 ```
 <br />
@@ -386,309 +351,253 @@ contract BTTSInterface {
 
 ## Sample BTTS Implementation
 
-See [contracts/BTTSToken.sol](contracts/BTTSToken.sol) for a sample implementation.
+From [contracts/BTTSTokenFactory.sol](contracts/BTTSTokenFactory.sol) the main parts of the BTTS functionality follow:
 
 ```javascript
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service (BTTS) Implementation v1.00
+// BokkyPooBah's Token Teleportation Service Library v1.00
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
 // ----------------------------------------------------------------------------
-contract BTTSToken is ERC20Token, BTTSInterface {
-    using SafeMath for uint;
+library BTTSLib {
+    struct Data {
+        bool initialised;
 
-    // ------------------------------------------------------------------------
-    // Constants used for signing and recovery
-    // ------------------------------------------------------------------------
-    bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
+        // Ownership
+        address owner;
+        address newOwner;
 
-    // ------------------------------------------------------------------------
-    // signedTransfer(...) function signature
-    // web3.sha3("signedTransfer(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xa64a9365"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferSig = "\xa6\x4a\x93\x65";
+        // Minting and management
+        address minter;
+        bool mintable;
+        bool transferable;
+        mapping(address => bool) accountLocked;
 
-    // ------------------------------------------------------------------------
-    // signedApprove(...) function signature
-    // web3.sha3("signedApprove(address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xb310efc3"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedApproveSig = "\xb3\x10\xef\xc3";
-
-    // ------------------------------------------------------------------------
-    // signedTransferFrom(...) function signature
-    // web3.sha3("signedTransferFrom(address,address,address,uint256,uint256,uint256,uint8,bytes32,bytes32)").substring(0,10)
-    // => "0xc6e5df0c"
-    // ------------------------------------------------------------------------
-    bytes4 public constant signedTransferFromSig = "\xc6\xe5\xdf\x0c";
-
-
-    // ------------------------------------------------------------------------
-    // Constructor
-    // ------------------------------------------------------------------------
-    function BTTSToken(string _symbol, string _name, uint8 _decimals, 
-        uint _initialSupply, bool _mintable, bool _transferable)
-        public ERC20Token(_symbol, _name, _decimals, _initialSupply,
-        _mintable, _transferable)
-    {
+        // Token
+        string symbol;
+        string name;
+        uint8 decimals;
+        uint totalSupply;
+        mapping(address => uint) balances;
+        mapping(address => mapping(address => uint)) allowed;
+        mapping(address => uint) nextNonce;
     }
 
+    ...
 
     // ------------------------------------------------------------------------
-    // signedTransfer functions
+    // ecrecover from a signature rather than the signature in parts [v, r, s]
+    // The signature format is a compact form {bytes32 r}{bytes32 s}{uint8 v}.
+    // Compact means, uint8 is not padded to 32 bytes.
     //
-    // Generate the hash used to create the signed transfer message
+    // An invalid signature results in the address(0) being returned, make
+    // sure that the returned result is checked to be non-zero for validity
+    //
+    // Parts from https://gist.github.com/axic/5b33912c6f61ae6fd96d6c4a47afde6d
     // ------------------------------------------------------------------------
-    function signedTransferHash(address owner, address to, uint tokens,
-        uint fee, uint nonce) public view returns (bytes32 hash)
-    {
-        hash = keccak256(signedTransferSig, address(this), owner, to, tokens,
-            fee, nonce);
+    function ecrecoverFromSig(bytes32 hash, bytes sig) public pure returns (address recoveredAddress) {
+        bytes32 r;
+        bytes32 s;
+        uint8 v;
+        if (sig.length != 65) return address(0);
+        assembly {
+            r := mload(add(sig, 32))
+            s := mload(add(sig, 64))
+            // Here we are loading the last 32 bytes. We exploit the fact that 'mload' will pad with zeroes if we overread.
+            // There is no 'mload8' to do this, but that would be nicer.
+            v := byte(0, mload(add(sig, 96)))
+        }
+        // Albeit non-transactional signatures are not specified by the YP, one would expect it to match the YP range of [27, 28]
+        // geth uses [0, 1] and some clients have followed. This might change, see https://github.com/ethereum/go-ethereum/issues/2053
+        if (v < 27) {
+          v += 27;
+        }
+        if (v != 27 && v != 28) return address(0);
+        return ecrecover(hash, v, r, s);
     }
 
+    ...
+
     // ------------------------------------------------------------------------
-    // Check whether a transfer can be executed on behalf of the user who
-    // signed the transfer message
+    // Signed function
     // ------------------------------------------------------------------------
-    function signedTransferCheck(address owner, address to, uint tokens,
-        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public constant returns (CheckResult result)
-    {
-        // Check tokens are transferable
-        if (!transferable) return CheckResult.NotTransferable;
-
-        // Check owner is the message signer
-        bytes32 hash = signedTransferHash(owner, to, tokens, fee, nonce);
-        if (owner != ecrecover(keccak256(signingPrefix, hash), v, r, s))
-            return CheckResult.SignerMismatch;
-
-        // Check message not already executed
-        if (executed[owner][hash]) return CheckResult.AlreadyExecuted;
-
-        uint total = tokens.add(fee);
-
-        // Check there are sufficient tokens to transfer
-        if (balances[owner] < tokens) return CheckResult.InsufficientTokens;
-
-        // Check there are sufficient tokens to pay for fees
-        if (balances[owner] < total)
-            return CheckResult.InsufficientTokensForFees;
-
-        // Check for overflows
-        if (balances[to] + tokens < balances[to])
-            return CheckResult.OverflowError;
-        if (balances[msg.sender] + fee < balances[msg.sender])
-            return CheckResult.OverflowError;
-
-        return CheckResult.Success;
+    function signedTransferHash(Data storage /*self*/, address tokenOwner, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
+        hash = keccak256(signedTransferSig, address(this), tokenOwner, to, tokens, fee, nonce);
     }
-
-    // ------------------------------------------------------------------------
-    // Execute a transfer on behalf of the user who signed the transfer
-    // message
-    // ------------------------------------------------------------------------
-    function signedTransfer(address owner, address to, uint tokens, uint fee,
-        uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public returns (bool success)
-    {
-        // Check tokens are transferable
-        require(transferable);
-
-        // Check owner is the message signer
-        bytes32 hash = signedTransferHash(owner, to, tokens, fee, nonce);
-        require(owner == ecrecover(keccak256(signingPrefix, hash), v, r, s));
-
-        // Check message not already executed
-        require(!executed[owner][hash]);
-        executed[owner][hash] = true;
-
-        // Move the tokens and fees
-        require(balances[owner] >= tokens);
-        balances[owner] = balances[owner].sub(tokens);
-        balances[to] = balances[to].add(tokens);
-        Transfer(owner, to, tokens);
-
-        // Fee
-        require(balances[owner] >= fee);
-        balances[owner] = balances[owner].sub(fee);
-        balances[msg.sender] = balances[msg.sender].add(fee);
-        Transfer(owner, msg.sender, fee);
-
+    function signedTransferCheck(Data storage self, address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
+        if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
+        bytes32 hash = signedTransferHash(self, tokenOwner, to, tokens, fee, nonce);
+        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
+        if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
+        if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
+        uint total = safeAdd(tokens, fee);
+        if (self.balances[tokenOwner] < tokens) return BTTSTokenInterface.CheckResult.InsufficientTokens;
+        if (self.balances[tokenOwner] < total) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
+        if (self.balances[to] + tokens < self.balances[to]) return BTTSTokenInterface.CheckResult.OverflowError;
+        if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
+        return BTTSTokenInterface.CheckResult.Success;
+    }
+    function signedTransfer(Data storage self, address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
+        require(self.transferable);
+        bytes32 hash = signedTransferHash(self, tokenOwner, to, tokens, fee, nonce);
+        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        require(!self.accountLocked[tokenOwner]);
+        require(self.nextNonce[tokenOwner] == nonce);
+        self.nextNonce[tokenOwner] = nonce + 1;
+        self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], tokens);
+        self.balances[to] = safeAdd(self.balances[to], tokens);
+        Transfer(tokenOwner, to, tokens);
+        self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
+        self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
+        Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
-
-
-    // ------------------------------------------------------------------------
-    // signedApprove functions
-    //
-    // Generate the hash used to create the signed approve message
-    // ------------------------------------------------------------------------
-    function signedApproveHash(address signer, address spender, uint tokens,
-        uint fee, uint nonce) public view returns (bytes32 hash) 
-    {
-        hash = keccak256(signedApproveSig, address(this),
-            signer, spender, tokens, fee, nonce);
+    function signedApproveHash(Data storage /*self*/, address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
+        hash = keccak256(signedApproveSig, address(this), tokenOwner, spender, tokens, fee, nonce);
     }
-
-    // ------------------------------------------------------------------------
-    // Check whether an approve can be executed on behalf of the user who
-    // signed the approve message
-    // ------------------------------------------------------------------------
-    function signedApproveCheck(address owner, address spender, uint tokens,
-        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public constant returns (CheckResult result) 
-    {
-        // Check tokens are transferable
-        if (!transferable) return CheckResult.NotTransferable;
-
-        // Check owner is the message signer
-        bytes32 hash = signedApproveHash(owner, spender, tokens, fee, nonce);
-        if (owner != ecrecover(keccak256(signingPrefix, hash), v, r, s))
-            return CheckResult.SignerMismatch;
-
-        // Check message not already executed
-        if (executed[owner][hash]) return CheckResult.AlreadyExecuted;
-
-        // Check there are sufficient tokens to pay for fees
-        if (balances[owner] < fee)
-            return CheckResult.InsufficientTokensForFees;
-
-        // Check for overflows
-        if (balances[msg.sender] + fee < balances[msg.sender])
-            return CheckResult.OverflowError;
-
-        return CheckResult.Success;
+    function signedApproveCheck(Data storage self, address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
+        if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
+        bytes32 hash = signedApproveHash(self, tokenOwner, spender, tokens, fee, nonce);
+        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
+        if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
+        if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
+        if (self.balances[tokenOwner] < fee) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
+        if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
+        return BTTSTokenInterface.CheckResult.Success;
     }
-
-    // ------------------------------------------------------------------------
-    // Execute an approve on behalf of the user who signed the approve message
-    // ------------------------------------------------------------------------
-    function signedApprove(address owner, address spender, uint tokens,
-        uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public returns (bool success) 
-    {
-        // Check tokens are transferable
-        require(transferable);
-
-        // Check owner is the message signer
-        bytes32 hash = signedApproveHash(owner, spender, tokens, fee, nonce);
-        require(owner == ecrecover(keccak256(signingPrefix, hash), v, r, s));
-
-        // Check message not already executed
-        require(!executed[owner][hash]);
-        executed[owner][hash] = true;
-
-        // Approve
-        allowed[owner][spender] = tokens;
-        Approval(owner, spender, tokens);
-
-        // Fee
-        require(balances[owner] >= fee);
-        balances[owner] = balances[owner].sub(fee);
-        balances[msg.sender] = balances[msg.sender].add(fee);
-        Transfer(owner, msg.sender, fee);
-
+    function signedApprove(Data storage self, address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
+        require(self.transferable);
+        bytes32 hash = signedApproveHash(self, tokenOwner, spender, tokens, fee, nonce);
+        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        require(!self.accountLocked[tokenOwner]);
+        require(self.nextNonce[tokenOwner] == nonce);
+        self.nextNonce[tokenOwner] = nonce + 1;
+        self.allowed[tokenOwner][spender] = tokens;
+        Approval(tokenOwner, spender, tokens);
+        self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
+        self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
+        Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
-
-
-    // ------------------------------------------------------------------------
-    // signedTransferFrom functions
-    //
-    // Generate the hash used to create the signed transferFrom message
-    // ------------------------------------------------------------------------
-    function signedTransferFromHash(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce) public view returns (bytes32 hash)
-    {
-        hash = keccak256(signedTransferFromSig, address(this),
-            spender, from, to, tokens, fee, nonce);
+    function signedTransferFromHash(Data storage /*self*/, address spender, address from, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
+        hash = keccak256(signedTransferFromSig, address(this), spender, from, to, tokens, fee, nonce);
     }
-
-    // ------------------------------------------------------------------------
-    // Check whether a transferFrom can be executed on behalf of the user who
-    // signed the transferFrom message
-    // ------------------------------------------------------------------------
-    function signedTransferFromCheck(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public constant returns (CheckResult result)
-    {
-        // Check tokens are transferable
-        if (!transferable) return CheckResult.NotTransferable;
-
-        // Check spender is the message signer
-        bytes32 hash = signedTransferFromHash(spender, from, to, tokens, fee,
-            nonce);
-        if (spender != ecrecover(keccak256(signingPrefix, hash), v, r, s))
-            return CheckResult.SignerMismatch;
-
-        // Check message not already executed
-        if (executed[spender][hash]) return CheckResult.AlreadyExecuted;
-
-        uint total = tokens.add(fee);
-
-        // Check there are sufficient approved tokens to transfer
-        if (allowed[from][spender] < tokens)
-            return CheckResult.InsufficientApprovedTokens;
-        // Check there are sufficient approved tokens to pay for fees
-        if (allowed[from][spender] < total)
-            return CheckResult.InsufficientApprovedTokensForFees;
-
-        // Check there are sufficient tokens to transfer
-        if (balances[from] < tokens) return CheckResult.InsufficientTokens;
-
-        // Check there are sufficient tokens to pay for fees
-        if (balances[from] < total)
-            return CheckResult.InsufficientTokensForFees;
-
-        // Check for overflows
-        if (balances[to] + tokens < balances[to])
-            return CheckResult.OverflowError;
-        if (balances[msg.sender] + fee < balances[msg.sender])
-            return CheckResult.OverflowError;
-
-        return CheckResult.Success;
+    function signedTransferFromCheck(Data storage self, address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
+        if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
+        bytes32 hash = signedTransferFromHash(self, spender, from, to, tokens, fee, nonce);
+        if (spender == address(0) || spender != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
+        if (self.accountLocked[from]) return BTTSTokenInterface.CheckResult.AccountLocked;
+        if (self.nextNonce[spender] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
+        uint total = safeAdd(tokens, fee);
+        if (self.allowed[from][spender] < tokens) return BTTSTokenInterface.CheckResult.InsufficientApprovedTokens;
+        if (self.allowed[from][spender] < total) return BTTSTokenInterface.CheckResult.InsufficientApprovedTokensForFees;
+        if (self.balances[from] < tokens) return BTTSTokenInterface.CheckResult.InsufficientTokens;
+        if (self.balances[from] < total) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
+        if (self.balances[to] + tokens < self.balances[to]) return BTTSTokenInterface.CheckResult.OverflowError;
+        if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
+        return BTTSTokenInterface.CheckResult.Success;
     }
-
-
-    // ------------------------------------------------------------------------
-    // Execute a transferFrom on behalf of the user who signed the transferFrom 
-    // message
-    // ------------------------------------------------------------------------
-    function signedTransferFrom(address spender, address from, address to,
-        uint tokens, uint fee, uint nonce, uint8 v, bytes32 r, bytes32 s)
-        public returns (bool success)
-    {
-        // Check tokens are transferable
-        require(transferable);
-
-        // Check spender is the message signer
-        bytes32 hash = signedTransferFromHash(spender, from, to, tokens,
-            fee, nonce);
-        require(spender == ecrecover(keccak256(signingPrefix, hash), v, r, s));
-
-        // Check message not already executed
-        require(!executed[spender][hash]);
-        executed[spender][hash] = true;
-
-        uint total = tokens.add(fee);
-        require(balances[from] >= total);
-        require(allowed[from][spender] >= total);
-
-        // Move the tokens and fees
-        balances[from] = balances[from].sub(tokens);
-        allowed[from][spender] = allowed[from][spender].sub(tokens);
-        balances[to] = balances[to].add(tokens);
+    function signedTransferFrom(Data storage self, address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
+        require(self.transferable);
+        bytes32 hash = signedTransferFromHash(self, spender, from, to, tokens, fee, nonce);
+        require(spender != address(0) && spender == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        require(!self.accountLocked[from]);
+        require(self.nextNonce[spender] == nonce);
+        self.nextNonce[spender] = nonce + 1;
+        self.balances[from] = safeSub(self.balances[from], tokens);
+        self.allowed[from][spender] = safeSub(self.allowed[from][spender], tokens);
+        self.balances[to] = safeAdd(self.balances[to], tokens);
         Transfer(from, to, tokens);
-
-        // Fee
-        balances[from] = balances[from].sub(fee);
-        allowed[from][spender] = allowed[from][spender].sub(fee);
-        balances[msg.sender] = balances[msg.sender].add(fee);
-        Transfer(from, msg.sender, fee);
-
+        self.balances[from] = safeSub(self.balances[from], fee);
+        self.allowed[from][spender] = safeSub(self.allowed[from][spender], fee);
+        self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
+        Transfer(from, feeAccount, fee);
         return true;
     }
+    function signedApproveAndCallHash(Data storage /*self*/, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce) public view returns (bytes32 hash) {
+        hash = keccak256(signedApproveAndCallSig, address(this), tokenOwner, spender, tokens, data, fee, nonce);
+    }
+    function signedApproveAndCallCheck(Data storage self, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
+        if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
+        bytes32 hash = signedApproveAndCallHash(self, tokenOwner, spender, tokens, data, fee, nonce);
+        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
+        if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
+        if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
+        if (self.balances[tokenOwner] < fee) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
+        if (self.balances[feeAccount] + fee < self.balances[feeAccount]) return BTTSTokenInterface.CheckResult.OverflowError;
+        return BTTSTokenInterface.CheckResult.Success;
+    }
+    function signedApproveAndCall(Data storage self, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
+        require(self.transferable);
+        bytes32 hash = signedApproveAndCallHash(self, tokenOwner, spender, tokens, data, fee, nonce);
+        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        require(!self.accountLocked[tokenOwner]);
+        require(self.nextNonce[tokenOwner] == nonce);
+        self.nextNonce[tokenOwner] = nonce + 1;
+        self.allowed[tokenOwner][spender] = tokens;
+        Approval(tokenOwner, spender, tokens);
+        self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
+        self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
+        Transfer(tokenOwner, feeAccount, fee);
+        ApproveAndCallFallBack(spender).receiveApproval(tokenOwner, tokens, address(this), data);
+        return true;
+    }
+}
+
+...
+
+// ----------------------------------------------------------------------------
+// BokkyPooBah's Token Teleportation Service Token Factory v1.00
+//
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
+// ----------------------------------------------------------------------------
+contract BTTSToken is BTTSTokenInterface {
+    using BTTSLib for BTTSLib.Data;
+
+    BTTSLib.Data data;
+
+    ...
+
+    // ------------------------------------------------------------------------
+    // Signed function
+    // ------------------------------------------------------------------------
+    function signedTransferHash(address tokenOwner, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
+        return data.signedTransferHash(tokenOwner, to, tokens, fee, nonce);
+    }
+    function signedTransferCheck(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
+        return data.signedTransferCheck(tokenOwner, to, tokens, fee, nonce, sig, feeAccount);
+    }
+    function signedTransfer(address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
+        return data.signedTransfer(tokenOwner, to, tokens, fee, nonce, sig, feeAccount);
+    }
+    function signedApproveHash(address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
+        return data.signedApproveHash(tokenOwner, spender, tokens, fee, nonce);
+    }
+    function signedApproveCheck(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
+        return data.signedApproveCheck(tokenOwner, spender, tokens, fee, nonce, sig, feeAccount);
+    }
+    function signedApprove(address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
+        return data.signedApprove(tokenOwner, spender, tokens, fee, nonce, sig, feeAccount);
+    }
+    function signedTransferFromHash(address spender, address from, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
+        return data.signedTransferFromHash(spender, from, to, tokens, fee, nonce);
+    }
+    function signedTransferFromCheck(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
+        return data.signedTransferFromCheck(spender, from, to, tokens, fee, nonce, sig, feeAccount);
+    }
+    function signedTransferFrom(address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
+        return data.signedTransferFrom(spender, from, to, tokens, fee, nonce, sig, feeAccount);
+    }
+    function signedApproveAndCallHash(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce) public view returns (bytes32 hash) {
+        return data.signedApproveAndCallHash(tokenOwner, spender, tokens, _data, fee, nonce);
+    }
+    function signedApproveAndCallCheck(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (CheckResult result) {
+        return data.signedApproveAndCallCheck(tokenOwner, spender, tokens, _data, fee, nonce, sig, feeAccount);
+    }
+    function signedApproveAndCall(address tokenOwner, address spender, uint tokens, bytes _data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
+        return data.signedApproveAndCall(tokenOwner, spender, tokens, _data, fee, nonce, sig, feeAccount);
+    }
+}
 ```
 
 <br />
@@ -739,4 +648,4 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 <br />
 
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd - Nov 18 2017. The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd - Feb 11 2018. The MIT Licence.
