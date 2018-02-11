@@ -78,6 +78,14 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
   * **LOW IMPORTANCE** [#10 Remove unnecessary parameter](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/10)
   * **LOW IMPORTANCE** [#11 Use of deprecated constant modifier for functions](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/11)
   * **LOW IMPORTANCE** [#12 Store array of deployed tokens in the factory ](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/12)
+* Feb 11 2018 - Deployment of [BTTSTokenFactory.sol v1.10](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/ec58bced28ed996cb8cb36bc5783472017fb3689/contracts/BTTSTokenFactory.sol)
+  to Ropsten testnet:
+  * BTTSLib [0xDb53A3dB5d9224FcE5Ab4459AE008BD2A43Af742](https://ropsten.etherscan.io/address/0xdb53a3db5d9224fce5ab4459ae008bd2a43af742#code) with 3,492,447 gas used
+  * BTTSTokenFactory [0xB62Af19795eF9208d368A98bBb0E5B5EB93ed2f3](https://ropsten.etherscan.io/address/0xb62af19795ef9208d368a98bbb0e5b5eb93ed2f3#code) with 3,075,332 gas used
+* Feb 11 2018 - Deployment of [BTTSTokenFactory.sol v1.10](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/ec58bced28ed996cb8cb36bc5783472017fb3689/contracts/BTTSTokenFactory.sol)
+  to **Mainnet**:
+  * BTTSLib [0x08CeE0ab11fe46E29C539509F25BcBDA2F70e2bF](https://etherscan.io/address/0x08cee0ab11fe46e29c539509f25bcbda2f70e2bf#code) with 3,492,447 gas used
+  * BTTSTokenFactory [0x14AabC5adE82240330e5BE05D8ef350661AEbB8a](https://etherscan.io/address/0x14aabc5ade82240330e5be05d8ef350661aebb8a#code) with 3,076,996 gas used
 * Feb 11 2018 - Outstanding - A migration from v1.00 token to v1.10 token is being worked out
 
 <br />
