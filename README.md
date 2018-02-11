@@ -62,7 +62,7 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
   to [0x594dd662b580ca58b1186af45551f34312e91e88](https://etherscan.io/address/0x594dd662b580ca58b1186af45551f34312e91e88#code).
   From this factory, the following BTTSToken contracts were deployed:
   * Dec 10 2017 - GazeCoin token at [0x8c65e992297d5f092a756def24f4781a280198ff](https://etherscan.io/address/0x8c65e992297d5f092a756def24f4781a280198ff#code)
-  * Jan 18 2018 0 Devery token at [0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c](https://etherscan.io/address/0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c#code)
+  * Jan 18 2018 - Devery token at [0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c](https://etherscan.io/address/0x923108a439c4e8c2315c4f6521e5ce95b44e9b4c#code)
 * Feb 9 2018 - Audit by [Oleksii Matiiasevych](https://github.com/lastperson) identified a major bug
   [#5 Incorrect parameter passed to ApproveAndCallFallBack() function](https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/issues/5)
   that would prevent `signedApproveAndCall(...)` from being used correctly
@@ -86,7 +86,7 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
   to **Mainnet**:
   * BTTSLib [0x08CeE0ab11fe46E29C539509F25BcBDA2F70e2bF](https://etherscan.io/address/0x08cee0ab11fe46e29c539509f25bcbda2f70e2bf#code) with 3,492,447 gas used
   * BTTSTokenFactory [0x14AabC5adE82240330e5BE05D8ef350661AEbB8a](https://etherscan.io/address/0x14aabc5ade82240330e5be05d8ef350661aebb8a#code) with 3,076,996 gas used
-* Feb 11 2018 - Outstanding - A migration from v1.00 token to v1.10 token is being worked out
+  * The new *GZE* *GazeCoin Metaverse Token* token contract [0x4ac00f287f36a6aad655281fe1ca6798c9cb727b](https://etherscan.io/address/0x4ac00f287f36a6aad655281fe1ca6798c9cb727b#code)
 
 <br />
 
