@@ -47,6 +47,7 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
 * [Summary](#summary)
 * [History](#history)
 * [How It Works](#how-it-works)
+* [How Do I Deploy My Own BTTS Token](#how-do-i-deploy-my-own-btts-token)
 * [BTTS Interface](#btts-interface)
 * [Sample BTTS Implementation](#sample-btts-implementation)
 * [Testing](#testing)
@@ -263,6 +264,80 @@ token.minter=0x0000000000000000000000000000000000000000
 Transfer 0 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
 Transfer 1 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.01
 ```
+
+<br />
+
+<hr />
+
+## How Do I Deploy My Own BTTS Token
+
+### BTTSTokenFactory Information
+
+On Mainnet, v1.10 of the BTTSTokenFactory has been deployed to [0x14AabC5adE82240330e5BE05D8ef350661AEbB8a](https://etherscan.io/address/0x14aabc5ade82240330e5be05d8ef350661aebb8a#code)
+On the Ropsten testnet, v1.10 of the BTTSTokenFactory has been deployed to [0xB62Af19795eF9208d368A98bBb0E5B5EB93ed2f3](https://ropsten.etherscan.io/address/0xb62af19795ef9208d368a98bbb0e5b5eb93ed2f3#code)
+
+The Application Binary Interface for both version follow:
+
+```javascript
+[{"constant":false,"inputs":[{"name":"symbol","type":"string"},{"name":"name","type":"string"},{"name":"decimals","type":"uint8"},{"name":"initialSupply","type":"uint256"},{"name":"mintable","type":"bool"},{"name":"transferable","type":"bool"}],"name":"deployBTTSTokenContract","outputs":[{"name":"bttsTokenAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"numberOfDeployedTokens","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenContract","type":"address"}],"name":"verify","outputs":[{"name":"valid","type":"bool"},{"name":"owner","type":"address"},{"name":"decimals","type":"uint256"},{"name":"mintable","type":"bool"},{"name":"transferable","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnershipImmediately","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"tokenAddress","type":"address"},{"name":"tokens","type":"uint256"}],"name":"transferAnyERC20Token","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"deployedTokens","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"ownerAddress","type":"address"},{"indexed":true,"name":"bttsTokenAddress","type":"address"},{"indexed":false,"name":"symbol","type":"string"},{"indexed":false,"name":"name","type":"string"},{"indexed":false,"name":"decimals","type":"uint8"},{"indexed":false,"name":"initialSupply","type":"uint256"},{"indexed":false,"name":"mintable","type":"bool"},{"indexed":false,"name":"transferable","type":"bool"}],"name":"BTTSTokenListing","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershipTransferred","type":"event"}]
+```
+
+The methods below show how the BTTSToken can be deployed using the BTTSTokenFactory. Post an issue on this GitHub repository if you cannot
+add the verified source code on EtherScan for your new BTTSToken contract.
+
+<br />
+
+### Deploy the BTTSToken from Ethereum Wallet
+
+In Ethereum Wallet / Mist, select the Contracts tab and click on Watch Contract. Enter the following information:
+
+* CONTRACT ADDRESS: `0x14AabC5adE82240330e5BE05D8ef350661AEbB8a`
+* CONTRACT NAME: `BTTSTokenFactory`
+* JSON INTERFACE: Copy and paste the Application Binary Interface information above
+* Click OK
+
+  <kbd><img src="https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/master/images/EthereumWalletWatchBTTSTokenFactory-20180212-112245.png" /></kbd>
+
+Click on the newly created entry "BTTSTOKENFACTORY". Under WRITE TO CONTRACT, select Deploy BTTSToken Contract:
+
+<kbd><img src="https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/master/images/EthereumWalletBTTSTokenFactoryWriteToContract-20180212-112833.png" /></kbd>
+
+Enter the following information:
+* Symbol: `{Your token symbol}`
+* Name: `{Your token name}`
+* Decimals: `{number of decimal places, 0 to 18}`
+* Initial supply: `{the initial supply of your tokens}`
+* Mintable: `{check the box if you want to deploy and link a minting contract to your token, uncheck the box}`
+* Transferable: `{check the box if you want the tokens to be transferable, uncheck otherwise}`
+* Execute from: `{select the account that will pay the ETH transaction fees - this will be the owner of the deployed BTTS token}`
+* Click EXECUTE and search for the newly deployed BTTSToken by viewing the last transaction from your account:
+
+  <kbd><img src="https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract/blob/master/images/EthereumWalletDeployBTTSTokenContract-20180212-113118.png" /></kbd>
+
+<br />
+
+### Deploy the BTTSToken from Go-Ethereum Command Line
+
+Execute the following instructions from the go-ethereum (`geth`) JavaScript console:
+
+```
+var bttsTokenFactoryAbi=[{"constant":false,"inputs":[{"name":"symbol","type":"string"},{"name":"name","type":"string"},{"name":"decimals","type":"uint8"},{"name":"initialSupply","type":"uint256"},{"name":"mintable","type":"bool"},{"name":"transferable","type":"bool"}],"name":"deployBTTSTokenContract","outputs":[{"name":"bttsTokenAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"numberOfDeployedTokens","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenContract","type":"address"}],"name":"verify","outputs":[{"name":"valid","type":"bool"},{"name":"owner","type":"address"},{"name":"decimals","type":"uint256"},{"name":"mintable","type":"bool"},{"name":"transferable","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnershipImmediately","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"tokenAddress","type":"address"},{"name":"tokens","type":"uint256"}],"name":"transferAnyERC20Token","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"deployedTokens","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"ownerAddress","type":"address"},{"indexed":true,"name":"bttsTokenAddress","type":"address"},{"indexed":false,"name":"symbol","type":"string"},{"indexed":false,"name":"name","type":"string"},{"indexed":false,"name":"decimals","type":"uint8"},{"indexed":false,"name":"initialSupply","type":"uint256"},{"indexed":false,"name":"mintable","type":"bool"},{"indexed":false,"name":"transferable","type":"bool"}],"name":"BTTSTokenListing","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershipTransferred","type":"event"}];
+var bttsTokenFactoryAddress="0x14AabC5adE82240330e5BE05D8ef350661AEbB8a";
+var bttsTokenFactory=eth.contract(bttsTokenFactoryAbi).at(bttsTokenFactoryAddress);
+
+var symbol="MYT";
+var name="MyToken";
+var decimals=18;
+var initialSupply="1000000000000000000000000";
+var mintable=false;
+var transferable=true;
+var fromAccount="{your account}";
+var gas=2200000;
+var gasPrice=web3.toWei("10", "gwei");
+var tx=bttsTokenFactory.deployBTTSTokenContract(symbol, name, decimals, initialSupply, mintable, transferable, {from: fromAccount, gas: gas, gasPrice: gasPrice});
+```
+
+Search for the newly deployed BTTSToken by viewing the last transaction from your account.
 
 <br />
 
