@@ -88,6 +88,9 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
   * BTTSLib [0x08CeE0ab11fe46E29C539509F25BcBDA2F70e2bF](https://etherscan.io/address/0x08cee0ab11fe46e29c539509f25bcbda2f70e2bf#code) with 3,492,447 gas used
   * BTTSTokenFactory [0x14AabC5adE82240330e5BE05D8ef350661AEbB8a](https://etherscan.io/address/0x14aabc5ade82240330e5be05d8ef350661aebb8a#code) with 3,076,996 gas used
   * The new *GZE* *GazeCoin Metaverse Token* token contract [0x4ac00f287f36a6aad655281fe1ca6798c9cb727b](https://etherscan.io/address/0x4ac00f287f36a6aad655281fe1ca6798c9cb727b#code)
+* Feb 20 2018 - Deployment of the *DOLL* *Dollops* BTTSToken v1.10 token contract with 18 decimal places on Ropsten testnet
+  [0x362fa7d41a47874cf5231dc12ac7ca1339d1090d](https://ropsten.etherscan.io/token/0x362fa7d41a47874cf5231dc12ac7ca1339d1090d)
+  and on Mainnet [0xc3fb4475013ee38099383fbb6893a64579f0bf53](https://etherscan.io/token/0xc3fb4475013ee38099383fbb6893a64579f0bf53)
 
 <br />
 
