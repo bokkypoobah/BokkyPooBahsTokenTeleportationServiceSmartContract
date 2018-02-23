@@ -91,6 +91,10 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
 * Feb 20 2018 - Deployment of the *DOLL* *Dollops* BTTSToken v1.10 token contract with 18 decimal places on Ropsten testnet
   [0x362fa7d41a47874cf5231dc12ac7ca1339d1090d](https://ropsten.etherscan.io/token/0x362fa7d41a47874cf5231dc12ac7ca1339d1090d)
   and on Mainnet [0xc3fb4475013ee38099383fbb6893a64579f0bf53](https://etherscan.io/token/0xc3fb4475013ee38099383fbb6893a64579f0bf53)
+* Feb 23 2018 - Deployment of the *HOLO* *Hologram* BTTSToken v1.10 token contract with 18 decimal
+  places on Mainnet [0x6dd186168874d8741737d6ae8621f7f4c570f16e](https://etherscan.io/token/0x6dd186168874d8741737d6ae8621f7f4c570f16e)
+* Feb 24 2018 - Deployment of the *GZERopsten* *GazeCoin Metaverse Token - Ropsten Testnet* BTTSToken v1.10 token contract with 18 decimal
+  places on Ropsten testnet [0xa579f55467d230afc54520e6e7f0ceb5ecc3f1a0](https://ropsten.etherscan.io/token/0xa579f55467d230afc54520e6e7f0ceb5ecc3f1a0)
 
 <br />
 
