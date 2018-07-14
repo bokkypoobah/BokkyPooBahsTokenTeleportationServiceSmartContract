@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------------------------
 # Testing the smart contract
 #
-# Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2017. The MIT Licence.
+# Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 # ----------------------------------------------------------------------------------------------
 
 MODE=${1:-test}
@@ -201,9 +201,6 @@ console.log("RESULT: ");
 
 // -----------------------------------------------------------------------------
 var tokenMessage = "Deploy Token Contract";
-// console.log("RESULT: old='" + tokenBin + "'");
-// var newTokenBin = tokenBin.replace(/__BTTSToken100\.sol\:SafeMath_____________/g, libAddress.substring(2, 42));
-// console.log("RESULT: new='" + newTokenBin + "'");
 var symbol = "GZETest";
 var name = "GazeCoin Test";
 var decimals = 18;
@@ -216,7 +213,7 @@ var tokenContract = web3.eth.contract(tokenAbi);
 // console.log(JSON.stringify(tokenContract));
 var tokenTx = null;
 var tokenAddress = null;
-var deployTokenTx = factory.deployBTTSTokenContract(symbol, name, decimals, initialSupply, mintable, transferable, {from: contractOwnerAccount, gas: 4000000, gasPrice: defaultGasPrice});
+var deployTokenTx = factory.deployBTTSTokenContract(symbol, name, decimals, initialSupply, mintable, transferable, {from: contractOwnerAccount, gas: 6000000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 var bttsTokens = getBTTSFactoryTokenListing();
