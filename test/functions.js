@@ -33,7 +33,7 @@ var feeAccount = eth.accounts[8];
 var baseBlock = eth.blockNumber;
 
 function unlockAccounts(password) {
-  for (var i = 0; i < eth.accounts.length; i++) {
+  for (var i = 0; i < eth.accounts.length && i < accounts.length; i++) {
     personal.unlockAccount(eth.accounts[i], password, 100000);
   }
 }
@@ -360,6 +360,7 @@ function printFactoryContractDetails() {
     var contract = eth.contract(factoryContractAbi).at(factoryContractAddress);
     console.log("RESULT: factory.owner=" + contract.owner());
     console.log("RESULT: factory.newOwner=" + contract.newOwner());
+    console.log("RESULT: factory.bttsTokenTemplate=" + contract.bttsTokenTemplate());
     console.log("RESULT: factory.numberOfDeployedTokens=" + contract.numberOfDeployedTokens());
     var i;
     for (i = 0; i < contract.numberOfDeployedTokens(); i++) {
