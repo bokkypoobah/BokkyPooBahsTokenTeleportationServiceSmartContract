@@ -65,10 +65,10 @@ DIFFS1=`diff $SOURCEDIR/$TOKENFACTORYSOL $TOKENFACTORYSOL`
 echo "--- Differences $SOURCEDIR/$TOKENFACTORYSOL $TOKENFACTORYSOL ---" | tee -a $TEST1OUTPUT
 echo "$DIFFS1" | tee -a $TEST1OUTPUT
 
-solc_0.4.18 --version | tee -a $TEST1OUTPUT
+solc_0.4.24 --version | tee -a $TEST1OUTPUT
 
-echo "var tokenFactoryOutput=`solc_0.4.18 --optimize --pretty-json --combined-json abi,bin,interface $TOKENFACTORYSOL`;" > $TOKENFACTORYJS
-echo "var testOutput=`solc_0.4.18 --optimize --pretty-json --combined-json abi,bin,interface $TESTSOL`;" > $TESTJS
+echo "var tokenFactoryOutput=`solc_0.4.24 --optimize --pretty-json --combined-json abi,bin,interface $TOKENFACTORYSOL`;" > $TOKENFACTORYJS
+echo "var testOutput=`solc_0.4.24 --optimize --pretty-json --combined-json abi,bin,interface $TESTSOL`;" > $TESTJS
 
 geth --verbosity 3 attach $GETHATTACHPOINT << EOF | tee -a $TEST1OUTPUT
 loadScript("$TOKENFACTORYJS");
@@ -116,7 +116,9 @@ var test = testContract.new({from: contractOwnerAccount, data: testBin, gas: 600
         testAddress = contract.address;
         addAccount(testAddress, "Test ApproveAndCallFallBack");
         addTestContractAddressAndAbi(testAddress, testAbi);
-        console.log("DATA: testAddress=" + testAddress);
+        console.log("DATA: var testAddress=\"" + testAddress + "\";");
+        console.log("DATA: var testAbi=" + JSON.stringify(testAbi) + ";");
+        console.log("DATA: var test=eth.contract(testAbi).at(testAddress);");
       }
     }
   }
@@ -161,20 +163,53 @@ console.log("RESULT: ");
 
 
 // -----------------------------------------------------------------------------
+var deployTokenTemplateMessage = "Deploy BTTSToken Template";
+// -----------------------------------------------------------------------------
+console.log("RESULT: --- " + deployTokenTemplateMessage + " ---");
+// console.log("RESULT: old='" + tokenBin + "'");
+var newTokenBin = tokenBin.replace(/__BTTSTokenFactory.sol:BTTSLib__________/g, libBTTSAddress.substring(2, 42));
+// console.log("RESULT: new='" + newTokenBin + "'");
+var tokenContract = web3.eth.contract(tokenAbi);
+// console.log(JSON.stringify(tokenAbi));
+// console.log(newTokenBin);
+var tokenTemplateTx = null;
+var tokenTemplateAddress = null;
+
+var tokenTemplate = tokenContract.new({from: contractOwnerAccount, data: newTokenBin, gas: 6000000, gasPrice: defaultGasPrice},
+  function(e, contract) {
+    if (!e) {
+      if (!contract.address) {
+        tokenTemplateTx = contract.transactionHash;
+      } else {
+        tokenTemplateAddress = contract.address;
+        addAccount(tokenTemplateAddress, "BTTSToken Template");
+        console.log("DATA: tokenTemplateAddress=" + tokenTemplateAddress);
+      }
+    }
+  }
+);
+while (txpool.status.pending > 0) {
+}
+printBalances();
+failIfTxStatusError(tokenTemplateTx, deployTokenTemplateMessage);
+printTxData("tokenTemplateTx", tokenTemplateTx);
+console.log("RESULT: ");
+
+
+// -----------------------------------------------------------------------------
 var deployFactoryMessage = "Deploy BTTSTokenFactory";
 // -----------------------------------------------------------------------------
 console.log("RESULT: --- " + deployFactoryMessage + " ---");
 // console.log("RESULT: old='" + factoryBin + "'");
 var newFactoryBin = factoryBin.replace(/__BTTSTokenFactory.sol:BTTSLib__________/g, libBTTSAddress.substring(2, 42));
 // console.log("RESULT: new='" + newFactoryBin + "'");
-
 var factoryContract = web3.eth.contract(factoryAbi);
 // console.log(JSON.stringify(factoryAbi));
 // console.log(factoryBin);
 var factoryTx = null;
 var factoryAddress = null;
 
-var factory = factoryContract.new({from: contractOwnerAccount, data: newFactoryBin, gas: 6000000, gasPrice: defaultGasPrice},
+var factory = factoryContract.new(tokenTemplateAddress, {from: contractOwnerAccount, data: newFactoryBin, gas: 6000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
@@ -183,15 +218,15 @@ var factory = factoryContract.new({from: contractOwnerAccount, data: newFactoryB
         factoryAddress = contract.address;
         addAccount(factoryAddress, "BTTSTokenFactory");
         addFactoryContractAddressAndAbi(factoryAddress, factoryAbi);
-        console.log("DATA: factoryAddress=" + factoryAddress);
+        console.log("DATA: var factoryAddress=\"" + factoryAddress + "\";");
+        console.log("DATA: var factoryAbi=" + JSON.stringify(factoryAbi) + ";");
+        console.log("DATA: var factory=eth.contract(factoryAbi).at(factoryAddress);");
       }
     }
   }
 );
-
 while (txpool.status.pending > 0) {
 }
-
 printBalances();
 failIfTxStatusError(factoryTx, deployFactoryMessage);
 printTxData("factoryTx", factoryTx);
@@ -224,6 +259,9 @@ token = web3.eth.contract(tokenAbi).at(tokenAddress);
 // console.log("RESULT: token=" + JSON.stringify(token));
 addAccount(tokenAddress, "Token '" + token.symbol() + "' '" + token.name() + "'");
 addTokenContractAddressAndAbi(tokenAddress, tokenAbi);
+console.log("DATA: var tokenAddress=\"" + tokenAddress + "\";");
+console.log("DATA: var tokenAbi=" + JSON.stringify(tokenAbi) + ";");
+console.log("DATA: var token=eth.contract(tokenAbi).at(tokenAddress);");
 printBalances();
 printTxData("deployTokenTx", deployTokenTx);
 printFactoryContractDetails();

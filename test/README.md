@@ -8,7 +8,6 @@
 
 * [Requirements](#requirements)
 * [Executing The Tests](#executing-the-tests)
-* [The Tests](#the-tests)
 * [Notes](#notes)
 
 <br />
@@ -18,8 +17,8 @@
 # Requirements
 
 * The tests works on OS/X. Should work in Linux. May work in Windows with Cygwin
-* Geth/v1.7.3-stable-4bb3c89d/darwin-amd64/go1.9.2 running with the Byzantium fork switched on
-* Solc 0.4.18+commit.9cf6e910.Darwin.appleclang
+* Geth/v1.8.11-stable-dea1ce05/darwin-amd64/go1.10.3 running with the Byzantium fork switched on
+* Solc 0.4.24+commit.e67f0147.Darwin.appleclang
 
 <br />
 
@@ -43,8 +42,8 @@
 
 # Notes
 
-* The tests were conducted using bash shell scripts running Geth/v1.7.3-stable-4bb3c89d/darwin-amd64/go1.9.2 JavaScript commands
-* The smart contracts were compiled using Solidity 0.4.18+commit.9cf6e910.Darwin.appleclang
+* The tests were conducted using bash shell scripts running Geth/v1.8.11-stable-dea1ce05/darwin-amd64/go1.10.3 JavaScript commands
+* The smart contracts were compiled using Solidity 0.4.24+commit.e67f0147.Darwin.appleclang
 * The test script can be found in [01_test1.sh](01_test1.sh)
 * The test results can be found in [test1results.txt](test1results.txt) with details in [test1output.txt](test1output.txt)
 * The test can be run on OS/X, should run on Linux and may run on Windows with Cygwin

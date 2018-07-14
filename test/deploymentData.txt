@@ -1,3 +1,0 @@
-testAddress=0x938d22c583154e944cc0f6e83749261d88bf01f0
-libBTTSAddress=0xb196e7fe3b147dc8421deb884a1fba46cd8e2b63
-factoryAddress=0x1aa3ebfd892954f32a37b698673505d1dafef4f5

@@ -1,7 +1,7 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service v1.10
+// BokkyPooBah's Token Teleportation Service v1.20
 //
 // https://github.com/bokkypoobah/BokkyPooBahsTokenTeleportationServiceSmartContract
 //
@@ -35,12 +35,12 @@ contract ApproveAndCallFallBack {
 
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service Interface v1.10
+// BokkyPooBah's Token Teleportation Service Interface v1.20
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
 contract BTTSTokenInterface is ERC20Interface {
-    uint public constant bttsVersion = 110;
+    uint public constant bttsVersion = 120;
 
     bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
     bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
@@ -132,7 +132,7 @@ library BTTSLib {
     // ------------------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------------------
-    uint public constant bttsVersion = 110;
+    uint public constant bttsVersion = 120;
     bytes public constant signingPrefix = "\x19Ethereum Signed Message:\n32";
     bytes4 public constant signedTransferSig = "\x75\x32\xea\xac";
     bytes4 public constant signedApproveSig = "\xe9\xaf\xa7\xa1";
@@ -165,8 +165,8 @@ library BTTSLib {
         if (initialSupply > 0) {
             self.balances[owner] = initialSupply;
             self.totalSupply = initialSupply;
-            Mint(self.owner, initialSupply, false);
-            Transfer(address(0), self.owner, initialSupply);
+            emit Mint(self.owner, initialSupply, false);
+            emit Transfer(address(0), self.owner, initialSupply);
         }
         self.mintable = mintable;
         self.transferable = transferable;
@@ -201,13 +201,13 @@ library BTTSLib {
     }
     function acceptOwnership(Data storage self) public {
         require(msg.sender == self.newOwner);
-        OwnershipTransferred(self.owner, self.newOwner);
+        emit OwnershipTransferred(self.owner, self.newOwner);
         self.owner = self.newOwner;
         self.newOwner = address(0);
     }
     function transferOwnershipImmediately(Data storage self, address newOwner) public {
         require(msg.sender == self.owner);
-        OwnershipTransferred(self.owner, newOwner);
+        emit OwnershipTransferred(self.owner, newOwner);
         self.owner = newOwner;
         self.newOwner = address(0);
     }
@@ -218,7 +218,7 @@ library BTTSLib {
     function setMinter(Data storage self, address minter) public {
         require(msg.sender == self.owner);
         require(self.mintable);
-        MinterUpdated(self.minter, minter);
+        emit MinterUpdated(self.minter, minter);
         self.minter = minter;
     }
     function mint(Data storage self, address tokenOwner, uint tokens, bool lockAccount) public returns (bool success) {
@@ -229,31 +229,31 @@ library BTTSLib {
         }
         self.balances[tokenOwner] = safeAdd(self.balances[tokenOwner], tokens);
         self.totalSupply = safeAdd(self.totalSupply, tokens);
-        Mint(tokenOwner, tokens, lockAccount);
-        Transfer(address(0), tokenOwner, tokens);
+        emit Mint(tokenOwner, tokens, lockAccount);
+        emit Transfer(address(0), tokenOwner, tokens);
         return true;
     }
     function unlockAccount(Data storage self, address tokenOwner) public {
         require(msg.sender == self.owner);
         require(self.accountLocked[tokenOwner]);
         self.accountLocked[tokenOwner] = false;
-        AccountUnlocked(tokenOwner);
+        emit AccountUnlocked(tokenOwner);
     }
     function disableMinting(Data storage self) public {
         require(self.mintable);
         require(msg.sender == self.minter || msg.sender == self.owner);
         self.mintable = false;
         if (self.minter != address(0)) {
-            MinterUpdated(self.minter, address(0));
+            emit MinterUpdated(self.minter, address(0));
             self.minter = address(0);
         }
-        MintingDisabled();
+        emit MintingDisabled();
     }
     function enableTransfers(Data storage self) public {
         require(msg.sender == self.owner);
         require(!self.transferable);
         self.transferable = true;
-        TransfersEnabled();
+        emit TransfersEnabled();
     }
 
     // ------------------------------------------------------------------------
@@ -333,13 +333,13 @@ library BTTSLib {
         require(!self.accountLocked[msg.sender]);
         self.balances[msg.sender] = safeSub(self.balances[msg.sender], tokens);
         self.balances[to] = safeAdd(self.balances[to], tokens);
-        Transfer(msg.sender, to, tokens);
+        emit Transfer(msg.sender, to, tokens);
         return true;
     }
     function approve(Data storage self, address spender, uint tokens) public returns (bool success) {
         require(!self.accountLocked[msg.sender]);
         self.allowed[msg.sender][spender] = tokens;
-        Approval(msg.sender, spender, tokens);
+        emit Approval(msg.sender, spender, tokens);
         return true;
     }
     function transferFrom(Data storage self, address from, address to, uint tokens) public returns (bool success) {
@@ -348,13 +348,13 @@ library BTTSLib {
         self.balances[from] = safeSub(self.balances[from], tokens);
         self.allowed[from][msg.sender] = safeSub(self.allowed[from][msg.sender], tokens);
         self.balances[to] = safeAdd(self.balances[to], tokens);
-        Transfer(from, to, tokens);
+        emit Transfer(from, to, tokens);
         return true;
     }
     function approveAndCall(Data storage self, address spender, uint tokens, bytes data) public returns (bool success) {
         require(!self.accountLocked[msg.sender]);
         self.allowed[msg.sender][spender] = tokens;
-        Approval(msg.sender, spender, tokens);
+        emit Approval(msg.sender, spender, tokens);
         ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, address(this), data);
         return true;
     }
@@ -363,12 +363,12 @@ library BTTSLib {
     // Signed function
     // ------------------------------------------------------------------------
     function signedTransferHash(Data storage /*self*/, address tokenOwner, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
-        hash = keccak256(signedTransferSig, address(this), tokenOwner, to, tokens, fee, nonce);
+        hash = keccak256(abi.encodePacked(signedTransferSig, address(this), tokenOwner, to, tokens, fee, nonce));
     }
     function signedTransferCheck(Data storage self, address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
         bytes32 hash = signedTransferHash(self, tokenOwner, to, tokens, fee, nonce);
-        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
+        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(abi.encodePacked(signingPrefix, hash)), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
         if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
         if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
         uint total = safeAdd(tokens, fee);
@@ -381,25 +381,25 @@ library BTTSLib {
     function signedTransfer(Data storage self, address tokenOwner, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         require(self.transferable);
         bytes32 hash = signedTransferHash(self, tokenOwner, to, tokens, fee, nonce);
-        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(abi.encodePacked(signingPrefix, hash)), sig));
         require(!self.accountLocked[tokenOwner]);
         require(self.nextNonce[tokenOwner] == nonce);
         self.nextNonce[tokenOwner] = nonce + 1;
         self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], tokens);
         self.balances[to] = safeAdd(self.balances[to], tokens);
-        Transfer(tokenOwner, to, tokens);
+        emit Transfer(tokenOwner, to, tokens);
         self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
         self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
-        Transfer(tokenOwner, feeAccount, fee);
+        emit Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
     function signedApproveHash(Data storage /*self*/, address tokenOwner, address spender, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
-        hash = keccak256(signedApproveSig, address(this), tokenOwner, spender, tokens, fee, nonce);
+        hash = keccak256(abi.encodePacked(signedApproveSig, address(this), tokenOwner, spender, tokens, fee, nonce));
     }
     function signedApproveCheck(Data storage self, address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
         bytes32 hash = signedApproveHash(self, tokenOwner, spender, tokens, fee, nonce);
-        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
+        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(abi.encodePacked(signingPrefix, hash)), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
         if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
         if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
         if (self.balances[tokenOwner] < fee) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
@@ -409,24 +409,24 @@ library BTTSLib {
     function signedApprove(Data storage self, address tokenOwner, address spender, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         require(self.transferable);
         bytes32 hash = signedApproveHash(self, tokenOwner, spender, tokens, fee, nonce);
-        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(abi.encodePacked(signingPrefix, hash)), sig));
         require(!self.accountLocked[tokenOwner]);
         require(self.nextNonce[tokenOwner] == nonce);
         self.nextNonce[tokenOwner] = nonce + 1;
         self.allowed[tokenOwner][spender] = tokens;
-        Approval(tokenOwner, spender, tokens);
+        emit Approval(tokenOwner, spender, tokens);
         self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
         self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
-        Transfer(tokenOwner, feeAccount, fee);
+        emit Transfer(tokenOwner, feeAccount, fee);
         return true;
     }
     function signedTransferFromHash(Data storage /*self*/, address spender, address from, address to, uint tokens, uint fee, uint nonce) public view returns (bytes32 hash) {
-        hash = keccak256(signedTransferFromSig, address(this), spender, from, to, tokens, fee, nonce);
+        hash = keccak256(abi.encodePacked(signedTransferFromSig, address(this), spender, from, to, tokens, fee, nonce));
     }
     function signedTransferFromCheck(Data storage self, address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
         bytes32 hash = signedTransferFromHash(self, spender, from, to, tokens, fee, nonce);
-        if (spender == address(0) || spender != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
+        if (spender == address(0) || spender != ecrecoverFromSig(keccak256(abi.encodePacked(signingPrefix, hash)), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
         if (self.accountLocked[from]) return BTTSTokenInterface.CheckResult.AccountLocked;
         if (self.nextNonce[spender] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
         uint total = safeAdd(tokens, fee);
@@ -441,27 +441,27 @@ library BTTSLib {
     function signedTransferFrom(Data storage self, address spender, address from, address to, uint tokens, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         require(self.transferable);
         bytes32 hash = signedTransferFromHash(self, spender, from, to, tokens, fee, nonce);
-        require(spender != address(0) && spender == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        require(spender != address(0) && spender == ecrecoverFromSig(keccak256(abi.encodePacked(signingPrefix, hash)), sig));
         require(!self.accountLocked[from]);
         require(self.nextNonce[spender] == nonce);
         self.nextNonce[spender] = nonce + 1;
         self.balances[from] = safeSub(self.balances[from], tokens);
         self.allowed[from][spender] = safeSub(self.allowed[from][spender], tokens);
         self.balances[to] = safeAdd(self.balances[to], tokens);
-        Transfer(from, to, tokens);
+        emit Transfer(from, to, tokens);
         self.balances[from] = safeSub(self.balances[from], fee);
         self.allowed[from][spender] = safeSub(self.allowed[from][spender], fee);
         self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
-        Transfer(from, feeAccount, fee);
+        emit Transfer(from, feeAccount, fee);
         return true;
     }
     function signedApproveAndCallHash(Data storage /*self*/, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce) public view returns (bytes32 hash) {
-        hash = keccak256(signedApproveAndCallSig, address(this), tokenOwner, spender, tokens, data, fee, nonce);
+        hash = keccak256(abi.encodePacked(signedApproveAndCallSig, address(this), tokenOwner, spender, tokens, data, fee, nonce));
     }
     function signedApproveAndCallCheck(Data storage self, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public view returns (BTTSTokenInterface.CheckResult result) {
         if (!self.transferable) return BTTSTokenInterface.CheckResult.NotTransferable;
         bytes32 hash = signedApproveAndCallHash(self, tokenOwner, spender, tokens, data, fee, nonce);
-        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(signingPrefix, hash), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
+        if (tokenOwner == address(0) || tokenOwner != ecrecoverFromSig(keccak256(abi.encodePacked(signingPrefix, hash)), sig)) return BTTSTokenInterface.CheckResult.SignerMismatch;
         if (self.accountLocked[tokenOwner]) return BTTSTokenInterface.CheckResult.AccountLocked;
         if (self.nextNonce[tokenOwner] != nonce) return BTTSTokenInterface.CheckResult.InvalidNonce;
         if (self.balances[tokenOwner] < fee) return BTTSTokenInterface.CheckResult.InsufficientTokensForFees;
@@ -471,15 +471,15 @@ library BTTSLib {
     function signedApproveAndCall(Data storage self, address tokenOwner, address spender, uint tokens, bytes data, uint fee, uint nonce, bytes sig, address feeAccount) public returns (bool success) {
         require(self.transferable);
         bytes32 hash = signedApproveAndCallHash(self, tokenOwner, spender, tokens, data, fee, nonce);
-        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
+        require(tokenOwner != address(0) && tokenOwner == ecrecoverFromSig(keccak256(abi.encodePacked(signingPrefix, hash)), sig));
         require(!self.accountLocked[tokenOwner]);
         require(self.nextNonce[tokenOwner] == nonce);
         self.nextNonce[tokenOwner] = nonce + 1;
         self.allowed[tokenOwner][spender] = tokens;
-        Approval(tokenOwner, spender, tokens);
+        emit Approval(tokenOwner, spender, tokens);
         self.balances[tokenOwner] = safeSub(self.balances[tokenOwner], fee);
         self.balances[feeAccount] = safeAdd(self.balances[feeAccount], fee);
-        Transfer(tokenOwner, feeAccount, fee);
+        emit Transfer(tokenOwner, feeAccount, fee);
         ApproveAndCallFallBack(spender).receiveApproval(tokenOwner, tokens, address(this), data);
         return true;
     }
@@ -487,7 +487,7 @@ library BTTSLib {
 
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service Token v1.10
+// BokkyPooBah's Token Teleportation Service Token v1.20
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
@@ -499,7 +499,9 @@ contract BTTSToken is BTTSTokenInterface {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function BTTSToken(address owner, string symbol, string name, uint8 decimals, uint initialSupply, bool mintable, bool transferable) public {
+    constructor() public {
+    }
+    function init(address owner, string symbol, string name, uint8 decimals, uint initialSupply, bool mintable, bool transferable) public {
         data.init(owner, symbol, name, decimals, initialSupply, mintable, transferable);
     }
 
@@ -657,7 +659,7 @@ contract Owned {
     address public newOwner;
     event OwnershipTransferred(address indexed _from, address indexed _to);
 
-    function Owned() public {
+    constructor() public {
         owner = msg.sender;
     }
     modifier onlyOwner {
@@ -669,12 +671,12 @@ contract Owned {
     }
     function acceptOwnership() public {
         require(msg.sender == newOwner);
-        OwnershipTransferred(owner, newOwner);
+        emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
         newOwner = address(0);
     }
     function transferOwnershipImmediately(address _newOwner) public onlyOwner {
-        OwnershipTransferred(owner, _newOwner);
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
         newOwner = address(0);
     }
@@ -682,17 +684,87 @@ contract Owned {
 
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Token Teleportation Service Token Factory v1.10
+// CloneFactory
+// ----------------------------------------------------------------------------
+/*
+The MIT License (MIT)
+
+Copyright (c) 2018 Murray Software, LLC.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+//solhint-disable max-line-length
+//solhint-disable no-inline-assembly
+
+/** Notes for auditors of the Ethereum Alarm Clock:
+ * This file is copied from node_modules/ after `npm install` is ran in this project.
+ * Alternatively it is also availble on Github: https://github.com/yarrumretep/clone-factory
+ * It is generated by running the script provided in that repository.
+ * It was independently verified by lsaether before being used here.
+ * For the bytecode annotation please see the `bytecode-annotation.txt` document at the root of this project.
+ * Briefly, this contract will create a "clone" contract that will delegatecall every transaction it is sent to the `target` address.
+ */
+contract CloneFactory {
+
+  event CloneCreated(address indexed target, address clone);
+
+  function createClone(address target) internal returns (address result) {
+    bytes memory clone = hex"3460425760388060106000396000f30036600060ff376000803660ff73beefbeefbeefbeefbeefbeefbeefbeefbeefbeef5af4156032573d80600060ff3e60fff3005b600080fd00";
+    bytes20 targetBytes = bytes20(target);
+    for (uint i = 0; i < 20; i++) {
+      clone[29 + i] = targetBytes[i];
+    }
+    assembly {
+      let len := mload(clone)
+      let data := add(clone, 0x20)
+      result := create(0, data, len)
+    }
+  }
+}
+
+
+// ----------------------------------------------------------------------------
+// BokkyPooBah's Token Teleportation Service Token Factory v1.20
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
-contract BTTSTokenFactory is Owned {
+contract BTTSTokenFactory is Owned, CloneFactory {
 
     // ------------------------------------------------------------------------
     // Internal data
     // ------------------------------------------------------------------------
+    BTTSToken public bttsTokenTemplate;
     mapping(address => bool) _verify;
     address[] public deployedTokens;
+
+    struct BTTSTokenDetail {
+        uint blockNumber;
+        address addr;
+        address owner;
+        string symbol;
+        string name;
+        uint8 decimals;
+        uint initialSupply;
+    }
+    mapping(address => BTTSTokenDetail) public bttsTokenDetails;
+
 
     // ------------------------------------------------------------------------
     // Event
@@ -702,6 +774,13 @@ contract BTTSTokenFactory is Owned {
         string symbol, string name, uint8 decimals,
         uint initialSupply, bool mintable, bool transferable);
 
+    // ------------------------------------------------------------------------
+    // Constructor
+    // ------------------------------------------------------------------------
+    constructor(address _bttsTokenTemplate) public {
+        require(_bttsTokenTemplate != 0);
+        bttsTokenTemplate = BTTSToken(_bttsTokenTemplate);
+    }
 
     // ------------------------------------------------------------------------
     // Anyone can call this method to verify whether the bttsToken contract at
@@ -733,7 +812,6 @@ contract BTTSTokenFactory is Owned {
             transferable = t.transferable();
         }
     }
-
 
     // ------------------------------------------------------------------------
     // Any account can call this method to deploy a new BTTSToken contract.
@@ -773,20 +851,14 @@ contract BTTSTokenFactory is Owned {
         uint initialSupply,
         bool mintable,
         bool transferable
-    ) public returns (address bttsTokenAddress) {
-        bttsTokenAddress = new BTTSToken(
-            msg.sender,
-            symbol,
-            name,
-            decimals,
-            initialSupply,
-            mintable,
-            transferable);
+    ) public returns (BTTSToken bttsToken) {
+        bttsToken = BTTSToken(createClone(bttsTokenTemplate));
+        bttsToken.init(msg.sender, symbol, name, decimals, initialSupply, mintable, transferable);
         // Record that this factory created the trader
-        _verify[bttsTokenAddress] = true;
-        deployedTokens.push(bttsTokenAddress);
-        BTTSTokenListing(msg.sender, bttsTokenAddress, symbol, name, decimals,
-            initialSupply, mintable, transferable);
+        _verify[address(bttsToken)] = true;
+        deployedTokens.push(address(bttsToken));
+        bttsTokenDetails[address(bttsToken)] = BTTSTokenDetail(block.number, address(bttsToken), owner, bttsToken.symbol(), bttsToken.name(), bttsToken.decimals(), initialSupply);
+        emit BTTSTokenListing(msg.sender, address(bttsToken), symbol, name, decimals, initialSupply, mintable, transferable);
     }
 
 

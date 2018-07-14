@@ -8,7 +8,7 @@ TOKENFACTORYJS=BTTSTokenFactory.js
 TESTSOL=TestApproveAndCallFallback.sol
 TESTJS=TestApproveAndCallFallback.js
 
-DEPLOYMENTDATA=deploymentData.txt
+DEPLOYMENTDATA=deploymentData.js
 
 INCLUDEJS=./include.js
 TEST1OUTPUT=test1output.txt
