@@ -1,5 +1,5 @@
 IPCFILE=ipc:./testchain/geth.ipc
-PASSWORD=
+PASSWORD=testtest
 
 SOURCEDIR=../contracts
 
