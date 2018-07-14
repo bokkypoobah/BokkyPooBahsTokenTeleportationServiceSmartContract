@@ -371,6 +371,7 @@ function printFactoryContractDetails() {
     var i;
     for (i = 0; i < contract.numberOfDeployedTokens(); i++) {
         console.log("RESULT: factory.deployedTokens(" + i + ")=" + JSON.stringify(contract.bttsTokenDetails(contract.deployedTokens(i))));
+        console.log("RESULT: factory.verify(" + i + ")=" + JSON.stringify(contract.verify(contract.deployedTokens(i))));
     }
 
     var latestBlock = eth.blockNumber;

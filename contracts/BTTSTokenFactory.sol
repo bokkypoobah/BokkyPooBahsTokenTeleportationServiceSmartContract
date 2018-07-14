@@ -162,12 +162,10 @@ library BTTSLib {
         self.symbol = symbol;
         self.name = name;
         self.decimals = decimals;
-        if (initialSupply > 0) {
-            self.balances[owner] = initialSupply;
-            self.totalSupply = initialSupply;
-            emit Mint(self.owner, initialSupply, false);
-            emit Transfer(address(0), self.owner, initialSupply);
-        }
+        self.balances[owner] = initialSupply;
+        self.totalSupply = initialSupply;
+        emit Mint(self.owner, initialSupply, false);
+        emit Transfer(address(0), self.owner, initialSupply);
         self.mintable = mintable;
         self.transferable = transferable;
     }
@@ -751,7 +749,6 @@ contract BTTSTokenFactory is Owned, CloneFactory {
     // Internal data
     // ------------------------------------------------------------------------
     BTTSToken public bttsTokenTemplate;
-    mapping(address => bool) _verify;
     address[] public deployedTokens;
 
     struct BTTSTokenDetail {
@@ -803,12 +800,13 @@ contract BTTSTokenFactory is Owned, CloneFactory {
         bool    mintable,
         bool    transferable
     ) {
-        valid = _verify[tokenContract];
-        if (valid) {
+        BTTSTokenDetail memory detail = bttsTokenDetails[tokenContract];
+        if (detail.addr != 0) {
             BTTSToken t = BTTSToken(tokenContract);
-            owner        = t.owner();
-            decimals     = t.decimals();
-            mintable     = t.mintable();
+            valid = true;
+            owner = t.owner();
+            decimals = t.decimals();
+            mintable = t.mintable();
             transferable = t.transferable();
         }
     }
@@ -854,8 +852,6 @@ contract BTTSTokenFactory is Owned, CloneFactory {
     ) public returns (BTTSToken bttsToken) {
         bttsToken = BTTSToken(createClone(bttsTokenTemplate));
         bttsToken.init(msg.sender, symbol, name, decimals, initialSupply, mintable, transferable);
-        // Record that this factory created the trader
-        _verify[address(bttsToken)] = true;
         deployedTokens.push(address(bttsToken));
         bttsTokenDetails[address(bttsToken)] = BTTSTokenDetail(block.number, address(bttsToken), owner, bttsToken.symbol(), bttsToken.name(), bttsToken.decimals(), initialSupply);
         emit BTTSTokenListing(msg.sender, address(bttsToken), symbol, name, decimals, initialSupply, mintable, transferable);
