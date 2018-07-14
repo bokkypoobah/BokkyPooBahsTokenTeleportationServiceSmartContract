@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
 // ERC Token Standard #20 Interface
@@ -25,6 +25,6 @@ contract TestApproveAndCallFallBack {
 
     function receiveApproval(address from, uint256 tokens, address token, bytes data) public {
         ERC20Interface(token).transferFrom(from, address(this), tokens);
-        emit LogBytes(data);
+        LogBytes(data);
     }
 }
