@@ -46,6 +46,7 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
 
 * [Summary](#summary)
 * [History](#history)
+* [Bug Bounty Scope And Donations](#bug-bounty-scope-and-donations)
 * [How It Works](#how-it-works)
 * [How Do I Deploy My Own BTTS Token](#how-do-i-deploy-my-own-btts-token)
 * [BTTS Interface](#btts-interface)
@@ -95,6 +96,19 @@ or the Ledger Nano S hardware wallet to unlock the same set of accounts.
   places on Mainnet [0x6dd186168874d8741737d6ae8621f7f4c570f16e](https://etherscan.io/token/0x6dd186168874d8741737d6ae8621f7f4c570f16e)
 * Feb 24 2018 - Deployment of the *GZERopsten* *GazeCoin Metaverse Token - Ropsten Testnet* BTTSToken v1.10 token contract with 18 decimal
   places on Ropsten testnet [0xa579f55467d230afc54520e6e7f0ceb5ecc3f1a0](https://ropsten.etherscan.io/token/0xa579f55467d230afc54520e6e7f0ceb5ecc3f1a0)
+* Feb 17 2019 - Bug bounty added
+
+<br />
+
+<hr />
+
+## Bug Bounty Scope And Donations
+
+Details of the bug bounty program for this project can be found at [BokkyPooBah's Hall Of Fame And Bug Bounties](https://github.com/bokkypoobah/BokkyPooBahsHallOfFameAndBugBounties). Please consider [donating](https://github.com/bokkypoobah/BokkyPooBahsHallOfFameAndBugBounties#donations) to support the bug bounty, and the development and maintenance of decentralised applications.
+
+The scope of the bug bounty for this project follows:
+
+* [contracts/BTTSTokenFactory.sol](contracts/BTTSTokenFactory.sol)
 
 <br />
 
@@ -108,7 +122,7 @@ session.
 
 In the testing [script](test/01_test1.sh) and [results](test/test1results.txt):
 
-* The account `0xa33a` wants to transfer 1 token to account `0xa55a` and pay a 0.01 token fee 
+* The account `0xa33a` wants to transfer 1 token to account `0xa55a` and pay a 0.01 token fee
 * The parameters for the signed transfers are:
   * `from` = `0xa33a`
   * `to` = `0xa55a`
@@ -155,13 +169,13 @@ In the testing [script](test/01_test1.sh) and [results](test/test1results.txt):
       require(owner == ecrecoverFromSig(keccak256(signingPrefix, hash), sig));
 
   If `ecrecoverFromSig(...)` returnes the same account as the token holder, the `require(...)` check passes. BTTS smart contract function `signedTransfer(...)` will continue executing
-  the transfers. If any of the parameters are not exactly the same parameters using the the hashing and signing process, `ecrecoverFromSig(...)` will return a different account to 
+  the transfers. If any of the parameters are not exactly the same parameters using the the hashing and signing process, `ecrecoverFromSig(...)` will return a different account to
   the token holder account.
 
 * 1 token is transferred from the owner `0xa33a` to the account `0xa55a` - the log of the transfer follows:
 
       Transfer 0 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa55a151eb00fded1634d27d1127b4be4627079ea tokens=1
-* 0.01 tokens is transferred from the owner `0xa33a` to the service provider `0xa11a` to compensate the service provider for the 
+* 0.01 tokens is transferred from the owner `0xa33a` to the service provider `0xa11a` to compensate the service provider for the
   ETH transaction fee `costETH=0.001749906 costUSD=0.66564674334` - the log of the transfer follows:
 
       Transfer 1 #166: from=0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0 to=0xa88a05d2b88283ce84c8325760b72a64591279a2 tokens=0.01
@@ -181,7 +195,7 @@ The signature `0xd563e5d5e0ace9e2f6ebc11fd7f2888a9289cdf9e2e44a148a72a14cc3a77c4
   * `sigV=0x1b` (last 2 hex chars of signature)
   * `sigR=d563e5d5e0ace9e2f6ebc11fd7f2888a9289cdf9e2e44a148a72a14cc3a77c44` (first 64 hex chars of signature)
   * `sigS=5e35d8abdbd499779c7d2d5081785beee092de14c7dcc6dc6e2aa653f3b4d1d5` (second 64 hex chars of signature)
-  
+
 The `ecrecoverFromSig(...)` is supplied with the full length signature, splits the full length signature into the component [v, r, s] and calls the `ecrecover(...)` function
 
 <br />
@@ -212,7 +226,7 @@ console.log("RESULT: sig=" + sig);
 
 var signedTransfer1Check = token.signedTransferCheck(from, to, tokens, fee, nonce, sig, feeAccount);
 console.log("RESULT: signedTransfer1Check=" + signedTransfer1Check + " " + signedTransferCheckResultString(signedTransfer1Check));
-var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, feeAccount, 
+var signedTransfer1Tx = token.signedTransfer(from, to, tokens, fee, nonce, sig, feeAccount,
   {from: contractOwnerAccount, gas: 200000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
@@ -256,7 +270,7 @@ signedTransfer1Tx status=0x1 Success gas=200000 gasUsed=99336 costETH=0.00009933
                                                                              12000000.000000000000000000 Total Token Balances
 -- ------------------------------------------ --------------------------- ------------------------------ ---------------------------
 
-PASS Signed Transfers - Signed Transfer 
+PASS Signed Transfers - Signed Transfer
 tokenContractAddress=0xa1b42c6ad2e1d69eee56532557480c20697aa3b5
 token.owner=0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 token.newOwner=0x0000000000000000000000000000000000000000
@@ -739,4 +753,4 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 <br />
 
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd - Feb 11 2018. The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd - Feb 17 2019. The MIT Licence.
